@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { FEELING_FIRST_GALLERY, isEmotionSlug, type EmotionInterpretation } from "./emotion-study-catalog";
@@ -20,6 +20,7 @@ function EmotionArtwork({ interpretation }: { interpretation: EmotionInterpretat
 
 export function FeelingFirstStudy() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const artworkRef = useRef<HTMLElement>(null);
   const emotionParam = searchParams.get("emotion");
   const activeSlug = isEmotionSlug(emotionParam) ? emotionParam : gallery.defaultInterpretation;
   const activeIndex = gallery.interpretations.findIndex((interpretation) => interpretation.slug === activeSlug);
@@ -47,6 +48,11 @@ export function FeelingFirstStudy() {
   function chooseInterpretation(index: number, replace = false) {
     const interpretation = gallery.interpretations[index];
     if (!interpretation) return;
+    const artwork = artworkRef.current;
+    if (typeof artwork?.scrollIntoView === "function") {
+      const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+      artwork.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+    }
     const next = new URLSearchParams(searchParams);
     next.set("view", "feeling-first");
     next.set("emotion", interpretation.slug);
@@ -63,9 +69,9 @@ export function FeelingFirstStudy() {
         </header>
 
         <section className="emotion-gallery__selector" aria-labelledby="emotion-selector-title">
-          <div>
-            <p className="eyebrow">ONE PREMISE · FIVE INTERPRETATIONS</p>
-            <h2 id="emotion-selector-title">Move through the feeling.</h2>
+          <div className="emotion-gallery__selector-copy">
+            <p className="eyebrow">CHOOSE A FEELING</p>
+            <h2 id="emotion-selector-title">Change the mood, keep the view.</h2>
           </div>
           <div className="emotion-range">
             <input type="range" min="0" max={gallery.interpretations.length - 1} step="1" value={activeIndex} aria-label="Emotional interpretation" aria-valuetext={`${active.emotion}: ${active.title}`} onChange={(event) => chooseInterpretation(Number(event.target.value), true)} style={{ "--emotion-accent": active.accent } as CSSProperties} />
@@ -81,7 +87,7 @@ export function FeelingFirstStudy() {
         </section>
 
         <section className="emotion-gallery__workspace" aria-live="polite">
-          <figure className="emotion-gallery__artwork" key={active.slug}>
+          <figure className="emotion-gallery__artwork" key={active.slug} ref={artworkRef}>
             <EmotionArtwork interpretation={active} />
             <figcaption>{active.artwork.alt}</figcaption>
           </figure>

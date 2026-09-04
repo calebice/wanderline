@@ -126,6 +126,7 @@ body::after {
 @media (max-width: 720px) {
   .site-shell { width: min(100% - 24px, 1480px); }
   .app-nav { position: static; margin-bottom: 30px; }
+  .emotion-gallery__selector { top: 8px; }
   .app-nav div { overflow-x: auto; padding-bottom: 3px; scrollbar-width: none; }
   .app-nav div a { flex: 0 0 auto; white-space: nowrap; }
   .site-footer { flex-direction: column; gap: 7px; }

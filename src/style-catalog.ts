@@ -10,6 +10,8 @@ const camperVanAsset = (file: string) =>
   `${basePath}style-guide/camper-van/${displayAsset(file)}`;
 const bouquetAsset = (file: string) =>
   `${basePath}style-guide/bouquet/${displayAsset(file)}`;
+const greenhouseAsset = (file: string) =>
+  `${basePath}style-guide/greenhouse/${displayAsset(file)}`;
 
 export const STYLE_GUIDE_SLUGS = [
   "realism",
@@ -81,7 +83,7 @@ export interface StyleComparisonVariant {
 }
 
 export interface StyleComparisonSubject {
-  slug: "coastal-stairway" | "astronaut" | "camper-van" | "bouquet";
+  slug: "coastal-stairway" | "astronaut" | "camper-van" | "bouquet" | "greenhouse";
   label: string;
   description: string;
   base: StyleGuideAsset;
@@ -94,7 +96,7 @@ export interface StyleReferenceVariant extends StyleComparisonVariant {
 }
 
 export interface StyleReferenceSubject {
-  slug: "japanese-seaside-town" | "coastal-stairway" | "astronaut" | "camper-van" | "bouquet";
+  slug: "japanese-seaside-town" | "coastal-stairway" | "astronaut" | "camper-van" | "bouquet" | "greenhouse";
   label: string;
   description: string;
   selectorImage: StyleGuideAsset;
@@ -399,6 +401,13 @@ const camperVanImage = (path: string, alt: string): StyleGuideAsset => ({
 
 const bouquetImage = (path: string, alt: string): StyleGuideAsset => ({
   src: bouquetAsset(path),
+  width: path.endsWith("thumbnail.png") ? 768 : 1536,
+  height: path.endsWith("thumbnail.png") ? 512 : 1024,
+  alt,
+});
+
+const greenhouseImage = (path: string, alt: string): StyleGuideAsset => ({
+  src: greenhouseAsset(path),
   width: path.endsWith("thumbnail.png") ? 768 : 1536,
   height: path.endsWith("thumbnail.png") ? 512 : 1024,
   alt,
@@ -724,6 +733,86 @@ export const BOUQUET_COMPARISON: StyleComparisonSubject = {
     "This collection varies the flowers, vessel, silhouette, and setting deliberately so each style demonstrates a different way to design the subject—not only a different finish.",
 };
 
+export const GREENHOUSE_COMPARISON: StyleComparisonSubject = {
+  slug: "greenhouse",
+  label: "Greenhouse after rain",
+  description:
+    "A warm glasshouse in a rain-darkened garden becomes a study in reflected light, structure, simplified shape, and quiet atmosphere.",
+  base: greenhouseImage(
+    "watercolor/thumbnail.png",
+    "Luminous watercolor of a warmly glowing glass greenhouse beside a reflective garden path after rain.",
+  ),
+  variants: [
+    {
+      style: "realism",
+      label: "Realism",
+      treatment: "Observed glass, wet foliage, material texture, and reflected light",
+      thumbnail: greenhouseImage(
+        "realism/thumbnail.png",
+        "Naturalistic colored drawing of a dark-framed greenhouse glowing warmly in a wet garden.",
+      ),
+      reference: greenhouseImage(
+        "realism/reference.png",
+        "Naturalistic eye-level illustration of a rain-beaded dark green greenhouse, warm potting table and chair, wet path reflections, hydrangeas, ferns, and broad hosta leaves.",
+      ),
+    },
+    {
+      style: "cartoon",
+      label: "Cartoon",
+      treatment: "Chunky construction, lively contours, and graphic puddle reflections",
+      thumbnail: greenhouseImage(
+        "cartoon/thumbnail.png",
+        "Bold cartoon greenhouse with an arched doorway, bright plants, stepping stones, and puddles.",
+      ),
+      reference: greenhouseImage(
+        "cartoon/reference.png",
+        "Playful low-angle cartoon of a squat teal greenhouse with oversized arched doors, bold outlines, warm flat light, simplified plant masses, stepping stones, and reflective puddles.",
+      ),
+    },
+    {
+      style: "architectural",
+      label: "Architectural drawing",
+      treatment: "Axonometric construction, line hierarchy, and visible interior organization",
+      thumbnail: greenhouseImage(
+        "architectural/thumbnail.png",
+        "Elevated architectural presentation of a glass greenhouse and its organized interior workspace.",
+      ),
+      reference: greenhouseImage(
+        "architectural/reference.png",
+        "Elevated axonometric architectural drawing of a dark-framed greenhouse showing roof pitch, mullions, shelves, chair, potting bench, restrained planting, and wet paving reflections.",
+      ),
+    },
+    {
+      style: "watercolor",
+      label: "Watercolor",
+      treatment: "Transparent rainy washes, lost edges, and a warm luminous center",
+      thumbnail: greenhouseImage(
+        "watercolor/thumbnail.png",
+        "Atmospheric watercolor greenhouse glowing beside a curving wet path in a blue-green garden.",
+      ),
+      reference: greenhouseImage(
+        "watercolor/reference.png",
+        "Transparent watercolor of a warm glass greenhouse set off-center in a rain-softened blue-green garden, with a curving reflective path, open paper, granulated foliage, chair, and potting table.",
+      ),
+    },
+    {
+      style: "anime-environment",
+      label: "Anime environment",
+      treatment: "Cinematic blue hour, deep garden framing, and luminous shelter",
+      thumbnail: greenhouseImage(
+        "anime-environment/thumbnail.png",
+        "Original cinematic blue-hour greenhouse glowing among deep wet garden foliage.",
+      ),
+      reference: greenhouseImage(
+        "anime-environment/reference.png",
+        "Original cinematic environment illustration of a warmly lit greenhouse nested in a deep indigo garden at blue hour, framed by rain-dark foliage and broad reflective paving.",
+      ),
+    },
+  ],
+  futureNote:
+    "The shared greenhouse idea stays recognizable while each drawing language independently controls camera, silhouette, edge behavior, detail density, and the balance between warm light and rainy garden atmosphere.",
+};
+
 export const STYLE_REFERENCE_SUBJECTS: readonly StyleReferenceSubject[] = [
   {
     slug: "japanese-seaside-town",
@@ -771,6 +860,14 @@ export const STYLE_REFERENCE_SUBJECTS: readonly StyleReferenceSubject[] = [
     selectorImage: BOUQUET_COMPARISON.base,
     variants: BOUQUET_COMPARISON.variants,
     futureNote: BOUQUET_COMPARISON.futureNote,
+  },
+  {
+    slug: GREENHOUSE_COMPARISON.slug,
+    label: GREENHOUSE_COMPARISON.label,
+    description: GREENHOUSE_COMPARISON.description,
+    selectorImage: GREENHOUSE_COMPARISON.base,
+    variants: GREENHOUSE_COMPARISON.variants,
+    futureNote: GREENHOUSE_COMPARISON.futureNote,
   },
 ] as const;
 

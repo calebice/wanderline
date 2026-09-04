@@ -1517,10 +1517,13 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visib
 .feeling-first-card .button-link { background: #e2a94e; color: #20162a; }
 
 .emotion-gallery { padding: 0; border: 0; background: transparent; }
-.emotion-gallery__hero { max-width: 780px; padding: 20px 0 24px; }
-.emotion-gallery__hero h1 { color: #263758; }
-.emotion-gallery__selector { display: grid; grid-template-columns: minmax(250px, .65fr) minmax(0, 1.35fr); gap: 40px; align-items: end; padding: 28px 32px; border-radius: 28px; background: #171f3e; color: #f8edcf; }
-.emotion-gallery__selector h2 { margin: 6px 0 0; font-size: clamp(2rem, 4vw, 3.2rem); }
+.emotion-gallery__hero { max-width: 780px; padding: 8px 0 16px; }
+.emotion-gallery__hero h1 { margin: 10px 0 14px; color: #263758; font-size: clamp(3rem, 6vw, 5.25rem); }
+.emotion-gallery__hero .lede { font-size: 1.08rem; }
+.emotion-gallery__selector { position: sticky; z-index: 19; top: 92px; display: grid; grid-template-columns: minmax(210px, .5fr) minmax(0, 1.5fr); gap: 24px; align-items: center; margin-top: 16px; padding: 14px 24px 12px; border: 1px solid rgba(255,255,255,.1); border-radius: 22px; background: rgba(23,31,62,.97); color: #f8edcf; box-shadow: 0 10px 28px rgba(16,24,48,.18); backdrop-filter: blur(12px); }
+.emotion-gallery__selector-copy { min-width: 0; }
+.emotion-gallery__selector-copy .eyebrow { margin: 0; font-size: .64rem; }
+.emotion-gallery__selector h2 { margin: 2px 0 0; font-size: clamp(1.25rem, 2vw, 1.7rem); line-height: 1.08; }
 .emotion-range { display: grid; gap: 7px; min-width: 0; }
 .emotion-range input { width: calc(100% - 26px); height: 28px; margin-inline: 13px; cursor: grab; accent-color: var(--emotion-accent); }
 .emotion-range input:active { cursor: grabbing; }
@@ -1533,7 +1536,7 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visib
 .emotion-range__labels button.is-selected { background: rgba(255,255,255,.09); color: #fff8e6; }
 .emotion-range__labels button.is-selected span { opacity: 1; box-shadow: 0 0 0 4px rgba(255,255,255,.12); }
 
-.emotion-gallery__workspace { display: grid; grid-template-columns: minmax(0, 1.48fr) minmax(300px, .52fr); overflow: hidden; border-radius: 30px; background: #151c38; color: #f8edcf; box-shadow: 10px 10px 0 rgba(37, 57, 91, .1); }
+.emotion-gallery__workspace { display: grid; grid-template-columns: minmax(0, 1.48fr) minmax(300px, .52fr); overflow: hidden; margin-top: 18px; border-radius: 30px; background: #151c38; color: #f8edcf; box-shadow: 10px 10px 0 rgba(37, 57, 91, .1); }
 .emotion-gallery__artwork { margin: 0; background: #0d1328; animation: emotion-artwork-enter .38s ease both; }
 .emotion-gallery__artwork img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .emotion-gallery__artwork figcaption { padding: 10px 18px; color: #aaafc0; font-size: .7rem; line-height: 1.4; text-align: center; }
@@ -1561,15 +1564,21 @@ button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visib
   .feeling-first-card,
   .emotion-gallery__selector,
   .emotion-gallery__workspace { grid-template-columns: minmax(0, 1fr); }
-  .emotion-gallery__selector { gap: 22px; }
+  .emotion-gallery__selector { gap: 9px; }
+  .emotion-gallery__selector-copy { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .emotion-gallery__selector h2 { margin: 0; font-size: 1.15rem; text-align: right; }
   .emotion-gallery__workspace aside { border-top-width: 7px; }
 }
 
 @media (max-width: 600px) {
   .feeling-first-card img { min-height: 220px; }
-  .emotion-gallery__selector { margin-inline: -6px; padding: 22px 14px; border-radius: 22px; }
+  .emotion-gallery__hero { padding-bottom: 8px; }
+  .emotion-gallery__hero h1 { font-size: clamp(3rem, 16vw, 4.25rem); }
+  .emotion-gallery__selector { top: 8px; margin-top: 8px; margin-inline: -6px; padding: 12px 14px 10px; border-radius: 18px; }
+  .emotion-gallery__selector-copy { align-items: center; }
+  .emotion-gallery__selector h2 { max-width: 190px; font-size: .98rem; }
   .emotion-range__labels button { font-size: .63rem; }
-  .emotion-gallery__workspace { margin-inline: -6px; border-radius: 22px; }
+  .emotion-gallery__workspace { margin-top: 12px; margin-inline: -6px; border-radius: 22px; }
   .emotion-gallery__workspace aside { padding: 28px 22px; }
 }
 

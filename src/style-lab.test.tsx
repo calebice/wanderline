@@ -33,8 +33,8 @@ function publicAssetPath(src: string) {
 afterEach(() => cleanup());
 
 describe("Sites-native Style Studio", () => {
-  it("ships five subjects with all 25 style combinations", () => {
-    expect(STYLE_REFERENCE_SUBJECTS).toHaveLength(5);
+  it("ships six subjects with all 30 style combinations", () => {
+    expect(STYLE_REFERENCE_SUBJECTS).toHaveLength(6);
     expect(STYLE_GUIDE_ENTRIES).toHaveLength(5);
     for (const subject of STYLE_REFERENCE_SUBJECTS) {
       expect(subject.variants).toHaveLength(5);
