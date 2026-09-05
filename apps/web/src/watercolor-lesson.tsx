@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { Link } from "react-router-dom";
 
 const basePath = (import.meta.env.BASE_URL || "/").replace(/\/?$/, "/");
@@ -24,6 +24,7 @@ type PaletteMix = {
   swatch: string;
   formula: string;
   dilution: string;
+  waterParts?: number;
 };
 
 const stages: readonly LessonStage[] = [
@@ -53,9 +54,9 @@ const stages: readonly LessonStage[] = [
     moveOn: "Let this layer become completely matte and cool to the touch before adding more color.",
     alt: "Pale transparent yellow and green first washes on a lemon and leaf with untouched paper showing through.",
     palette: [
-      { name: "Lemon light", swatch: "#f4d860", formula: "Yellow", dilution: "1 color : 8 water" },
-      { name: "Leaf light", swatch: "#b4bf77", formula: "Yellow + blue · 3:1", dilution: "1 mix : 6 water" },
-      { name: "Shadow hint", swatch: "#bac1d1", formula: "Blue + red · 2:1", dilution: "1 mix : 8 water" },
+      { name: "Lemon light", swatch: "#f4d860", formula: "Yellow", dilution: "1 : 8 dilution", waterParts: 8 },
+      { name: "Leaf light", swatch: "#b4bf77", formula: "Yellow + blue · 3:1", dilution: "1 : 6 dilution", waterParts: 6 },
+      { name: "Shadow hint", swatch: "#bac1d1", formula: "Blue + red · 2:1", dilution: "1 : 8 dilution", waterParts: 8 },
     ],
   },
   {
@@ -69,9 +70,9 @@ const stages: readonly LessonStage[] = [
     moveOn: "Stop touching the lemon when the sheen disappears. Let every area dry before the final glaze.",
     alt: "Partly developed watercolor lemon with warm damp-in-damp shadow, layered green leaf, and a pale cast shadow.",
     palette: [
-      { name: "Warm turn", swatch: "#e9a742", formula: "Yellow + red · 4:1", dilution: "1 mix : 4 water" },
-      { name: "Leaf middle", swatch: "#718944", formula: "Yellow + blue · 2:1", dilution: "1 mix : 3 water" },
-      { name: "Cast shadow", swatch: "#8792ad", formula: "Blue + red · 2:1", dilution: "1 mix : 5 water" },
+      { name: "Warm turn", swatch: "#e9a742", formula: "Yellow + red · 4:1", dilution: "1 : 4 dilution", waterParts: 4 },
+      { name: "Leaf middle", swatch: "#718944", formula: "Yellow + blue · 2:1", dilution: "1 : 3 dilution", waterParts: 3 },
+      { name: "Cast shadow", swatch: "#8792ad", formula: "Blue + red · 2:1", dilution: "1 : 5 dilution", waterParts: 5 },
     ],
   },
   {
@@ -85,9 +86,9 @@ const stages: readonly LessonStage[] = [
     moveOn: "Finish when the subject feels grounded. If a new mark will not explain form, edge, or contact, leave it out.",
     alt: "Finished attainable transparent watercolor of one lemon and leaf with a luminous highlight and soft blue-violet cast shadow.",
     palette: [
-      { name: "Lemon glaze", swatch: "#dfa033", formula: "Yellow + red · 5:1", dilution: "1 mix : 3 water" },
-      { name: "Deep green", swatch: "#3f5f2b", formula: "Blue + yellow · 1:2", dilution: "1 mix : 2 water" },
-      { name: "Deep neutral", swatch: "#646375", formula: "Blue + red · 1:1", dilution: "1 mix : 2 water" },
+      { name: "Lemon glaze", swatch: "#dfa033", formula: "Yellow + red · 5:1", dilution: "1 : 3 dilution", waterParts: 3 },
+      { name: "Deep green", swatch: "#3f5f2b", formula: "Blue + yellow · 1:2", dilution: "1 : 2 dilution", waterParts: 2 },
+      { name: "Deep neutral", swatch: "#646375", formula: "Blue + red · 1:1", dilution: "1 : 2 dilution", waterParts: 2 },
     ],
   },
 ] as const;
@@ -115,6 +116,51 @@ function StageArtwork({ stage }: { stage: number }) {
   );
 }
 
+function dilutionResult(waterParts: number) {
+  if (waterParts >= 8) return "a very pale, luminous wash";
+  if (waterParts >= 5) return "a light, transparent wash";
+  if (waterParts >= 3) return "a middle-strength wash";
+  return "a strong accent mix";
+}
+
+function DilutionGuide({ mix }: { mix: PaletteMix }) {
+  const tooltipId = useId();
+
+  if (!mix.waterParts) return <small>{mix.dilution}</small>;
+
+  return (
+    <span className="watercolor-dilution">
+      <button type="button" aria-describedby={tooltipId}>
+        {mix.dilution}
+        <span aria-hidden="true">?</span>
+      </button>
+      <span className="watercolor-dilution__tooltip" id={tooltipId} role="tooltip">
+        <strong>What 1 : {mix.waterParts} means</strong>
+        <span className="watercolor-dilution__diagram" aria-hidden="true">
+          <span className="watercolor-dilution__measure watercolor-dilution__measure--paint">
+            <i style={{ backgroundColor: mix.swatch }} />
+            <b>1×</b>
+            <small>paint mix</small>
+          </span>
+          <b>+</b>
+          <span className="watercolor-dilution__measure watercolor-dilution__measure--water">
+            <i />
+            <b>{mix.waterParts}×</b>
+            <small>clean water</small>
+          </span>
+          <b>=</b>
+          <span className="watercolor-dilution__measure watercolor-dilution__measure--result">
+            <i style={{ backgroundColor: mix.swatch }} />
+            <small>ready wash</small>
+          </span>
+        </span>
+        <span>First make the color shown above. Using the same brush, combine one full brush-load of that color with {mix.waterParts} equally full brush-loads of clean water.</span>
+        <em>Expected result: {dilutionResult(mix.waterParts)}. Test it on scrap paper before painting.</em>
+      </span>
+    </span>
+  );
+}
+
 function StagePalette({ palette }: { palette: readonly PaletteMix[] }) {
   return (
     <section className="watercolor-palette" aria-labelledby="watercolor-palette-title">
@@ -129,7 +175,7 @@ function StagePalette({ palette }: { palette: readonly PaletteMix[] }) {
             <span className="watercolor-palette__details">
               <strong>{mix.name}</strong>
               <span>{mix.formula}</span>
-              <small>{mix.dilution}</small>
+              <DilutionGuide mix={mix} />
             </span>
           </li>
         ))}

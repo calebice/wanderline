@@ -117,7 +117,9 @@ describe("Sites-native Style Studio", () => {
     expect(screen.getByText(/More water makes a lighter/)).toBeInTheDocument();
     expect(screen.getByText("Lemon light")).toBeInTheDocument();
     expect(screen.getByText("Yellow + blue · 3:1")).toBeInTheDocument();
-    expect(screen.getByText("1 color : 8 water")).toBeInTheDocument();
+    const dilution = screen.getAllByRole("button", { name: /1 : 8 dilution/ })[0];
+    expect(dilution).toHaveAttribute("aria-describedby");
+    expect(screen.getAllByRole("tooltip")[0]).toHaveTextContent("one full brush-load of that color with 8 equally full brush-loads of clean water");
 
     fireEvent.click(screen.getByRole("button", { name: "Reference photo" }));
     expect(screen.getByAltText(/Single yellow lemon/)).toBeInTheDocument();
