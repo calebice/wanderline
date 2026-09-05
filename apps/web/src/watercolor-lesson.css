@@ -129,6 +129,30 @@
 
 .watercolor-reference { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; border-radius: 24px; object-fit: cover; box-shadow: 0 15px 38px rgba(52, 49, 39, .15); }
 
+.watercolor-palette {
+  display: grid;
+  gap: 13px;
+  margin-top: 16px;
+  padding: 17px;
+  border: 1px solid rgba(90, 78, 56, .12);
+  border-radius: 20px;
+  background: rgba(251, 248, 238, .88);
+  box-shadow: 0 10px 24px rgba(52, 49, 39, .08);
+}
+
+.watercolor-palette__header { display: grid; grid-template-columns: auto minmax(180px, 1fr); gap: 16px; align-items: baseline; }
+.watercolor-palette__header h3 { margin: 0; font-family: var(--display-font); font-size: 1.05rem; }
+.watercolor-palette__header p { margin: 0; color: var(--text-secondary); font-size: .7rem; line-height: 1.4; text-align: right; }
+
+.watercolor-palette__mixes { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.watercolor-palette__mixes li { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 10px; align-items: center; min-width: 0; padding: 10px; border-radius: 14px; background: rgba(255, 255, 255, .55); }
+.watercolor-palette__swatch { width: 42px; height: 42px; border: 1px solid rgba(52, 49, 39, .18); border-radius: 50% 46% 52% 44%; box-shadow: inset 3px 3px 7px rgba(255, 255, 255, .36), 0 3px 7px rgba(52, 49, 39, .1); transform: rotate(-5deg); }
+.watercolor-palette__details { display: grid; min-width: 0; }
+.watercolor-palette__details strong { overflow: hidden; color: var(--text-primary); font-size: .76rem; text-overflow: ellipsis; white-space: nowrap; }
+.watercolor-palette__details > span { color: var(--text-secondary); font-size: .68rem; line-height: 1.35; }
+.watercolor-palette__details small { margin-top: 2px; color: var(--theme-accent-strong); font-size: .66rem; font-weight: 800; line-height: 1.35; }
+.watercolor-palette__note { margin: -2px 0 0; color: var(--text-secondary); font-size: .66rem; font-style: italic; line-height: 1.4; }
+
 .watercolor-instruction { display: grid; align-content: start; gap: 18px; padding: clamp(24px, 4vw, 42px); }
 .watercolor-instruction .eyebrow { margin: 2px 0 -8px; color: var(--theme-accent-strong); }
 .watercolor-instruction h2 { margin: 0; font-size: clamp(2.1rem, 4vw, 3.3rem); line-height: 1.02; }
@@ -208,6 +232,8 @@
   .watercolor-visual { padding: 11px; }
   .watercolor-stage-artwork,
   .watercolor-reference { border-radius: 17px; }
+  .watercolor-palette__header { grid-template-columns: 1fr; gap: 3px; }
+  .watercolor-palette__header p { text-align: left; }
   .watercolor-instruction { padding: 24px 20px; }
   .watercolor-complete,
   .watercolor-lesson-kit,
@@ -221,6 +247,7 @@
   .watercolor-principle-strip { grid-template-columns: 1fr; }
   .watercolor-principle-strip button { min-height: 82px; border-right: 0; border-bottom: 1px solid var(--theme-border); }
   .watercolor-principle-strip button:nth-child(3) { border-bottom: 1px solid var(--theme-border); }
+  .watercolor-palette__mixes { grid-template-columns: 1fr; }
   .watercolor-stage-actions { grid-template-columns: 1fr; }
 }
 

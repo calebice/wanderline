@@ -16,6 +16,14 @@ type LessonStage = {
   lookFor: string;
   moveOn: string;
   alt: string;
+  palette: readonly PaletteMix[];
+};
+
+type PaletteMix = {
+  name: string;
+  swatch: string;
+  formula: string;
+  dilution: string;
 };
 
 const stages: readonly LessonStage[] = [
@@ -29,6 +37,10 @@ const stages: readonly LessonStage[] = [
     lookFor: "The lemon reads as one tilted oval with two small pointed ends. The leaf is one quieter shape, not a collection of veins.",
     moveOn: "Move on when the silhouette feels balanced and the highlight has a clear boundary.",
     alt: "Light graphite outline of one lemon and leaf on watercolor paper with the highlight reserved.",
+    palette: [
+      { name: "Paper light", swatch: "#f7f2e7", formula: "Leave unpainted", dilution: "0 paint" },
+      { name: "Graphite guide", swatch: "#77736c", formula: "HB pencil", dilution: "Feather-light pressure" },
+    ],
   },
   {
     title: "Make one luminous first wash.",
@@ -40,6 +52,11 @@ const stages: readonly LessonStage[] = [
     lookFor: "The wash stays glossy long enough to connect your strokes. Color is even enough to feel calm, with no scrubbing back into drying areas.",
     moveOn: "Let this layer become completely matte and cool to the touch before adding more color.",
     alt: "Pale transparent yellow and green first washes on a lemon and leaf with untouched paper showing through.",
+    palette: [
+      { name: "Lemon light", swatch: "#f4d860", formula: "Yellow", dilution: "1 color : 8 water" },
+      { name: "Leaf light", swatch: "#b4bf77", formula: "Yellow + blue · 3:1", dilution: "1 mix : 6 water" },
+      { name: "Shadow hint", swatch: "#bac1d1", formula: "Blue + red · 2:1", dilution: "1 mix : 8 water" },
+    ],
   },
   {
     title: "Charge color while the surface is damp.",
@@ -51,6 +68,11 @@ const stages: readonly LessonStage[] = [
     lookFor: "The new color feathers softly instead of exploding into a bloom or sitting as a hard stripe. The light side remains visibly lighter.",
     moveOn: "Stop touching the lemon when the sheen disappears. Let every area dry before the final glaze.",
     alt: "Partly developed watercolor lemon with warm damp-in-damp shadow, layered green leaf, and a pale cast shadow.",
+    palette: [
+      { name: "Warm turn", swatch: "#e9a742", formula: "Yellow + red · 4:1", dilution: "1 mix : 4 water" },
+      { name: "Leaf middle", swatch: "#718944", formula: "Yellow + blue · 2:1", dilution: "1 mix : 3 water" },
+      { name: "Cast shadow", swatch: "#8792ad", formula: "Blue + red · 2:1", dilution: "1 mix : 5 water" },
+    ],
   },
   {
     title: "Glaze once. Accent selectively.",
@@ -62,6 +84,11 @@ const stages: readonly LessonStage[] = [
     lookFor: "The lemon feels round because of one clear light-to-shadow turn. The highlight still belongs to the paper and the darkest darks stay small.",
     moveOn: "Finish when the subject feels grounded. If a new mark will not explain form, edge, or contact, leave it out.",
     alt: "Finished attainable transparent watercolor of one lemon and leaf with a luminous highlight and soft blue-violet cast shadow.",
+    palette: [
+      { name: "Lemon glaze", swatch: "#dfa033", formula: "Yellow + red · 5:1", dilution: "1 mix : 3 water" },
+      { name: "Deep green", swatch: "#3f5f2b", formula: "Blue + yellow · 1:2", dilution: "1 mix : 2 water" },
+      { name: "Deep neutral", swatch: "#646375", formula: "Blue + red · 1:1", dilution: "1 mix : 2 water" },
+    ],
   },
 ] as const;
 
@@ -85,6 +112,30 @@ function StageArtwork({ stage }: { stage: number }) {
         alt={stages[stage].alt}
       />
     </div>
+  );
+}
+
+function StagePalette({ palette }: { palette: readonly PaletteMix[] }) {
+  return (
+    <section className="watercolor-palette" aria-labelledby="watercolor-palette-title">
+      <div className="watercolor-palette__header">
+        <h3 id="watercolor-palette-title">Mix for this stage</h3>
+        <p>Color ratios compare pigments; dilution compares one brush-load of mix to water.</p>
+      </div>
+      <ul className="watercolor-palette__mixes">
+        {palette.map((mix) => (
+          <li key={mix.name}>
+            <span className="watercolor-palette__swatch" style={{ backgroundColor: mix.swatch }} aria-hidden="true" />
+            <span className="watercolor-palette__details">
+              <strong>{mix.name}</strong>
+              <span>{mix.formula}</span>
+              <small>{mix.dilution}</small>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="watercolor-palette__note">Start here, then test a swatch—pigment strength varies by brand.</p>
+    </section>
   );
 }
 
@@ -152,6 +203,7 @@ export function WatercolorLesson() {
             <StageArtwork stage={activeStage} />
           )}
           <p>{showReference ? "Observe the large light, middle, and shadow shapes. Ignore the peel texture." : `Stage ${activeStage + 1} of ${stages.length} · ${stage.waterState}`}</p>
+          <StagePalette palette={stage.palette} />
         </div>
 
         <aside className="watercolor-instruction" aria-live="polite">

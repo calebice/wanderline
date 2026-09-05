@@ -109,13 +109,19 @@ describe("Sites-native Style Studio", () => {
     expect(screen.getByRole("heading", { name: "Understand the water.", level: 1 })).toBeInTheDocument();
     expect(screen.getAllByText("Dry paper").length).toBeGreaterThan(0);
     expect(screen.getByAltText(/Light graphite outline/)).toBeInTheDocument();
+    expect(screen.getByText("Paper light")).toBeInTheDocument();
+    expect(screen.getByText("0 paint")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Next stage →" }));
     expect(screen.getByRole("heading", { name: "Make one luminous first wash." })).toBeInTheDocument();
     expect(screen.getByText(/More water makes a lighter/)).toBeInTheDocument();
+    expect(screen.getByText("Lemon light")).toBeInTheDocument();
+    expect(screen.getByText("Yellow + blue · 3:1")).toBeInTheDocument();
+    expect(screen.getByText("1 color : 8 water")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Reference photo" }));
     expect(screen.getByAltText(/Single yellow lemon/)).toBeInTheDocument();
+    expect(screen.getByText("Lemon light")).toBeInTheDocument();
 
     view.unmount();
     renderPath("/?view=watercolor-lesson");
