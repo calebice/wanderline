@@ -1,0 +1,229 @@
+.watercolor-lesson {
+  display: grid;
+  gap: 34px;
+  padding: 0 0 72px;
+  border: 0;
+  background: transparent;
+}
+
+.watercolor-lesson > section { margin: 0; }
+
+.watercolor-lesson__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: 42px;
+  align-items: end;
+  max-width: none;
+  padding: 32px 0 4px;
+}
+
+.watercolor-lesson__header .text-link { display: inline-block; margin-bottom: 26px; }
+.watercolor-lesson__header h1 { max-width: 920px; margin: 8px 0 16px; font-size: clamp(3.6rem, 8vw, 7rem); }
+.watercolor-lesson__header .lede { max-width: 860px; margin-bottom: 0; }
+
+.watercolor-lesson__header aside {
+  padding: 24px;
+  border-radius: 28px;
+  background: linear-gradient(145deg, var(--theme-highlight), #f3cf67);
+  color: var(--theme-ink);
+  box-shadow: 10px 12px 0 var(--theme-highlight-soft);
+}
+
+.watercolor-lesson__header aside span { font-size: .68rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+.watercolor-lesson__header aside strong { display: block; margin: 8px 0; font-family: var(--display-font); font-size: 1.75rem; line-height: 1.1; }
+.watercolor-lesson__header aside p { margin: 0; font-size: .82rem; line-height: 1.5; }
+
+.watercolor-principle-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  border-radius: 24px;
+  background: color-mix(in srgb, var(--surface-panel) 88%, transparent);
+}
+
+.watercolor-principle-strip button {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 10px;
+  align-items: center;
+  min-height: 96px;
+  margin: 0;
+  padding: 18px;
+  border: 0;
+  border-right: 1px solid var(--theme-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.watercolor-principle-strip button:last-child { border-right: 0; }
+.watercolor-principle-strip button::after { position: absolute; right: 18px; bottom: 14px; left: 18px; height: 4px; border-radius: 99px; background: var(--theme-border); content: ""; }
+.watercolor-principle-strip button.is-past::after { background: var(--theme-primary); }
+.watercolor-principle-strip button.is-active { background: var(--theme-highlight-soft); }
+.watercolor-principle-strip button.is-active::after { background: var(--theme-highlight); }
+.watercolor-principle-strip button:focus-visible { z-index: 1; outline: 4px solid var(--focus-ring); outline-offset: -4px; }
+.watercolor-principle-strip button > span { grid-row: 1 / span 2; font-family: var(--display-font); font-size: 1.45rem; }
+.watercolor-principle-strip strong { font-family: var(--display-font); font-size: 1.12rem; }
+.watercolor-principle-strip small { color: var(--text-secondary); font-size: .72rem; }
+
+.watercolor-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(360px, .82fr);
+  overflow: hidden;
+  border: 1px solid var(--theme-border);
+  border-radius: 34px;
+  background: var(--surface-panel);
+  box-shadow: 0 24px 70px color-mix(in srgb, var(--theme-shadow) 85%, transparent);
+}
+
+.watercolor-visual { min-width: 0; padding: 18px; background: #e9e3d5; }
+.watercolor-visual > p { margin: 11px 4px 0; color: var(--text-secondary); font-size: .78rem; line-height: 1.4; }
+
+.watercolor-view-toggle {
+  display: inline-flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  padding: 4px;
+  border-radius: 14px;
+  background: rgba(251, 248, 238, .9);
+}
+
+.watercolor-view-toggle button {
+  margin: 0;
+  padding: 9px 13px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: .76rem;
+}
+
+.watercolor-view-toggle button.is-selected { background: var(--theme-primary); color: var(--text-on-color); }
+.watercolor-view-toggle button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+
+.watercolor-stage-artwork {
+  position: relative;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #f4f1e9;
+  box-shadow: 0 15px 38px rgba(52, 49, 39, .15);
+}
+
+.watercolor-stage-sheet {
+  display: block;
+  width: 200%;
+  max-width: none;
+  height: auto;
+  transform-origin: top left;
+  transition: transform 360ms ease;
+}
+
+.watercolor-stage-sheet--1 { transform: translate(0, 0); }
+.watercolor-stage-sheet--2 { transform: translate(-50%, 0); }
+.watercolor-stage-sheet--3 { transform: translate(0, -50%); }
+.watercolor-stage-sheet--4 { transform: translate(-50%, -50%); }
+
+.watercolor-reference { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; border-radius: 24px; object-fit: cover; box-shadow: 0 15px 38px rgba(52, 49, 39, .15); }
+
+.watercolor-instruction { display: grid; align-content: start; gap: 18px; padding: clamp(24px, 4vw, 42px); }
+.watercolor-instruction .eyebrow { margin: 2px 0 -8px; color: var(--theme-accent-strong); }
+.watercolor-instruction h2 { margin: 0; font-size: clamp(2.1rem, 4vw, 3.3rem); line-height: 1.02; }
+
+.watercolor-stage-meta { display: flex; gap: 8px; flex-wrap: wrap; }
+.watercolor-stage-meta span { padding: 7px 11px; border-radius: 999px; background: var(--theme-primary-soft); color: var(--theme-primary-strong); font-size: .72rem; font-weight: 800; }
+.watercolor-stage-meta span:last-child { background: var(--theme-info-soft); color: var(--theme-info-strong); }
+
+.watercolor-instruction blockquote { margin: 0; padding: 17px 19px; border-left: 5px solid var(--theme-highlight); border-radius: 0 16px 16px 0; background: var(--theme-highlight-soft); font-family: var(--display-font); font-size: 1.12rem; line-height: 1.45; }
+.watercolor-instruction__section { display: grid; gap: 5px; }
+.watercolor-instruction__section h3 { margin: 0; font-size: 1.05rem; }
+.watercolor-instruction__section p { margin: 0; color: var(--text-secondary); line-height: 1.55; }
+
+.watercolor-ready-cue { padding: 17px 18px; border-radius: 18px; background: var(--theme-reflective-soft); }
+.watercolor-ready-cue strong { color: var(--theme-reflective); font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; }
+.watercolor-ready-cue p { margin: 5px 0 0; line-height: 1.5; }
+
+.watercolor-stage-actions { display: grid; grid-template-columns: 1fr 1.45fr; gap: 9px; margin-top: 2px; }
+.watercolor-stage-actions button { min-height: 48px; margin: 0; padding: 12px 15px; border-radius: 14px; }
+.watercolor-stage-actions button:first-child { background: var(--theme-primary-soft); color: var(--theme-primary-strong); }
+.watercolor-stage-actions button:disabled { opacity: .42; cursor: not-allowed; }
+.watercolor-stage-actions button:focus-visible { outline: 4px solid var(--focus-ring); outline-offset: 2px; }
+
+.watercolor-complete {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 24px;
+  align-items: center;
+  padding: 28px 30px;
+  border-radius: 28px;
+  background: var(--theme-primary);
+  color: var(--text-on-color);
+  box-shadow: 10px 12px 0 var(--theme-primary-soft);
+}
+
+.watercolor-complete h2 { margin: 4px 0 8px; color: inherit; font-size: clamp(2rem, 4vw, 3rem); }
+.watercolor-complete p { margin: 0; line-height: 1.5; }
+.watercolor-complete button { margin: 0; background: var(--theme-highlight); color: var(--theme-ink); }
+
+.watercolor-lesson-kit { display: grid; grid-template-columns: minmax(260px, .7fr) minmax(0, 1.3fr); gap: 36px; align-items: start; padding: 28px; border: 1px solid var(--theme-border); border-radius: 28px; background: color-mix(in srgb, var(--surface-panel) 78%, transparent); }
+.watercolor-lesson-kit h2 { margin: 4px 0 0; font-size: clamp(2rem, 4vw, 3rem); }
+.watercolor-lesson-kit ul { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.watercolor-lesson-kit li { display: grid; gap: 4px; padding: 15px; border-radius: 16px; background: var(--surface-panel); }
+.watercolor-lesson-kit li:last-child { grid-column: 1 / -1; }
+.watercolor-lesson-kit li strong { color: var(--theme-accent-strong); font-size: .78rem; text-transform: uppercase; }
+.watercolor-lesson-kit li span { color: var(--text-secondary); font-size: .88rem; line-height: 1.45; }
+
+.watercolor-lesson-invitation {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 30px;
+  align-items: center;
+  padding: 28px 30px;
+  border-radius: 28px;
+  background: linear-gradient(120deg, var(--theme-highlight-soft), var(--surface-panel));
+  box-shadow: inset 7px 0 var(--theme-highlight);
+}
+
+.watercolor-lesson-invitation h2 { margin: 4px 0 8px; font-size: clamp(2rem, 4vw, 3rem); }
+.watercolor-lesson-invitation p:last-child { max-width: 780px; margin: 0; color: var(--text-secondary); line-height: 1.55; }
+.watercolor-lesson-invitation .button-link { min-width: 210px; margin: 0; text-align: center; }
+
+@media (max-width: 980px) {
+  .watercolor-lesson__header,
+  .watercolor-workspace { grid-template-columns: 1fr; }
+  .watercolor-lesson__header aside { width: min(100%, 520px); }
+  .watercolor-instruction { padding: 28px; }
+}
+
+@media (max-width: 720px) {
+  .watercolor-lesson { gap: 24px; }
+  .watercolor-lesson__header { gap: 24px; padding-top: 10px; }
+  .watercolor-lesson__header h1 { font-size: clamp(3.2rem, 16vw, 5rem); }
+  .watercolor-principle-strip { grid-template-columns: 1fr 1fr; }
+  .watercolor-principle-strip button:nth-child(2) { border-right: 0; }
+  .watercolor-principle-strip button:nth-child(-n + 2) { border-bottom: 1px solid var(--theme-border); }
+  .watercolor-visual { padding: 11px; }
+  .watercolor-stage-artwork,
+  .watercolor-reference { border-radius: 17px; }
+  .watercolor-instruction { padding: 24px 20px; }
+  .watercolor-complete,
+  .watercolor-lesson-kit,
+  .watercolor-lesson-invitation { grid-template-columns: 1fr; }
+  .watercolor-lesson-kit ul { grid-template-columns: 1fr; }
+  .watercolor-lesson-kit li:last-child { grid-column: auto; }
+  .watercolor-lesson-invitation .button-link { width: 100%; }
+}
+
+@media (max-width: 430px) {
+  .watercolor-principle-strip { grid-template-columns: 1fr; }
+  .watercolor-principle-strip button { min-height: 82px; border-right: 0; border-bottom: 1px solid var(--theme-border); }
+  .watercolor-principle-strip button:nth-child(3) { border-bottom: 1px solid var(--theme-border); }
+  .watercolor-stage-actions { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .watercolor-stage-sheet { transition: none; }
+}

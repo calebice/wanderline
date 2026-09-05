@@ -30,7 +30,10 @@ function publicAssetPath(src: string) {
   return resolve(process.cwd(), "public", src.replace(/^\//, ""));
 }
 
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  window.localStorage.clear();
+});
 
 describe("Sites-native Style Studio", () => {
   it("ships six subjects with all 30 style combinations", () => {
@@ -99,6 +102,33 @@ describe("Sites-native Style Studio", () => {
     const styles = screen.getByRole("group", { name: /Choose a drawing language/ });
     fireEvent.click(within(styles).getByRole("button", { name: /Architectural drawing/ }));
     expect(screen.getByText(/Set the horizon or projection axes/)).toBeInTheDocument();
+  });
+
+  it("teaches watercolor as four persistent visual stages", () => {
+    const view = renderPath("/?view=watercolor-lesson");
+    expect(screen.getByRole("heading", { name: "Understand the water.", level: 1 })).toBeInTheDocument();
+    expect(screen.getAllByText("Dry paper").length).toBeGreaterThan(0);
+    expect(screen.getByAltText(/Light graphite outline/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Next stage →" }));
+    expect(screen.getByRole("heading", { name: "Make one luminous first wash." })).toBeInTheDocument();
+    expect(screen.getByText(/More water makes a lighter/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Reference photo" }));
+    expect(screen.getByAltText(/Single yellow lemon/)).toBeInTheDocument();
+
+    view.unmount();
+    renderPath("/?view=watercolor-lesson");
+    expect(screen.getByRole("heading", { name: "Make one luminous first wash." })).toBeInTheDocument();
+  });
+
+  it("ships compact lemon lesson imagery", () => {
+    for (const file of ["reference.jpg", "process.jpg"]) {
+      const path = resolve(process.cwd(), "public", "watercolor-lesson", "lemon", file);
+      const contents = readFileSync(path);
+      expect(contents.subarray(0, 2)).toEqual(Buffer.from([0xff, 0xd8]));
+      expect(statSync(path).size).toBeLessThan(1_000_000);
+    }
   });
 
   it("uses explicit defaults for invalid comparison values", () => {

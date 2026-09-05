@@ -39,6 +39,20 @@ test("teaching guides restore, paginate, and retain accessible landmarks", async
   await expect(page.getByRole("heading", { name: "Anime environment", level: 1 })).toBeVisible();
 });
 
+test("watercolor lesson advances through visual paper states", async ({ page }) => {
+  await page.goto("/?view=watercolor-lesson");
+  await expect(page.getByRole("heading", { name: "Understand the water." })).toBeVisible();
+  await expect(page.getByAltText(/Light graphite outline/)).toBeVisible();
+
+  await page.getByRole("button", { name: "Next stage →" }).click();
+  await expect(page.getByRole("heading", { name: "Make one luminous first wash." })).toBeVisible();
+  await page.getByRole("button", { name: "Reference photo" }).click();
+  await expect(page.getByAltText(/Single yellow lemon/)).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Make one luminous first wash." })).toBeVisible();
+});
+
 test("Feeling First restores all controls and survives reduced motion", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/?view=feeling-first&emotion=joy");
