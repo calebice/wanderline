@@ -1,0 +1,298 @@
+:root,
+:root[data-theme="garden-studio"] {
+  color-scheme: light;
+
+  /* Foundational pigments: the only values a future color theme needs to replace. */
+  --theme-canvas: #f1efe6;
+  --theme-paper: #fbf8ee;
+  --theme-ink: #29302d;
+  --theme-muted: #5c655f;
+  --theme-primary: #3c705c;
+  --theme-primary-strong: #285747;
+  --theme-primary-soft: #dbe8dd;
+  --theme-accent: #d97666;
+  --theme-accent-strong: #a94f45;
+  --theme-accent-soft: #f1ddd7;
+  --theme-highlight: #e0ad40;
+  --theme-highlight-soft: #f2e6bd;
+  --theme-info: #4d89ba;
+  --theme-info-strong: #316b9a;
+  --theme-info-soft: #dce7ef;
+  --theme-reflective: #89627f;
+  --theme-reflective-soft: #e7dce5;
+  --theme-border: rgba(41, 48, 45, 0.14);
+  --theme-shadow: rgba(51, 71, 60, 0.12);
+
+  /* Semantic roles consumed by structural component CSS. */
+  --surface-page: var(--theme-canvas);
+  --surface-panel: var(--theme-paper);
+  --surface-primary: var(--theme-primary);
+  --surface-action: var(--theme-highlight);
+  --surface-feedback: var(--theme-accent-soft);
+  --text-primary: var(--theme-ink);
+  --text-secondary: var(--theme-muted);
+  --text-on-color: var(--theme-paper);
+  --interactive-primary: var(--theme-primary-strong);
+  --interactive-hover: var(--theme-accent-strong);
+  --focus-ring: rgba(77, 137, 186, 0.62);
+  --track-perspective: var(--theme-info);
+  --track-perspective-soft: var(--theme-info-soft);
+  --track-form: var(--theme-primary);
+  --track-form-soft: var(--theme-primary-soft);
+  --track-light: var(--theme-highlight);
+  --track-light-soft: var(--theme-highlight-soft);
+  --track-portrait: var(--theme-reflective);
+  --track-portrait-soft: var(--theme-reflective-soft);
+  --track-creature: var(--theme-accent);
+  --track-creature-soft: var(--theme-accent-soft);
+
+  /* Compatibility aliases while structural CSS migrates to semantic roles. */
+  --studio-canvas: var(--theme-canvas);
+  --studio-paper: var(--theme-paper);
+  --studio-ink: var(--theme-ink);
+  --studio-muted: var(--theme-muted);
+  --studio-green: var(--theme-primary);
+  --studio-green-deep: var(--theme-primary-strong);
+  --studio-green-soft: var(--theme-primary-soft);
+  --studio-coral: var(--theme-accent);
+  --studio-coral-deep: var(--theme-accent-strong);
+  --studio-coral-soft: var(--theme-accent-soft);
+  --studio-gold: var(--theme-highlight);
+  --studio-gold-soft: var(--theme-highlight-soft);
+  --studio-blue: var(--theme-info);
+  --studio-blue-deep: var(--theme-info-strong);
+  --studio-blue-soft: var(--theme-info-soft);
+  --studio-plum: var(--theme-reflective);
+  --studio-plum-soft: var(--theme-reflective-soft);
+  --studio-border: var(--theme-border);
+  --studio-shadow: var(--theme-shadow);
+}
+
+/* App-shell roles shared by every route. */
+:root[data-theme="garden-studio"] .app-nav a.is-active {
+  color: var(--interactive-hover);
+}
+
+:root[data-theme="garden-studio"] .app-nav a.is-active::after {
+  display: block;
+  height: 3px;
+  margin-top: 4px;
+  border-radius: 99px;
+  background: currentColor;
+  content: "";
+}
+
+:root[data-theme="garden-studio"] .back-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: var(--theme-info-soft);
+  color: var(--theme-info-strong);
+  font-weight: 750;
+  text-decoration: none;
+}
+
+/* Curriculum weeks use the same category logic as the exercise shelf. */
+:root[data-theme="garden-studio"] .path-week {
+  --week-color: var(--theme-primary);
+  --week-soft: var(--theme-primary-soft);
+}
+
+:root[data-theme="garden-studio"] .path-week:nth-child(2) {
+  --week-color: var(--theme-info);
+  --week-soft: var(--theme-info-soft);
+}
+
+:root[data-theme="garden-studio"] .path-week:nth-child(3) {
+  --week-color: var(--theme-highlight);
+  --week-soft: var(--theme-highlight-soft);
+}
+
+:root[data-theme="garden-studio"] .path-week:nth-child(4) {
+  --week-color: var(--theme-reflective);
+  --week-soft: var(--theme-reflective-soft);
+}
+
+:root[data-theme="garden-studio"] .path-week .week-heading > span {
+  background: var(--week-color);
+  color: var(--text-on-color);
+}
+
+:root[data-theme="garden-studio"] .path-week:nth-child(3) .week-heading > span {
+  color: var(--theme-ink);
+}
+
+:root[data-theme="garden-studio"] .path-lesson {
+  border: 0;
+  background: linear-gradient(110deg, var(--week-soft), rgba(251, 248, 238, .88));
+  box-shadow: inset 5px 0 var(--week-color);
+}
+
+:root[data-theme="garden-studio"] .path-lesson.is-recommended {
+  background: var(--week-color);
+  color: var(--text-on-color);
+  box-shadow: 7px 7px 0 var(--week-soft);
+}
+
+:root[data-theme="garden-studio"] .path-week:nth-child(3) .path-lesson.is-recommended {
+  color: var(--theme-ink);
+}
+
+:root[data-theme="garden-studio"] .path-lesson.is-recommended p,
+:root[data-theme="garden-studio"] .path-lesson.is-recommended div > span,
+:root[data-theme="garden-studio"] .path-lesson.is-recommended strong {
+  color: inherit;
+}
+
+/* Reference finding: creative prompt surfaces use pigment, results stay paper-like. */
+:root[data-theme="garden-studio"] .reference-hero {
+  position: relative;
+}
+
+:root[data-theme="garden-studio"] .reference-hero::before {
+  position: absolute;
+  z-index: -1;
+  right: 250px;
+  bottom: 20px;
+  width: 76px;
+  height: 30px;
+  border-top: 5px solid var(--theme-accent);
+  border-bottom: 5px solid var(--theme-info);
+  content: "";
+  opacity: .72;
+  transform: rotate(-7deg);
+}
+
+:root[data-theme="garden-studio"] .starter-studies,
+:root[data-theme="garden-studio"] .reference-results {
+  padding: 32px;
+  border-radius: 32px;
+  background: rgba(251, 248, 238, .48);
+  box-shadow: inset 0 0 0 1px rgba(41, 48, 45, .08);
+}
+
+/* Critique route: review tools should feel like part of the studio, not a utility form. */
+:root[data-theme="garden-studio"] .upload-page {
+  position: relative;
+  max-width: none;
+  padding: 34px;
+  overflow: hidden;
+  border-radius: 34px;
+  background: linear-gradient(135deg, rgba(220, 231, 239, .72), rgba(251, 248, 238, .82));
+  box-shadow: 9px 9px 0 var(--theme-accent-soft);
+}
+
+:root[data-theme="garden-studio"] .upload-page::after {
+  position: absolute;
+  z-index: 0;
+  top: -80px;
+  right: -70px;
+  width: 230px;
+  height: 230px;
+  border: 24px dashed rgba(137, 98, 127, .14);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+:root[data-theme="garden-studio"] .upload-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+:root[data-theme="garden-studio"] .upload-page > h1,
+:root[data-theme="garden-studio"] .upload-page > .lede {
+  max-width: 760px;
+}
+
+:root[data-theme="garden-studio"] .upload-dropzone {
+  border: 2px dashed var(--theme-primary);
+  background:
+    radial-gradient(circle at 15% 18%, rgba(224, 173, 64, .18), transparent 22%),
+    var(--theme-paper);
+  box-shadow: inset 0 0 0 8px rgba(60, 112, 92, .04);
+  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+:root[data-theme="garden-studio"] .upload-dropzone:hover,
+:root[data-theme="garden-studio"] .upload-dropzone:focus-within {
+  border-color: var(--theme-accent);
+  background-color: var(--theme-accent-soft);
+  transform: translateY(-3px);
+}
+
+:root[data-theme="garden-studio"] .subject-input {
+  padding: 22px;
+  border-radius: 20px;
+  background: var(--theme-primary-soft);
+}
+
+:root[data-theme="garden-studio"] .subject-input input {
+  border-color: var(--theme-primary);
+  background: var(--theme-paper);
+}
+
+:root[data-theme="garden-studio"] .analysis-results {
+  padding-top: 30px;
+  border-top: 2px solid var(--theme-info);
+}
+
+:root[data-theme="garden-studio"] .analysis-results .metric-grid article:nth-child(4n+1) { background: var(--theme-primary-soft); }
+:root[data-theme="garden-studio"] .analysis-results .metric-grid article:nth-child(4n+2) { background: var(--theme-info-soft); }
+:root[data-theme="garden-studio"] .analysis-results .metric-grid article:nth-child(4n+3) { background: var(--theme-highlight-soft); }
+:root[data-theme="garden-studio"] .analysis-results .metric-grid article:nth-child(4n+4) { background: var(--theme-reflective-soft); }
+
+/* 3D studio and Procreate handoff share the same physical-material language. */
+:root[data-theme="garden-studio"] .studio-page {
+  position: relative;
+  padding: 34px;
+  border-radius: 34px;
+  background: linear-gradient(135deg, rgba(231, 220, 229, .62), rgba(251, 248, 238, .82));
+  box-shadow: 9px 9px 0 var(--theme-info-soft);
+}
+
+:root[data-theme="garden-studio"] .studio-page .studio {
+  background: var(--theme-paper);
+}
+
+:root[data-theme="garden-studio"] .studio-page .studio-controls {
+  border: 0;
+  background: var(--theme-highlight-soft);
+  box-shadow: inset 5px 0 var(--theme-highlight);
+}
+
+:root[data-theme="garden-studio"] .procreate-editor {
+  background: var(--theme-paper);
+  color: var(--theme-ink);
+}
+
+:root[data-theme="garden-studio"] .procreate-editor-backdrop {
+  background: rgba(40, 87, 71, .72);
+}
+
+:root[data-theme="garden-studio"] .procreate-controls fieldset {
+  border-color: var(--theme-border);
+  background: var(--theme-info-soft);
+}
+
+:root[data-theme="garden-studio"] .overlay-presets button.is-selected {
+  border-color: var(--theme-primary);
+  background: var(--theme-primary-soft);
+  color: var(--theme-primary-strong);
+}
+
+@media (max-width: 760px) {
+  :root[data-theme="garden-studio"] .reference-hero::before,
+  :root[data-theme="garden-studio"] .upload-page::after { display: none; }
+  :root[data-theme="garden-studio"] .starter-studies,
+  :root[data-theme="garden-studio"] .reference-results,
+  :root[data-theme="garden-studio"] .upload-page,
+  :root[data-theme="garden-studio"] .studio-page { padding: 24px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root[data-theme="garden-studio"] .upload-dropzone { transition: none; }
+  :root[data-theme="garden-studio"] .upload-dropzone:hover,
+  :root[data-theme="garden-studio"] .upload-dropzone:focus-within { transform: none; }
+}
