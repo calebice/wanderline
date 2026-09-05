@@ -86,6 +86,21 @@ describe("Sites-native Style Studio", () => {
     expect(screen.getByAltText(/Playful high-angle cartoon illustration/)).toBeInTheDocument();
   });
 
+  it("turns each reference into an actionable study and supports a value check", () => {
+    renderPath("/?subject=greenhouse&style=watercolor");
+    expect(screen.getByRole("heading", { name: "Turn looking into drawing." })).toBeInTheDocument();
+    expect(screen.getByText(/Reserve the brightest light/)).toBeInTheDocument();
+
+    const valueButton = screen.getByRole("button", { name: "Value check" });
+    fireEvent.click(valueButton);
+    expect(valueButton).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByAltText(/Transparent watercolor of a warm glass greenhouse/)).toHaveClass("is-value-view");
+
+    const styles = screen.getByRole("group", { name: /Choose a drawing language/ });
+    fireEvent.click(within(styles).getByRole("button", { name: /Architectural drawing/ }));
+    expect(screen.getByText(/Set the horizon or projection axes/)).toBeInTheDocument();
+  });
+
   it("uses explicit defaults for invalid comparison values", () => {
     renderPath("/?subject=missing&style=missing");
     expect(screen.getByRole("button", { name: /Japanese seaside town/ })).toHaveAttribute("aria-pressed", "true");

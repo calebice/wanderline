@@ -2581,11 +2581,23 @@ main::before {
 }
 .style-reference-workspace figure { margin: 0; background: var(--theme-reflective-soft); }
 .style-reference-workspace__image { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
+.style-reference-workspace__image.is-value-view { filter: grayscale(1); }
 .style-reference-workspace figcaption { padding: 10px 18px; color: var(--text-secondary); font-size: .7rem; line-height: 1.4; text-align: center; }
+.style-reference-view-toggle { display: flex; gap: 7px; align-items: center; margin: 12px 14px 0; padding: 0; border: 0; }
+.style-reference-view-toggle legend { margin-right: 4px; color: var(--text-secondary); font-size: .72rem; font-weight: 800; }
+.style-reference-view-toggle button { margin: 0; padding: 8px 11px; border: 1px solid var(--theme-border); border-radius: 999px; background: var(--surface-panel); color: var(--text-primary); font-size: .72rem; font-weight: 800; }
+.style-reference-view-toggle button.is-selected { border-color: var(--theme-reflective); background: var(--theme-reflective); color: var(--text-on-color); }
+.style-reference-view-toggle button:focus-visible { outline: 4px solid var(--theme-highlight); outline-offset: 2px; }
 .style-reference-workspace aside { display: grid; align-content: center; min-width: 0; gap: 10px; padding: 28px; }
 .style-reference-workspace aside h2 { margin: 0; overflow-wrap: anywhere; font-size: clamp(2.3rem, 4vw, 3.2rem); }
 .style-reference-workspace aside > strong { color: var(--theme-accent-strong); font-family: var(--display-font); font-size: 1.15rem; line-height: 1.35; }
 .style-reference-workspace aside > p:not(.eyebrow) { margin: 4px 0 8px; color: var(--text-secondary); line-height: 1.55; }
+.style-study-lens { display: grid; gap: 12px; margin: 4px 0; padding: 18px; border: 1px solid var(--theme-border); border-radius: 18px; background: var(--theme-reflective-soft); }
+.style-study-lens h3 { margin: 3px 0 0; font-size: 1.25rem; }
+.style-study-lens dl { display: grid; gap: 9px; margin: 0; }
+.style-study-lens dl > div { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 10px; }
+.style-study-lens dt { color: var(--theme-accent-strong); font-size: .68rem; font-weight: 850; letter-spacing: .06em; text-transform: uppercase; }
+.style-study-lens dd { margin: 0; color: var(--text-secondary); font-size: .78rem; line-height: 1.42; }
 .style-reference-actions { display: grid; gap: 8px; }
 .style-reference-actions a { padding: 12px 14px; border-radius: 12px; background: var(--theme-primary); color: var(--text-on-color); font-size: .78rem; font-weight: 800; text-align: center; text-decoration: none; }
 .style-reference-actions a:last-child:not(:first-child) { background: var(--theme-highlight-soft); color: var(--text-primary); }

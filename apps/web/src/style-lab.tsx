@@ -7,10 +7,39 @@ import {
   isStyleGuideSlug,
   type StyleGuideAsset,
   type StyleGuideEntry,
+  type StyleGuideSlug,
 } from "./style-catalog";
 import { FEELING_FIRST_GALLERY } from "./emotion-study-catalog";
 import { FeelingFirstStudy } from "./feeling-first";
 import { AppNav } from "./navigation";
+
+const STUDY_LENSES: Record<StyleGuideSlug, { notice: string; start: string; check: string }> = {
+  realism: {
+    notice: "Find the largest light and dark families. Notice where edges sharpen nearby and soften with distance.",
+    start: "Place the subject's outer envelope, horizon, and three value masses before drawing any texture.",
+    check: "Proportion and perspective should feel convincing when every small detail is hidden.",
+  },
+  cartoon: {
+    notice: "Look for the pushed silhouette, repeated shape family, and one proportion choice carrying the personality.",
+    start: "Rebuild the subject with five large shapes, then choose one relationship to exaggerate.",
+    check: "The idea should still read when interior lines and surface marks are removed.",
+  },
+  architectural: {
+    notice: "Trace the main axes, repeated intervals, and shifts from heavy profile lines to lighter internal structure.",
+    start: "Set the horizon or projection axes, draw one bounding volume, then divide it into measured parts.",
+    check: "Repeated edges agree, openings align, and line weight explains what sits in front.",
+  },
+  watercolor: {
+    notice: "Find the untouched paper, connected wet shapes, soft blooms, and few deliberately crisp focal edges.",
+    start: "Reserve the brightest light and lay one pale, connected wash across the largest color family.",
+    check: "Enough paper remains open, and the image reads before small dark accents are added.",
+  },
+  "anime-environment": {
+    notice: "Follow the focal contrast, warm-and-cool color script, and layers that move from crisp foreground to quiet distance.",
+    start: "Make a three-value thumbnail, then place one warm focal light inside the dominant cool atmosphere.",
+    check: "Detail and sharp edges gather near the story focus instead of spreading evenly across the scene.",
+  },
+};
 
 function StyleImage({ asset, className }: { asset: StyleGuideAsset; className?: string }) {
   const [failed, setFailed] = useState(false);
@@ -38,12 +67,14 @@ function StyleImage({ asset, className }: { asset: StyleGuideAsset; className?: 
 
 export function StyleGuideGallery() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [imageMode, setImageMode] = useState<"color" | "value">("color");
   const subject = STYLE_REFERENCE_SUBJECTS.find(
     (candidate) => candidate.slug === searchParams.get("subject"),
   ) ?? STYLE_REFERENCE_SUBJECTS[0];
   const variant = subject.variants.find(
     (candidate) => candidate.style === searchParams.get("style"),
   ) ?? subject.variants[0];
+  const studyLens = STUDY_LENSES[variant.style];
 
   function chooseReference(subjectSlug: string, styleSlug: string) {
     const next = new URLSearchParams();
@@ -132,8 +163,13 @@ export function StyleGuideGallery() {
             <StyleImage
               key={`${subject.slug}-${variant.style}`}
               asset={variant.reference}
-              className="style-reference-workspace__image"
+              className={`style-reference-workspace__image${imageMode === "value" ? " is-value-view" : ""}`}
             />
+            <fieldset className="style-reference-view-toggle">
+              <legend>Reference view</legend>
+              <button type="button" className={imageMode === "color" ? "is-selected" : ""} aria-pressed={imageMode === "color"} onClick={() => setImageMode("color")}>Full color</button>
+              <button type="button" className={imageMode === "value" ? "is-selected" : ""} aria-pressed={imageMode === "value"} onClick={() => setImageMode("value")}>Value check</button>
+            </fieldset>
             <figcaption>{variant.reference.alt}</figcaption>
           </figure>
 
@@ -142,6 +178,14 @@ export function StyleGuideGallery() {
             <h2>{variant.label}</h2>
             <strong>{variant.treatment}</strong>
             <p>{subject.description}</p>
+            <section className="style-study-lens" aria-labelledby="style-study-lens-title">
+              <div><p className="eyebrow">8-MINUTE STUDY LENS</p><h3 id="style-study-lens-title">Turn looking into drawing.</h3></div>
+              <dl>
+                <div><dt>Notice</dt><dd>{studyLens.notice}</dd></div>
+                <div><dt>Start</dt><dd>{studyLens.start}</dd></div>
+                <div><dt>Check</dt><dd>{studyLens.check}</dd></div>
+              </dl>
+            </section>
             <div className="style-reference-actions">
               <a href={variant.reference.src} target="_blank" rel="noreferrer">Open full image ↗</a>
               {variant.guidePath && <Link to={`/?view=guide&style=${variant.style}`}>Open teaching guide →</Link>}
