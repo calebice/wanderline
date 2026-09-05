@@ -293,7 +293,7 @@ export function StyleStudioApp() {
       <AppNav />
       <main id="main-content">{content}</main>
       <footer className="site-footer">
-        <span>DrawCoach Style Studio</span>
+        <span>Wanderline Style Studio</span>
         <p>Look closely. Choose boldly. Make it yours.</p>
       </footer>
     </div>

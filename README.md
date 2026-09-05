@@ -1,4 +1,4 @@
-# DrawCoach Style Studio
+# Wanderline Style Studio
 
 A static, Sites-native reference studio for exploring how subject, drawing language, and composition change an image. The production app contains three source-controlled experiences:
 

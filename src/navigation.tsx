@@ -11,10 +11,10 @@ export function AppNav() {
   const view = searchParams.get("view");
 
   return (
-    <nav className="app-nav" aria-label="Style Studio navigation">
+    <nav className="app-nav" aria-label="Wanderline navigation">
       <Link className="brand" to="/">
         <span aria-hidden="true">✦</span>
-        <span>DrawCoach <small>Style Studio</small></span>
+        <span>Wanderline <small>Style Studio</small></span>
       </Link>
       <div>
         {links.map((link) => (
