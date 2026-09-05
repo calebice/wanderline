@@ -1,0 +1,25 @@
+{
+  "name": "Wanderline",
+  "short_name": "Wanderline",
+  "description": "Guided drawing practice and transparent Procreate construction overlays.",
+  "start_url": "./library",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f1e8",
+  "theme_color": "#f4f1e8",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "icons/drawcoach.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/drawcoach-180.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

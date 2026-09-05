@@ -1,0 +1,58 @@
+services:
+  minio:
+    ports: !reset []
+
+  api:
+    ports: !reset []
+    environment:
+      CORS_ORIGINS: http://wanderline.localhost:8080,http://drawcoach.localhost:8080
+    networks:
+      - default
+      - terminus-ingress
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: terminus-ingress
+      traefik.http.routers.wanderline-api.entrypoints: web
+      traefik.http.routers.wanderline-api.rule: (Host(`wanderline-api.localhost`) || HostRegexp(`^wanderline-api[.].+$`) || Host(`drawcoach-api.localhost`) || HostRegexp(`^drawcoach-api[.].+$`)) || ((Host(`wanderline.localhost`) || HostRegexp(`^wanderline[.].+$`) || Host(`drawcoach.localhost`) || HostRegexp(`^drawcoach[.].+$`)) && PathPrefix(`/api/`))
+      traefik.http.routers.wanderline-api.priority: "100"
+      traefik.http.routers.wanderline-api.middlewares: wanderline-api-security
+      traefik.http.services.wanderline-api.loadbalancer.server.port: "8000"
+      traefik.http.middlewares.wanderline-api-security.headers.contentTypeNosniff: "true"
+      traefik.http.middlewares.wanderline-api-security.headers.frameDeny: "true"
+      traefik.http.middlewares.wanderline-api-security.headers.referrerPolicy: strict-origin-when-cross-origin
+
+  web:
+    ports: !reset []
+    environment:
+      VITE_API_URL: ""
+      VITE_BASE_PATH: /
+      __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: ${WANDERLINE_ALLOWED_HOST:-wanderline.localhost}
+    networks:
+      - default
+      - terminus-ingress
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: terminus-ingress
+      traefik.http.routers.wanderline.entrypoints: web
+      traefik.http.routers.wanderline.rule: Host(`wanderline.localhost`) || HostRegexp(`^wanderline[.].+$`) || Host(`drawcoach.localhost`) || HostRegexp(`^drawcoach[.].+$`)
+      traefik.http.routers.wanderline.middlewares: wanderline-security
+      traefik.http.services.wanderline.loadbalancer.server.port: "3000"
+      traefik.http.middlewares.wanderline-security.headers.contentTypeNosniff: "true"
+      traefik.http.middlewares.wanderline-security.headers.frameDeny: "true"
+      traefik.http.middlewares.wanderline-security.headers.referrerPolicy: strict-origin-when-cross-origin
+      terminus.app: "true"
+      terminus.name: Wanderline
+      terminus.slug: wanderline
+      terminus.initials: WL
+      terminus.description: A calm drawing studio for following curiosity and finding your visual voice.
+      terminus.category: Creative
+      terminus.accent: amber
+      terminus.tags: Private,Docker
+      terminus.order: "30"
+      terminus.host: wanderline.localhost
+      terminus.managed: "true"
+      terminus.version: "0.1.0"
+
+networks:
+  terminus-ingress:
+    external: true
