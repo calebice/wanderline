@@ -140,7 +140,7 @@ function DilutionGuide({ mix }: { mix: PaletteMix }) {
           <span className="watercolor-dilution__measure watercolor-dilution__measure--paint">
             <i style={{ backgroundColor: mix.swatch }} />
             <b>1×</b>
-            <small>paint mix</small>
+            <small>concentrated paint</small>
           </span>
           <b>+</b>
           <span className="watercolor-dilution__measure watercolor-dilution__measure--water">
@@ -154,7 +154,7 @@ function DilutionGuide({ mix }: { mix: PaletteMix }) {
             <small>ready wash</small>
           </span>
         </span>
-        <span>First make the color shown above. Using the same brush, combine one full brush-load of that color with {mix.waterParts} equally full brush-loads of clean water.</span>
+        <span>Awaken the paint and make the color shown above as a concentrated puddle. Using the same brush, combine one full brush-load of that prepared paint with {mix.waterParts} equally full brush-loads of clean water.</span>
         <em>Expected result: {dilutionResult(mix.waterParts)}. Test it on scrap paper before painting.</em>
       </span>
     </span>
@@ -166,7 +166,7 @@ function StagePalette({ palette }: { palette: readonly PaletteMix[] }) {
     <section className="watercolor-palette" aria-labelledby="watercolor-palette-title">
       <div className="watercolor-palette__header">
         <h3 id="watercolor-palette-title">Mix for this stage</h3>
-        <p>Color ratios compare pigments; dilution compares one brush-load of mix to water.</p>
+        <p>Color ratios compare pigments; dilution compares one brush-load of concentrated prepared paint to water.</p>
       </div>
       <ul className="watercolor-palette__mixes">
         {palette.map((mix) => (
