@@ -127,4 +127,3 @@ class LibraryAttemptRepository:
                 .order_by(LibraryAttempt.started_at.desc())
             )
         )
-

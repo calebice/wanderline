@@ -42,8 +42,7 @@ def test_0008_removes_style_records_and_recreates_only_empty_schema(monkeypatch)
         )
         connection.execute(
             sa.text(
-                "CREATE INDEX ix_style_artifacts_attempt_id "
-                "ON style_study_artifacts (attempt_id)"
+                "CREATE INDEX ix_style_artifacts_attempt_id ON style_study_artifacts (attempt_id)"
             )
         )
         connection.execute(
@@ -68,9 +67,7 @@ def test_0008_removes_style_records_and_recreates_only_empty_schema(monkeypatch)
         assert "style_study_artifacts" not in tables
         assert connection.scalar(sa.text("SELECT count(*) FROM library_exercises")) == 1
         assert connection.scalar(sa.text("SELECT count(*) FROM library_attempts")) == 1
-        assert connection.scalar(
-            sa.text("SELECT track FROM library_exercises")
-        ) == "solid_form"
+        assert connection.scalar(sa.text("SELECT track FROM library_exercises")) == "solid_form"
 
         migration.downgrade()
         tables = set(sa.inspect(connection).get_table_names())
