@@ -1,5 +1,6 @@
 @import "./styles.css";
 @import "./themes/garden-studio.css";
+@import "./watercolor-lesson.css";
 
 /*
  * Sites-native Style Studio layer.
@@ -98,8 +99,9 @@ body::after {
 }
 
 .app-nav div a.is-active {
-  background: var(--theme-primary);
-  color: var(--text-on-color);
+  background: var(--theme-info-soft);
+  color: var(--theme-info-strong);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--theme-info) 24%, transparent);
 }
 
 .app-nav div a.is-active::after { display: none; }

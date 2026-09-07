@@ -12,6 +12,7 @@ import {
 import { FEELING_FIRST_GALLERY } from "./emotion-study-catalog";
 import { FeelingFirstStudy } from "./feeling-first";
 import { AppNav } from "./navigation";
+import { WatercolorLesson } from "./watercolor-lesson";
 
 const STUDY_LENSES: Record<StyleGuideSlug, { notice: string; start: string; check: string }> = {
   realism: {
@@ -221,6 +222,17 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
           <aside><span>Primary medium</span><strong>{entry.medium}</strong></aside>
         </header>
 
+        {entry.slug === "watercolor" && (
+          <section className="watercolor-lesson-invitation" aria-labelledby="watercolor-lesson-invitation-title">
+            <div>
+              <p className="eyebrow">GUIDED PRACTICE</p>
+              <h2 id="watercolor-lesson-invitation-title">See what the water is doing.</h2>
+              <p>Paint one lemon through dry, glossy, damp, and dry-again stages. Each interval shows what to do, what to notice, and when the paper is ready to move on.</p>
+            </div>
+            <Link className="button-link" to="/?view=watercolor-lesson">Start the lemon lesson →</Link>
+          </section>
+        )}
+
         <section className="style-guide-showcase" aria-labelledby="finished-reference-title">
           <div className="section-heading">
             <div><p className="eyebrow">FINISHED REFERENCE</p><h2 id="finished-reference-title">See the full visual language.</h2></div>
@@ -321,7 +333,7 @@ export function StyleStudioApp() {
   useEffect(() => {
     if (view === "guide" && !guide) {
       setSearchParams({ view: "guide", style: STYLE_GUIDE_ENTRIES[0].slug }, { replace: true });
-    } else if (view && view !== "guide" && view !== "feeling-first") {
+    } else if (view && view !== "guide" && view !== "feeling-first" && view !== "watercolor-lesson") {
       setSearchParams({}, { replace: true });
     }
   }, [guide, setSearchParams, view]);
@@ -330,6 +342,8 @@ export function StyleStudioApp() {
     ? <StyleGuideDetail entry={guide} />
     : view === "feeling-first"
       ? <FeelingFirstStudy />
+      : view === "watercolor-lesson"
+        ? <WatercolorLesson />
       : <StyleGuideGallery />;
 
   return (

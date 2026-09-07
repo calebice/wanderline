@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 const links = [
   { to: "/", label: "Compare", view: null },
   { to: "/?view=guide&style=realism", label: "Teaching guides", view: "guide" },
+  { to: "/?view=watercolor-lesson", label: "Watercolor lesson", view: "watercolor-lesson" },
   { to: "/?view=feeling-first&emotion=pensive", label: "Feeling First", view: "feeling-first" },
 ] as const;
 

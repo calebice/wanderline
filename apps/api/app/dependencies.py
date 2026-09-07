@@ -69,4 +69,3 @@ def get_image_decomposition_service(
     db: Annotated[AsyncSession, Depends(get_db)],
 ) -> ImageDecompositionService:
     return ImageDecompositionService(settings, storage, db)
-
