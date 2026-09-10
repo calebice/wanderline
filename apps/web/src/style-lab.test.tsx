@@ -80,7 +80,7 @@ describe("Sites-native Style Studio", () => {
   it("restores comparison state and updates its bookmarkable URL", () => {
     renderPath("/?subject=bouquet&style=watercolor");
     expect(screen.getByRole("button", { name: /Bouquets & vessels/ })).toHaveAttribute("aria-pressed", "true");
-    const styles = screen.getByRole("group", { name: /Choose a drawing language/ });
+    const styles = screen.getByRole("group", { name: /Choose a style/ });
     expect(within(styles).getByRole("button", { name: /Watercolor/ })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByAltText(/Luminous transparent watercolor/)).toBeInTheDocument();
 
@@ -94,12 +94,12 @@ describe("Sites-native Style Studio", () => {
     expect(screen.getByRole("heading", { name: "Turn looking into drawing." })).toBeInTheDocument();
     expect(screen.getByText(/Reserve the brightest light/)).toBeInTheDocument();
 
-    const valueButton = screen.getByRole("button", { name: "Value check" });
+    const valueButton = screen.getByRole("button", { name: "See light and dark" });
     fireEvent.click(valueButton);
     expect(valueButton).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByAltText(/Transparent watercolor of a warm glass greenhouse/)).toHaveClass("is-value-view");
 
-    const styles = screen.getByRole("group", { name: /Choose a drawing language/ });
+    const styles = screen.getByRole("group", { name: /Choose a style/ });
     fireEvent.click(within(styles).getByRole("button", { name: /Architectural drawing/ }));
     expect(screen.getByText(/Set the horizon or projection axes/)).toBeInTheDocument();
   });
@@ -108,22 +108,24 @@ describe("Sites-native Style Studio", () => {
     const view = renderPath("/?view=watercolor-lesson");
     expect(screen.getByRole("heading", { name: "Understand the water.", level: 1 })).toBeInTheDocument();
     expect(screen.getAllByText("Dry paper").length).toBeGreaterThan(0);
-    expect(screen.getByAltText(/Light graphite outline/)).toBeInTheDocument();
-    expect(screen.getByText("Paper light")).toBeInTheDocument();
-    expect(screen.getByText("0 paint")).toBeInTheDocument();
+    expect(screen.getByAltText(/Draw the lemon/)).toBeInTheDocument();
+    expect(screen.getAllByText("Paper light")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("0 paint")[0]).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Next stage →" }));
+    fireEvent.click(screen.getByRole("button", { name: "Next step →" }));
     expect(screen.getByRole("heading", { name: "Make one luminous first wash." })).toBeInTheDocument();
+    fireEvent.click(screen.getByText("More painting tips", { selector: "strong" }));
     expect(screen.getByText(/More water makes a lighter/)).toBeInTheDocument();
-    expect(screen.getByText("Lemon light")).toBeInTheDocument();
-    expect(screen.getByText("Yellow + blue · 3:1")).toBeInTheDocument();
+    expect(screen.getAllByText("Lemon light")[0]).toBeInTheDocument();
+    expect(screen.getAllByText("Yellow + blue · 3:1")[0]).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Palette details", { selector: "strong" }));
     const dilution = screen.getAllByRole("button", { name: /1 : 8 dilution/ })[0];
     expect(dilution).toHaveAttribute("aria-describedby");
     expect(screen.getAllByRole("tooltip")[0]).toHaveTextContent("one full brush-load of that prepared paint with 8 equally full brush-loads of clean water");
 
-    fireEvent.click(screen.getByRole("button", { name: "Reference photo" }));
+    fireEvent.click(screen.getByRole("button", { name: "Original photo" }));
     expect(screen.getByAltText(/Single yellow lemon/)).toBeInTheDocument();
-    expect(screen.getByText("Lemon light")).toBeInTheDocument();
+    expect(screen.getAllByText("Lemon light")[0]).toBeInTheDocument();
 
     view.unmount();
     renderPath("/?view=watercolor-lesson");
@@ -142,7 +144,7 @@ describe("Sites-native Style Studio", () => {
   it("uses explicit defaults for invalid comparison values", () => {
     renderPath("/?subject=missing&style=missing");
     expect(screen.getByRole("button", { name: /Japanese seaside town/ })).toHaveAttribute("aria-pressed", "true");
-    const styles = screen.getByRole("group", { name: /Choose a drawing language/ });
+    const styles = screen.getByRole("group", { name: /Choose a style/ });
     expect(within(styles).getByRole("button", { name: /^Realism/ })).toHaveAttribute("aria-pressed", "true");
   });
 
@@ -182,13 +184,13 @@ describe("Sites-native Style Studio", () => {
     fireEvent.error(screen.getByAltText(/Detailed colored-pencil view/));
     expect(screen.getByRole("img", { name: /Detailed colored-pencil view/ })).toBeInTheDocument();
     expect(screen.getByText("Reference image unavailable")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /Comparison studio/ })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /^← Explore$/ })).toBeInTheDocument();
   });
 
   it("makes no API request while changing the comparison", () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch");
     renderPath("/");
-    const styles = screen.getByRole("group", { name: /Choose a drawing language/ });
+    const styles = screen.getByRole("group", { name: /Choose a style/ });
     fireEvent.click(within(styles).getByRole("button", { name: /Watercolor/ }));
     expect(fetchSpy).not.toHaveBeenCalled();
     fetchSpy.mockRestore();

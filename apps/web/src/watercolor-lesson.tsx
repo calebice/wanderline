@@ -1,119 +1,19 @@
 import { useEffect, useId, useState } from "react";
 import { Link } from "react-router-dom";
+import { PaintingRecipeSheet } from "./painting-recipe";
 
-const basePath = (import.meta.env.BASE_URL || "/").replace(/\/?$/, "/");
-const referenceImage = `${basePath}watercolor-lesson/lemon/reference.jpg`;
-const processImage = `${basePath}watercolor-lesson/lemon/process.jpg`;
-const storageKey = "wanderline.watercolor-lemon.v1";
+import { LEMON_LESSON, type PaintingLesson, type PaletteMix, type LessonStage } from "./lesson-model";
 
-type LessonStage = {
-  title: string;
-  shortTitle: string;
-  time: string;
-  waterState: string;
-  principle: string;
-  instruction: string;
-  lookFor: string;
-  moveOn: string;
-  alt: string;
-  palette: readonly PaletteMix[];
-};
-
-type PaletteMix = {
-  name: string;
-  swatch: string;
-  formula: string;
-  dilution: string;
-  waterParts?: number;
-};
-
-const stages: readonly LessonStage[] = [
-  {
-    title: "Place the shape. Save the light.",
-    shortTitle: "Plan",
-    time: "3–5 min",
-    waterState: "Dry paper",
-    principle: "In transparent watercolor, the paper is your brightest paint.",
-    instruction: "Draw the lemon and leaf with a light, searching line. Mark the highlight as a simple paper-white shape; do not shade it.",
-    lookFor: "The lemon reads as one tilted oval with two small pointed ends. The leaf is one quieter shape, not a collection of veins.",
-    moveOn: "Move on when the silhouette feels balanced and the highlight has a clear boundary.",
-    alt: "Light graphite outline of one lemon and leaf on watercolor paper with the highlight reserved.",
-    palette: [
-      { name: "Paper light", swatch: "#f7f2e7", formula: "Leave unpainted", dilution: "0 paint" },
-      { name: "Graphite guide", swatch: "#77736c", formula: "HB pencil", dilution: "Feather-light pressure" },
-    ],
-  },
-  {
-    title: "Make one luminous first wash.",
-    shortTitle: "Wash",
-    time: "4–6 min",
-    waterState: "Wet paint on dry paper",
-    principle: "More water makes a lighter, more transparent color—not a weaker decision.",
-    instruction: "Mix a generous puddle of pale yellow. Paint the lemon as one connected shape around the highlight, then place one pale green leaf wash.",
-    lookFor: "The wash stays glossy long enough to connect your strokes. Color is even enough to feel calm, with no scrubbing back into drying areas.",
-    moveOn: "Let this layer become completely matte and cool to the touch before adding more color.",
-    alt: "Pale transparent yellow and green first washes on a lemon and leaf with untouched paper showing through.",
-    palette: [
-      { name: "Lemon light", swatch: "#f4d860", formula: "Yellow", dilution: "1 : 8 dilution", waterParts: 8 },
-      { name: "Leaf light", swatch: "#b4bf77", formula: "Yellow + blue · 3:1", dilution: "1 : 6 dilution", waterParts: 6 },
-      { name: "Shadow hint", swatch: "#bac1d1", formula: "Blue + red · 2:1", dilution: "1 : 8 dilution", waterParts: 8 },
-    ],
-  },
-  {
-    title: "Charge color while the surface is damp.",
-    shortTitle: "Shape",
-    time: "6–8 min",
-    waterState: "Damp sheen",
-    principle: "Damp paper lets pigment travel just far enough to turn a flat wash into form.",
-    instruction: "Touch warmer yellow-orange into the lower-right lemon while the wash still has a soft sheen. Deepen the leaf with a cooler green and begin the cast shadow with blue-violet gray.",
-    lookFor: "The new color feathers softly instead of exploding into a bloom or sitting as a hard stripe. The light side remains visibly lighter.",
-    moveOn: "Stop touching the lemon when the sheen disappears. Let every area dry before the final glaze.",
-    alt: "Partly developed watercolor lemon with warm damp-in-damp shadow, layered green leaf, and a pale cast shadow.",
-    palette: [
-      { name: "Warm turn", swatch: "#e9a742", formula: "Yellow + red · 4:1", dilution: "1 : 4 dilution", waterParts: 4 },
-      { name: "Leaf middle", swatch: "#718944", formula: "Yellow + blue · 2:1", dilution: "1 : 3 dilution", waterParts: 3 },
-      { name: "Cast shadow", swatch: "#8792ad", formula: "Blue + red · 2:1", dilution: "1 : 5 dilution", waterParts: 5 },
-    ],
-  },
-  {
-    title: "Glaze once. Accent selectively.",
-    shortTitle: "Finish",
-    time: "6–8 min",
-    waterState: "Dry again",
-    principle: "A glaze changes what is beneath it; it should clarify the form, not cover it.",
-    instruction: "On fully dry paper, sweep one transparent warm glaze across the turning side. Strengthen the contact shadow, stem, leaf fold, and lemon tip with only a few darker marks.",
-    lookFor: "The lemon feels round because of one clear light-to-shadow turn. The highlight still belongs to the paper and the darkest darks stay small.",
-    moveOn: "Finish when the subject feels grounded. If a new mark will not explain form, edge, or contact, leave it out.",
-    alt: "Finished attainable transparent watercolor of one lemon and leaf with a luminous highlight and soft blue-violet cast shadow.",
-    palette: [
-      { name: "Lemon glaze", swatch: "#dfa033", formula: "Yellow + red · 5:1", dilution: "1 : 3 dilution", waterParts: 3 },
-      { name: "Deep green", swatch: "#3f5f2b", formula: "Blue + yellow · 1:2", dilution: "1 : 2 dilution", waterParts: 2 },
-      { name: "Deep neutral", swatch: "#646375", formula: "Blue + red · 1:1", dilution: "1 : 2 dilution", waterParts: 2 },
-    ],
-  },
-] as const;
-
-function readSavedStage() {
+function readSavedStage(key: string, stageIds: string[]) {
   try {
-    const saved = Number(window.localStorage.getItem(storageKey));
-    return Number.isInteger(saved) && saved >= 0 && saved < stages.length ? saved : 0;
+    const saved = window.localStorage.getItem(key);
+    const stableIndex = stageIds.indexOf(saved || "");
+    if (stableIndex >= 0) return stableIndex;
+    const legacyIndex = Number(saved);
+    return Number.isInteger(legacyIndex) && legacyIndex >= 0 && legacyIndex < stageIds.length ? legacyIndex : 0;
   } catch {
     return 0;
   }
-}
-
-function StageArtwork({ stage }: { stage: number }) {
-  return (
-    <div className="watercolor-stage-artwork">
-      <img
-        className={`watercolor-stage-sheet watercolor-stage-sheet--${stage + 1}`}
-        src={processImage}
-        width="1536"
-        height="1024"
-        alt={stages[stage].alt}
-      />
-    </div>
-  );
 }
 
 function dilutionResult(waterParts: number) {
@@ -125,189 +25,139 @@ function dilutionResult(waterParts: number) {
 
 function DilutionGuide({ mix }: { mix: PaletteMix }) {
   const tooltipId = useId();
-
-  if (!mix.waterParts) return <small>{mix.dilution}</small>;
-
+  if (!mix.water_parts) return <small>{mix.dilution}</small>;
   return (
     <span className="watercolor-dilution">
-      <button type="button" aria-describedby={tooltipId}>
-        {mix.dilution}
-        <span aria-hidden="true">?</span>
-      </button>
+      <button type="button" aria-describedby={tooltipId}>{mix.dilution}<span aria-hidden="true">?</span></button>
       <span className="watercolor-dilution__tooltip" id={tooltipId} role="tooltip">
-        <strong>What 1 : {mix.waterParts} means</strong>
+        <strong>What 1 : {mix.water_parts} means</strong>
         <span className="watercolor-dilution__diagram" aria-hidden="true">
-          <span className="watercolor-dilution__measure watercolor-dilution__measure--paint">
-            <i style={{ backgroundColor: mix.swatch }} />
-            <b>1×</b>
-            <small>concentrated paint</small>
-          </span>
-          <b>+</b>
-          <span className="watercolor-dilution__measure watercolor-dilution__measure--water">
-            <i />
-            <b>{mix.waterParts}×</b>
-            <small>clean water</small>
-          </span>
-          <b>=</b>
-          <span className="watercolor-dilution__measure watercolor-dilution__measure--result">
-            <i style={{ backgroundColor: mix.swatch }} />
-            <small>ready wash</small>
-          </span>
+          <span className="watercolor-dilution__measure watercolor-dilution__measure--paint"><i style={{ backgroundColor: mix.swatch }} /><b>1×</b><small>concentrated paint</small></span><b>+</b>
+          <span className="watercolor-dilution__measure watercolor-dilution__measure--water"><i /><b>{mix.water_parts}×</b><small>clean water</small></span><b>=</b>
+          <span className="watercolor-dilution__measure watercolor-dilution__measure--result"><i style={{ backgroundColor: mix.swatch }} /><small>ready wash</small></span>
         </span>
-        <span>Awaken the paint and make the color shown above as a concentrated puddle. Using the same brush, combine one full brush-load of that prepared paint with {mix.waterParts} equally full brush-loads of clean water.</span>
-        <em>Expected result: {dilutionResult(mix.waterParts)}. Test it on scrap paper before painting.</em>
+        <span>Awaken the paint and make the color shown above as a concentrated puddle. Using the same brush, combine one full brush-load of that prepared paint with {mix.water_parts} equally full brush-loads of clean water.</span>
+        <em>Expected result: {dilutionResult(mix.water_parts)}. Test it on scrap paper.</em>
       </span>
     </span>
   );
 }
 
-function StagePalette({ palette }: { palette: readonly PaletteMix[] }) {
+function StagePalette({ palette }: { palette: PaletteMix[] }) {
+  const titleId = useId();
   return (
-    <section className="watercolor-palette" aria-labelledby="watercolor-palette-title">
-      <div className="watercolor-palette__header">
-        <h3 id="watercolor-palette-title">Mix for this stage</h3>
-        <p>Color ratios compare pigments; dilution compares one brush-load of concentrated prepared paint to water.</p>
-      </div>
-      <ul className="watercolor-palette__mixes">
-        {palette.map((mix) => (
-          <li key={mix.name}>
-            <span className="watercolor-palette__swatch" style={{ backgroundColor: mix.swatch }} aria-hidden="true" />
-            <span className="watercolor-palette__details">
-              <strong>{mix.name}</strong>
-              <span>{mix.formula}</span>
-              <DilutionGuide mix={mix} />
-            </span>
-          </li>
-        ))}
-      </ul>
+    <section className="watercolor-palette" aria-labelledby={titleId}>
+      <div className="watercolor-palette__header"><h3 id={titleId}>Mix for this step</h3><p>Color ratios compare pigments; dilution compares prepared paint to water.</p></div>
+      <ul className="watercolor-palette__mixes">{palette.map((mix) => <li key={mix.id}><span className="watercolor-palette__swatch" style={{ backgroundColor: mix.swatch }} aria-hidden="true" /><span className="watercolor-palette__details"><strong>{mix.name}</strong><span>{mix.formula}</span><DilutionGuide mix={mix} /></span></li>)}</ul>
       <p className="watercolor-palette__note">Start here, then test a swatch—pigment strength varies by brand.</p>
     </section>
   );
 }
 
-export function WatercolorLesson() {
-  const [activeStage, setActiveStage] = useState(readSavedStage);
-  const [showReference, setShowReference] = useState(false);
+export function CompactStagePalette({ palette }: { palette: PaletteMix[] }) {
+  return <section className="checkpoint-palette" aria-label="Palette for this step"><strong>Mix for this step</strong><ul>{palette.map((mix) => <li key={mix.id}><span className="checkpoint-palette__swatch" style={{ backgroundColor: mix.swatch }} aria-hidden="true" /><span><b>{mix.name}</b><small>{mix.formula}</small><em>{mix.dilution}</em></span></li>)}</ul></section>;
+}
+
+function GuidanceDetails({ lesson }: { lesson: PaintingLesson }) {
+  const content = lesson.content!;
+  const detailGroups = [
+    { title: "Look a little closer", eyebrow: "COMPOSITION · VALUE · FOCUS", body: [content.composition_crop, content.focal_point, content.large_value_shapes] },
+    { title: "Color and light", eyebrow: "PALETTE · LIGHT · SHADOW", body: [content.light_shadow] },
+    { title: "Materials and drawing", eyebrow: "SETUP · UNDER-SKETCH", body: [content.underdrawing, ...content.materials] },
+    { title: "Control the wash and edges", eyebrow: "WATER · HARD · SOFT · LOST", body: [content.wash_control, `Hard: ${content.edges.hard}`, `Soft: ${content.edges.soft}`, `Lost: ${content.edges.lost}`] },
+  ];
+  return (
+    <section className="watercolor-guidance" aria-label="Complete watercolor guidance">
+      {detailGroups.map((group, index) => <details key={group.title} open={index === 0}><summary><span className="eyebrow">{group.eyebrow}</span><strong>{group.title}</strong></summary><div>{group.body.map((item) => <p key={item}>{item}</p>)}</div></details>)}
+      <details><summary><span className="eyebrow">PRESERVE · SIMPLIFY · EXAGGERATE · OMIT</span><strong>Make deliberate detail choices</strong></summary><div className="watercolor-detail-grid">{Object.entries(content.details).map(([key, values]) => <section key={key}><h3>{key}</h3><ul>{values.map((value) => <li key={value}>{value}</li>)}</ul></section>)}</div></details>
+      <details><summary><span className="eyebrow">COMMON DETOURS</span><strong>What to correct first</strong></summary><div className="watercolor-mistakes">{content.common_mistakes.map((item) => <p key={item.id}><strong>{item.mistake}</strong> {item.correction}</p>)}</div></details>
+      <section className="style-study-lens watercolor-study-lens" aria-labelledby="lesson-study-lens-title"><div><p className="eyebrow">{content.timed_study.duration_minutes} MINUTES TO EXPLORE</p><h2 id="lesson-study-lens-title">Turn looking into painting.</h2></div><dl><div><dt>Notice</dt><dd>{content.timed_study.notice}</dd></div><div><dt>Start</dt><dd>{content.timed_study.start}</dd></div><div><dt>Check</dt><dd>{content.timed_study.check}</dd></div></dl></section>
+      <details><summary><span className="eyebrow">COMPLETE TEACHING GUIDE</span><strong>Read the deeper session</strong></summary><div>{content.teaching_guide.map((section) => <section key={section.id}><h3>{section.title}</h3><p>{section.body}</p></section>)}</div></details>
+      <details><summary><span className="eyebrow">REFLECTION · NOTES</span><strong>Notice what changed</strong></summary><div><ul>{content.reflection_prompts.map((prompt) => <li key={prompt}>{prompt}</li>)}</ul>{content.user_notes && <p><strong>Your notes:</strong> {content.user_notes}</p>}</div></details>
+    </section>
+  );
+}
+
+function checkpointAsset(lesson: PaintingLesson, stageId: string) {
+  return lesson.assets.find((asset) => asset.stage_id === stageId && asset.is_current && asset.role === "stage_image")
+    ?? lesson.assets.find((asset) => asset.stage_id === stageId && asset.is_current && (asset.id === lesson.approved_target_asset_id || asset.render_set_id === lesson.active_render_set_id));
+}
+
+export function LayerProcessSheet({ lesson }: { lesson: PaintingLesson }) {
+  const content = lesson.content!;
+  return <section className="layer-process-sheet" aria-label="All watercolor steps">{content.stages.map((stage, index) => { const image = checkpointAsset(lesson, stage.id); const palette = stage.palette_mix_ids.map((id) => content.palette.find((mix) => mix.id === id)).filter((mix): mix is PaletteMix => Boolean(mix)); return <article key={stage.id}><figure>{image ? <img src={image.image_url} width={image.width} height={image.height} alt={image.alt_text} /> : <div className="lesson-image-missing">Step image unavailable</div>}<figcaption><span>{String(index + 1).padStart(2, "0")}</span><strong>{stage.short_title}</strong></figcaption></figure><div><p>{stage.checkpoint_action || stage.instruction}</p><ul aria-label={`Palette for step ${index + 1}`}>{palette.map((mix) => <li key={mix.id}><span style={{ backgroundColor: mix.swatch }} aria-hidden="true" /><small><b>{mix.name}</b>{mix.formula} · {mix.dilution}</small></li>)}</ul></div></article>; })}</section>;
+}
+
+function CheckpointLessonTemplate({ lesson }: { lesson: PaintingLesson }) {
+  const content = lesson.content!;
+  const stages = content.stages;
+  const storageKey = `wanderline.watercolor-lesson.${lesson.id}.stage`;
+  const [activeStage, setActiveStage] = useState(() => readSavedStage(storageKey, stages.map((stage) => stage.id)));
   const [completed, setCompleted] = useState(false);
-  const stage = stages[activeStage];
+  const [imageMode, setImageMode] = useState<"stage" | "process" | "target" | "original">("stage");
+  const isLayerStudy = lesson.generation_brief.sequence_style === "layer_study";
+  const stage = stages[Math.min(activeStage, stages.length - 1)];
+  const image = checkpointAsset(lesson, stage.id);
+  const palette = stage.palette_mix_ids.map((id) => content.palette.find((mix) => mix.id === id)).filter((mix): mix is PaletteMix => Boolean(mix));
+  const target = lesson.assets.find((asset) => asset.id === lesson.approved_target_asset_id)
+    ?? lesson.assets.find((asset) => (asset.role === "target_reference" || asset.role === "study_reference") && asset.is_current);
+  const original = lesson.assets.find((asset) => asset.role === "original_reference" && asset.is_primary)
+    ?? lesson.assets.find((asset) => asset.role === "original_reference");
+  const shownAsset = imageMode === "target" ? target : imageMode === "original" ? original : image;
+  const modes: Array<"stage" | "process" | "target" | "original"> = ["stage", ...(isLayerStudy ? ["process"] as const : []), ...(target ? ["target"] as const : []), ...(original ? ["original"] as const : [])];
 
   useEffect(() => {
-    try {
-      window.localStorage.setItem(storageKey, String(activeStage));
-    } catch {
-      // The lesson remains fully usable when browser storage is unavailable.
-    }
-  }, [activeStage]);
+    try { window.localStorage.setItem(storageKey, stage.id); } catch { /* optional */ }
+  }, [stage.id, storageKey]);
 
   function chooseStage(index: number) {
     setActiveStage(index);
-    setShowReference(false);
     setCompleted(false);
   }
 
   return (
-    <article className="watercolor-lesson">
-      <header className="watercolor-lesson__header">
-        <div>
-          <Link className="text-link" to="/?view=guide&style=watercolor">← Watercolor guide</Link>
-          <p className="eyebrow">GUIDED WATERCOLOR · ONE LEMON</p>
-          <h1>Understand the water.</h1>
-          <p className="lede">Paint one simple subject in four visible stages. The goal is to notice when the paper is dry, glossy, damp, and dry again—and to know what each state lets you do.</p>
-        </div>
-        <aside>
-          <span>Active painting time</span>
-          <strong>20–30 minutes</strong>
-          <p>Drying pauses are part of the lesson. Advance when the paper is ready, not when a timer says so.</p>
-        </aside>
+    <article className="checkpoint-lesson">
+      <header className="checkpoint-lesson__header">
+        <div><Link className="text-link" to="/?view=guide&style=watercolor">← Watercolor guide</Link><p className="eyebrow">GUIDED WATERCOLOR · {lesson.difficulty}</p><h1>{lesson.title}</h1></div>
+        <dl><div><dt>Steps</dt><dd>{stages.length}</dd></div><div><dt>Active time</dt><dd>{lesson.estimated_duration_minutes} min</dd></div></dl>
       </header>
-
-      <section className="watercolor-principle-strip" aria-label="Watercolor lesson sequence">
-        {stages.map((item, index) => (
-          <button
-            type="button"
-            key={item.shortTitle}
-            className={index === activeStage ? "is-active" : index < activeStage ? "is-past" : ""}
-            aria-current={index === activeStage ? "step" : undefined}
-            onClick={() => chooseStage(index)}
-          >
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <strong>{item.shortTitle}</strong>
-            <small>{item.waterState}</small>
-          </button>
-        ))}
+      {lesson.is_demo && <aside className="lesson-demo-note" role="status"><strong>A sample session.</strong> These tips offer a starting point; they are not based on a visual reading of your photo.</aside>}
+      <nav className="checkpoint-lesson__rail" aria-label="Session steps">
+        {stages.map((item, index) => { const thumbnail = checkpointAsset(lesson, item.id); return <button type="button" key={item.id} className={index === activeStage ? "is-active" : ""} aria-current={index === activeStage ? "step" : undefined} onClick={() => chooseStage(index)}>{thumbnail ? <img src={thumbnail.image_url} alt="" /> : <span className="checkpoint-lesson__thumb-placeholder" aria-hidden="true" /> }<span><small>{String(index + 1).padStart(2, "0")}</small><strong>{item.short_title}</strong></span></button>; })}
+      </nav>
+      <section className="checkpoint-lesson__active" aria-labelledby="checkpoint-action-title">
+        <div className="checkpoint-lesson__visual"><div className="watercolor-view-toggle" aria-label="Session image view">{modes.map((mode) => <button type="button" key={mode} className={imageMode === mode ? "is-selected" : ""} aria-pressed={imageMode === mode} onClick={() => setImageMode(mode)}>{mode === "stage" ? "Current step" : mode === "process" ? "Process sheet" : mode === "target" ? "Finished painting" : "Original photo"}</button>)}</div>{imageMode === "process" ? <LayerProcessSheet lesson={lesson} /> : <figure>{imageMode === "stage" ? <PaintingStepArt lesson={lesson} stageId={stage.id} /> : shownAsset ? <img src={shownAsset.image_url} width={shownAsset.width} height={shownAsset.height} alt={shownAsset.alt_text} /> : null}<figcaption>{imageMode === "target" ? "Finished painting" : imageMode === "original" ? "Original photograph" : `Step ${activeStage + 1} of ${stages.length} · ${stage.water_state}`}</figcaption></figure>}<CompactStagePalette palette={palette} /></div>
+        <aside><div className="checkpoint-lesson__stage-meta"><span>{stage.time}</span><span>{stage.water_state}</span></div><p className="eyebrow">STEP {String(activeStage + 1).padStart(2, "0")}</p><PaintingStepGuidance stage={stage} headingId="checkpoint-action-title" /><div className="watercolor-stage-actions"><button type="button" disabled={activeStage === 0} onClick={() => chooseStage(activeStage - 1)}>← Previous</button>{activeStage < stages.length - 1 ? <button type="button" onClick={() => chooseStage(activeStage + 1)}>Next step →</button> : <button type="button" onClick={() => setCompleted(true)}>Finish session</button>}</div></aside>
       </section>
-
-      <section className="watercolor-workspace" aria-labelledby="watercolor-stage-title">
-        <div className="watercolor-visual">
-          <div className="watercolor-view-toggle" aria-label="Lesson image view">
-            <button type="button" className={!showReference ? "is-selected" : ""} aria-pressed={!showReference} onClick={() => setShowReference(false)}>Current stage</button>
-            <button type="button" className={showReference ? "is-selected" : ""} aria-pressed={showReference} onClick={() => setShowReference(true)}>Reference photo</button>
-          </div>
-          {showReference ? (
-            <img className="watercolor-reference" src={referenceImage} width="1536" height="1024" alt="Single yellow lemon with one green leaf and a soft shadow on a warm white surface." />
-          ) : (
-            <StageArtwork stage={activeStage} />
-          )}
-          <p>{showReference ? "Observe the large light, middle, and shadow shapes. Ignore the peel texture." : `Stage ${activeStage + 1} of ${stages.length} · ${stage.waterState}`}</p>
-          <StagePalette palette={stage.palette} />
-        </div>
-
-        <aside className="watercolor-instruction" aria-live="polite">
-          <div className="watercolor-stage-meta">
-            <span>{stage.time}</span>
-            <span>{stage.waterState}</span>
-          </div>
-          <p className="eyebrow">STEP {String(activeStage + 1).padStart(2, "0")}</p>
-          <h2 id="watercolor-stage-title">{stage.title}</h2>
-          <blockquote>{stage.principle}</blockquote>
-          <div className="watercolor-instruction__section">
-            <h3>On your paper</h3>
-            <p>{stage.instruction}</p>
-          </div>
-          <div className="watercolor-instruction__section">
-            <h3>Look for</h3>
-            <p>{stage.lookFor}</p>
-          </div>
-          <div className="watercolor-ready-cue">
-            <strong>Ready for the next stage?</strong>
-            <p>{stage.moveOn}</p>
-          </div>
-
-          <div className="watercolor-stage-actions">
-            <button type="button" disabled={activeStage === 0} onClick={() => chooseStage(activeStage - 1)}>← Previous</button>
-            {activeStage < stages.length - 1 ? (
-              <button type="button" onClick={() => chooseStage(activeStage + 1)}>Next stage →</button>
-            ) : (
-              <button type="button" onClick={() => setCompleted(true)}>Finish lesson</button>
-            )}
-          </div>
-        </aside>
+      <section className="checkpoint-lesson__drawers" aria-label="Supporting session details">
+        <details><summary><span><strong>Palette details</strong><small>Color formulas and dilution</small></span></summary><StagePalette palette={palette} /></details>
+        <details><summary><span><strong>More painting tips</strong><small>Principle, full instruction, and what to look for</small></span></summary><div className="checkpoint-lesson__drawer-copy"><blockquote>{stage.principle}</blockquote><h3>Full technique</h3><p>{stage.instruction}</p><h3>Look for</h3><p>{stage.look_for}</p></div></details>
+        <details><summary><span><strong>All your painting notes</strong><small>Composition, setup, edges, detours, and extended guide</small></span></summary><div className="checkpoint-lesson__complete-notes"><h2>Your starting point</h2><p>{content.overview}</p><h3>What you’ll explore</h3><p>{content.learning_objective}</p><GuidanceDetails lesson={lesson} /></div></details>
       </section>
-
-      {completed && (
-        <section className="watercolor-complete" aria-live="polite">
-          <div>
-            <p className="eyebrow">LESSON COMPLETE</p>
-            <h2>You practiced the rhythm of watercolor.</h2>
-            <p>Reserve the light. Connect the first wash. Add pigment while damp. Glaze only when dry.</p>
-          </div>
-          <button type="button" onClick={() => chooseStage(0)}>Paint it again</button>
-        </section>
-      )}
-
-      <section className="watercolor-lesson-kit" aria-labelledby="watercolor-kit-title">
-        <div>
-          <p className="eyebrow">SMALL KIT · CLEAR JOBS</p>
-          <h2 id="watercolor-kit-title">Set up before the paper gets wet.</h2>
-        </div>
-        <ul>
-          <li><strong>Paper</strong><span>Cold-pressed watercolor paper, postcard size or larger</span></li>
-          <li><strong>Brush</strong><span>One medium round with a good point</span></li>
-          <li><strong>Color</strong><span>Transparent yellow, warm red, and blue</span></li>
-          <li><strong>Water</strong><span>Two cups: one to rinse, one to keep clean</span></li>
-          <li><strong>Cloth</strong><span>For controlling the brush, not scrubbing the paper</span></li>
-        </ul>
-      </section>
+      {completed && <section className="watercolor-complete" aria-live="polite"><div><p className="eyebrow">SESSION COMPLETE</p><h2>You practiced watercolor decisions.</h2><p>{content.completion_notes}</p></div><button type="button" onClick={() => chooseStage(0)}>Paint it again</button></section>}
     </article>
   );
 }
+
+export function WatercolorLessonTemplate({ lesson }: { lesson: PaintingLesson }) {
+  if (!lesson.content?.stages.length) return <section className="lesson-state"><h1>Your session is still taking shape.</h1><Link className="text-link" to="/?view=sessions">Return to your sessions</Link></section>;
+  if (lesson.generation_brief.sequence_style === "simple_recipe") return <PaintingRecipeSheet lesson={lesson} />;
+  return <CheckpointLessonTemplate lesson={lesson} />;
+}
+
+export function PaintingStepArt({ lesson, stageId }: { lesson: PaintingLesson; stageId: string }) {
+  const image = checkpointAsset(lesson, stageId);
+  const index = lesson.content?.stages.findIndex((stage) => stage.id === stageId) ?? -1;
+  if (image) return <img src={image.image_url} width={image.width} height={image.height} alt={image.alt_text} />;
+  if (lesson.process_image && index >= 0 && index < 4) return <div className="watercolor-stage-artwork"><img className={`watercolor-step-sheet watercolor-step-sheet--${index + 1}`} src={lesson.process_image} width="1536" height="1024" alt={`${lesson.content!.stages[index].short_title}: ${lesson.content!.stages[index].instruction}`} /></div>;
+  const original = lesson.assets.find((asset) => asset.is_primary && asset.role === "original_reference");
+  if (lesson.is_demo && original) return <><img src={original.image_url} alt={original.alt_text} /><p className="lesson-capability-note">Your photo, with sample painting guidance.</p></>;
+  return <div className="lesson-image-missing"><strong>This step’s image isn’t ready.</strong><span>Your painting notes are still here.</span></div>;
+}
+
+export function PaintingStepGuidance({ stage, headingId }: { stage: LessonStage; headingId: string }) {
+  const instructions = stage.approach_steps?.length ? stage.approach_steps : [stage.instruction, stage.look_for];
+  return <><h2 id={headingId}>{stage.checkpoint_action || stage.title}</h2><ol className="painting-step-instructions">{instructions.map((step) => <li key={step}>{step}</li>)}</ol><div className="watercolor-ready-cue"><strong>Ready when</strong><p>{stage.move_on}</p></div></>;
+}
+
+export function WatercolorLesson() { return <WatercolorLessonTemplate lesson={LEMON_LESSON} />; }

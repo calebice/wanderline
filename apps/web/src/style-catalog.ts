@@ -329,7 +329,7 @@ export const STYLE_GUIDE_ENTRIES: readonly StyleGuideEntry[] = [
   {
     slug: "anime-environment",
     label: "Anime environment",
-    kicker: "Stage a place with a story",
+    kicker: "Step a place with a story",
     definition:
       "An animation-background approach that combines clear layout, cinematic perspective, controlled tonal planning, atmospheric color, and selective lived-in detail. The environment is designed to support mood and implied narrative while remaining readable behind moving characters.",
     medium: "Layered digital gouache-style environment painting",
@@ -362,7 +362,7 @@ export const STYLE_GUIDE_ENTRIES: readonly StyleGuideEntry[] = [
       { title: "Painted atmosphere and detail", description: "Rock strata, tree clusters, waterfall spray, railings, windows, and small signs of habitation sharpen toward the inn." },
     ],
     steps: [
-      { title: "Stage the focal path", instruction: "Place the cliff, inn, waterfall, inlet, and framing trees as five simple shapes. Let the waterfall point toward the building.", checkpoint: "The eye reaches the inn without needing any detail." },
+      { title: "Step the focal path", instruction: "Place the cliff, inn, waterfall, inlet, and framing trees as five simple shapes. Let the waterfall point toward the building.", checkpoint: "The eye reaches the inn without needing any detail." },
       { title: "Solve the layout", instruction: "Build the inn from stacked boxes and roofs, then connect platforms, supports, stairs, and water to the cliff logic.", checkpoint: "The place feels inhabitable and structurally possible." },
       { title: "Script value and color", instruction: "Group dark frame, mid-value cliff, warm focal architecture, light water, and pale distance before rendering.", checkpoint: "The focal building separates even when the image is viewed very small." },
       { title: "Paint the story clues", instruction: "Add clustered tree, rock, timber, water, and habitation details, using atmosphere to quiet the distance.", checkpoint: "The setting feels lived in, but the large tonal design remains intact." },
@@ -497,7 +497,7 @@ export const ASTRONAUT_COMPARISON: StyleComparisonSubject = {
   slug: "astronaut",
   label: "Laid-back astronaut",
   description:
-    "One relaxed, oversized-suit character re-staged for each drawing language, showing how style can shape pose, camera, composition, and environment—not only surface treatment.",
+    "One relaxed, oversized-suit character re-staged for each style, showing how style can shape pose, camera, composition, and environment—not only surface treatment.",
   base: astronautImage(
     "base-thumbnail.png",
     "Neutral graphite construction drawing of a relaxed astronaut in a roomy, ruffled suit, seated casually on a floating moon-rock ledge among sparse stars.",
@@ -570,7 +570,7 @@ export const ASTRONAUT_COMPARISON: StyleComparisonSubject = {
     },
   ],
   futureNote:
-    "This collection intentionally lets every drawing language direct its own pose, camera angle, and background while retaining the same relaxed astronaut idea.",
+    "This collection intentionally lets every style direct its own pose, camera angle, and background while retaining the same relaxed astronaut idea.",
 };
 
 export const CAMPER_VAN_COMPARISON: StyleComparisonSubject = {
@@ -657,7 +657,7 @@ export const BOUQUET_COMPARISON: StyleComparisonSubject = {
   slug: "bouquet",
   label: "Bouquets & vessels",
   description:
-    "Five distinct arrangements pair different flowers and vessels with the drawing language that best explains their shape, structure, atmosphere, and character.",
+    "Five distinct arrangements pair different flowers and vessels with the style that best explains their shape, structure, atmosphere, and character.",
   base: bouquetImage(
     "watercolor/thumbnail.png",
     "Airy watercolor meadow bouquet in a translucent sea-green glass jar beside a rain-washed window.",
@@ -810,7 +810,7 @@ export const GREENHOUSE_COMPARISON: StyleComparisonSubject = {
     },
   ],
   futureNote:
-    "The shared greenhouse idea stays recognizable while each drawing language independently controls camera, silhouette, edge behavior, detail density, and the balance between warm light and rainy garden atmosphere.",
+    "The shared greenhouse idea stays recognizable while each style independently controls camera, silhouette, edge behavior, detail density, and the balance between warm light and rainy garden atmosphere.",
 };
 
 export const STYLE_REFERENCE_SUBJECTS: readonly StyleReferenceSubject[] = [

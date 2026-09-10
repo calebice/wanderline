@@ -31,8 +31,8 @@ services:
       MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:-drawcoach}
       MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:-drawcoach-development-only}
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
     volumes:
       - minio-data:/data
     healthcheck:
@@ -81,6 +81,8 @@ services:
       postgres:
         condition: service_healthy
       redis:
+        condition: service_healthy
+      minio:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import os; os.kill(1, 0)"]

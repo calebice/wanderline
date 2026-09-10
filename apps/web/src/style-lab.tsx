@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, Route, Routes, useLocation, useNavigate, useSearchParams, type Location } from "react-router-dom";
 import {
   STYLE_GUIDE_BY_SLUG,
   STYLE_GUIDE_ENTRIES,
@@ -11,8 +11,11 @@ import {
 } from "./style-catalog";
 import { FEELING_FIRST_GALLERY } from "./emotion-study-catalog";
 import { FeelingFirstStudy } from "./feeling-first";
+import { StartPaintingLink, StudioDialog, StudioConfirmationProvider } from "./studio-ui";
+import { PaintingSessions, StudioSettings } from "./studio-pages";
 import { AppNav } from "./navigation";
 import { WatercolorLesson } from "./watercolor-lesson";
+import { LessonAssembly, LessonCreator, LessonEditor, LessonTargetReview, SavedLessonLibrary, SavedLessonView } from "./lesson-workflow";
 
 const STUDY_LENSES: Record<StyleGuideSlug, { notice: string; start: string; check: string }> = {
   realism: {
@@ -88,42 +91,23 @@ export function StyleGuideGallery() {
     <>
       <header className="style-guide-hero style-guide-hero--compact">
         <div>
-          <p className="eyebrow">CURATED STYLE REFERENCE GUIDE</p>
-          <h1>Style reference studio.</h1>
+          <p className="eyebrow">Follow your curiosity</p>
+          <h1>What will you make today?</h1>
           <p className="lede">
-            Choose a subject, switch its drawing language, and compare how construction,
-            staging, light, and mark-making change without searching through a long gallery.
+            Find something that catches your eye. Try a new style. See where it takes you.
           </p>
+          <StartPaintingLink />
         </div>
-        <aside>
-          <span>Reference studio</span>
-          <strong>{STYLE_REFERENCE_SUBJECTS.length} subjects × {STYLE_GUIDE_ENTRIES.length} styles</strong>
-          <p>Every pairing is available immediately.</p>
-        </aside>
+
       </header>
 
-      <section className="feeling-first-card" aria-labelledby="feeling-first-card-title">
-        <img
-          src={FEELING_FIRST_GALLERY.thumbnail.src}
-          width={FEELING_FIRST_GALLERY.thumbnail.width}
-          height={FEELING_FIRST_GALLERY.thumbnail.height}
-          alt={FEELING_FIRST_GALLERY.thumbnail.alt}
-          loading="lazy"
-          decoding="async"
-        />
-        <div>
-          <p className="eyebrow">NEW · EMOTIONAL SPACE GALLERY</p>
-          <h2 id="feeling-first-card-title">One premise. Five feelings.</h2>
-          <p>Move from sadness to joy through five completely different celestial interpretations. See how setting, viewpoint, light, and subject change what an image feels like.</p>
-          <Link className="button-link" to="/?view=feeling-first&emotion=pensive">Explore the gallery →</Link>
-        </div>
-      </section>
+
 
       <section className="style-reference-studio" aria-labelledby="reference-studio-title">
         <h2 className="sr-only" id="reference-studio-title">Interactive style reference selector</h2>
         <div className="style-reference-controls">
           <fieldset>
-            <legend><span>01</span> Choose a subject</legend>
+            <legend>Choose a subject</legend>
             <div className="style-reference-subjects">
               {STYLE_REFERENCE_SUBJECTS.map((candidate) => (
                 <button
@@ -141,7 +125,7 @@ export function StyleGuideGallery() {
           </fieldset>
 
           <fieldset>
-            <legend><span>02</span> Choose a drawing language</legend>
+            <legend>Choose a style</legend>
             <div className="style-reference-styles">
               {subject.variants.map((candidate) => (
                 <button
@@ -169,7 +153,7 @@ export function StyleGuideGallery() {
             <fieldset className="style-reference-view-toggle">
               <legend>Reference view</legend>
               <button type="button" className={imageMode === "color" ? "is-selected" : ""} aria-pressed={imageMode === "color"} onClick={() => setImageMode("color")}>Full color</button>
-              <button type="button" className={imageMode === "value" ? "is-selected" : ""} aria-pressed={imageMode === "value"} onClick={() => setImageMode("value")}>Value check</button>
+              <button type="button" className={imageMode === "value" ? "is-selected" : ""} aria-pressed={imageMode === "value"} onClick={() => setImageMode("value")}>See light and dark</button>
             </fieldset>
             <figcaption>{variant.reference.alt}</figcaption>
           </figure>
@@ -180,7 +164,7 @@ export function StyleGuideGallery() {
             <strong>{variant.treatment}</strong>
             <p>{subject.description}</p>
             <section className="style-study-lens" aria-labelledby="style-study-lens-title">
-              <div><p className="eyebrow">8-MINUTE STUDY LENS</p><h3 id="style-study-lens-title">Turn looking into drawing.</h3></div>
+              <div><p className="eyebrow">A FEW MINUTES TO EXPLORE</p><h3 id="style-study-lens-title">Turn looking into drawing.</h3></div>
               <dl>
                 <div><dt>Notice</dt><dd>{studyLens.notice}</dd></div>
                 <div><dt>Start</dt><dd>{studyLens.start}</dd></div>
@@ -189,16 +173,29 @@ export function StyleGuideGallery() {
             </section>
             <div className="style-reference-actions">
               <a href={variant.reference.src} target="_blank" rel="noreferrer">Open full image ↗</a>
-              {variant.guidePath && <Link to={`/?view=guide&style=${variant.style}`}>Open teaching guide →</Link>}
+              {variant.guidePath && <Link to={`/?view=guide&style=${variant.style}`}>Tips to try →</Link>}
             </div>
-            {subject.futureNote && (
-              <small className="style-reference-future-note">
-                <strong>Future revisit:</strong> {subject.futureNote}
-              </small>
-            )}
+
           </aside>
         </div>
       </section>
+      <section className="feeling-first-card" aria-labelledby="feeling-first-card-title">
+        <img
+          src={FEELING_FIRST_GALLERY.thumbnail.src}
+          width={FEELING_FIRST_GALLERY.thumbnail.width}
+          height={FEELING_FIRST_GALLERY.thumbnail.height}
+          alt={FEELING_FIRST_GALLERY.thumbnail.alt}
+          loading="lazy"
+          decoding="async"
+        />
+        <div>
+          <p className="eyebrow">NEW · EMOTIONAL SPACE GALLERY</p>
+          <h2 id="feeling-first-card-title">One premise. Five feelings.</h2>
+          <p>Move from sadness to joy through five completely different celestial interpretations. See how setting, viewpoint, light, and subject change what an image feels like.</p>
+          <Link className="button-link" to="/?view=feeling-first&emotion=pensive">Explore the gallery →</Link>
+        </div>
+      </section>
+      <SavedLessonLibrary />
     </>
   );
 }
@@ -213,7 +210,7 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
       <article className={`style-guide-detail style-guide-detail--${entry.slug}`}>
         <header className="style-guide-detail__header">
           <div>
-            <Link className="text-link" to="/">← Comparison studio</Link>
+            <Link className="text-link" to="/">← Explore</Link>
             <p className="eyebrow">STYLE {String(index + 1).padStart(2, "0")} OF 05</p>
             <h1>{entry.label}</h1>
             <p className="style-guide-kicker">{entry.kicker}</p>
@@ -221,17 +218,6 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
           </div>
           <aside><span>Primary medium</span><strong>{entry.medium}</strong></aside>
         </header>
-
-        {entry.slug === "watercolor" && (
-          <section className="watercolor-lesson-invitation" aria-labelledby="watercolor-lesson-invitation-title">
-            <div>
-              <p className="eyebrow">GUIDED PRACTICE</p>
-              <h2 id="watercolor-lesson-invitation-title">See what the water is doing.</h2>
-              <p>Paint one lemon through dry, glossy, damp, and dry-again stages. Each interval shows what to do, what to notice, and when the paper is ready to move on.</p>
-            </div>
-            <Link className="button-link" to="/?view=watercolor-lesson">Start the lemon lesson →</Link>
-          </section>
-        )}
 
         <section className="style-guide-showcase" aria-labelledby="finished-reference-title">
           <div className="section-heading">
@@ -244,25 +230,36 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
           </figure>
         </section>
 
-        <section className="style-guide-traits" aria-labelledby="defining-traits-title">
+        {entry.slug === "watercolor" && (
+          <section className="watercolor-lesson-invitation" aria-labelledby="watercolor-lesson-invitation-title">
+            <div>
+              <p className="eyebrow">MAKE A LITTLE TIME</p>
+              <h2 id="watercolor-lesson-invitation-title">See what the water is doing.</h2>
+              <p>Paint one lemon through dry, glossy, damp, and dry-again steps. Each interval shows what to do, what to notice, and when the paper is ready to move on.</p>
+            </div>
+            <Link className="button-link" to="/?view=watercolor-lesson">Start the lemon session →</Link>
+          </section>
+        )}
+
+        <details className="studio-guide-details"><summary>What gives this style its character?</summary><section className="style-guide-traits" aria-labelledby="defining-traits-title">
           <div><p className="eyebrow">DEFINING TRAITS</p><h2 id="defining-traits-title">What makes it read this way.</h2></div>
           <ul>{entry.traits.map((trait) => <li key={trait}>{trait}</li>)}</ul>
         </section>
 
-        <section className="style-guide-learner" aria-labelledby="learner-reference-title">
+        </details><section className="style-guide-learner" aria-labelledby="learner-reference-title">
           <figure>
             <StyleImage asset={entry.learnerReference} className="style-guide-full-image" />
             <figcaption>{entry.learnerReference.alt}</figcaption>
           </figure>
           <div>
-            <p className="eyebrow">LEARNER REFERENCE</p>
+            <p className="eyebrow">A SIMPLE START</p>
             <h2 id="learner-reference-title">The same idea, made attainable.</h2>
             <p>This reduced version keeps the style’s core structure while lowering the number of shapes, edges, colors, and finishing marks you need to manage at once.</p>
             <blockquote>{entry.practicePrompt}</blockquote>
           </div>
         </section>
 
-        <section className="style-guide-recipe" aria-labelledby="visual-recipe-title">
+        <details className="studio-guide-details"><summary>A few choices behind the painting</summary><section className="style-guide-recipe" aria-labelledby="visual-recipe-title">
           <div className="section-heading">
             <div><p className="eyebrow">VISUAL RECIPE</p><h2 id="visual-recipe-title">Seven decisions behind the result.</h2></div>
             <p>Read top to bottom.</p>
@@ -274,7 +271,7 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
           </dl>
         </section>
 
-        <section className="style-guide-process" aria-labelledby="process-sheet-title">
+        </details><section className="style-guide-process" aria-labelledby="process-sheet-title">
           <div className="section-heading">
             <div><p className="eyebrow">FOUR-STAGE PROCESS</p><h2 id="process-sheet-title">From blank page to finish.</h2></div>
             <p>Each panel has a written equivalent below.</p>
@@ -313,7 +310,7 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
           </article>
         </section>
 
-        {entry.futureNote && <aside className="style-guide-future-note"><p className="eyebrow">FUTURE EXPANSION</p><p>{entry.futureNote}</p></aside>}
+
 
         <nav className="style-guide-pagination" aria-label="Browse style guides">
           <Link to={`/?view=guide&style=${previous.slug}`}><span>Previous</span><strong>← {previous.label}</strong></Link>
@@ -324,36 +321,43 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
   );
 }
 
-export function StyleStudioApp() {
+function StudioPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const view = searchParams.get("view");
   const style = searchParams.get("style");
   const guide = isStyleGuideSlug(style) ? STYLE_GUIDE_BY_SLUG.get(style) : undefined;
-
   useEffect(() => {
-    if (view === "guide" && !guide) {
-      setSearchParams({ view: "guide", style: STYLE_GUIDE_ENTRIES[0].slug }, { replace: true });
-    } else if (view && view !== "guide" && view !== "feeling-first" && view !== "watercolor-lesson") {
-      setSearchParams({}, { replace: true });
-    }
+    if (view === "guide" && !guide) setSearchParams({ view: "guide", style: STYLE_GUIDE_ENTRIES[0].slug }, { replace: true });
   }, [guide, setSearchParams, view]);
-
-  const content = view === "guide" && guide
-    ? <StyleGuideDetail entry={guide} />
-    : view === "feeling-first"
-      ? <FeelingFirstStudy />
-      : view === "watercolor-lesson"
-        ? <WatercolorLesson />
-      : <StyleGuideGallery />;
-
-  return (
-    <div className="site-shell">
-      <AppNav />
-      <main id="main-content">{content}</main>
-      <footer className="site-footer">
-        <span>Wanderline Style Studio</span>
-        <p>Look closely. Choose boldly. Make it yours.</p>
-      </footer>
-    </div>
-  );
+  if (view === "guide" && guide) return <StyleGuideDetail entry={guide} />;
+  if (view === "feeling-first") return <FeelingFirstStudy />;
+  if (view === "sessions") return <PaintingSessions />;
+  if (view === "settings") return <StudioSettings />;
+  if (view === "watercolor-lesson") return <WatercolorLesson />;
+  if (view === "lesson-build") return <LessonAssembly id={searchParams.get("lesson")} runId={searchParams.get("run")} next={searchParams.get("next")} />;
+  if (view === "lesson-review") return <LessonEditor id={searchParams.get("lesson")} />;
+  if (view === "lesson") return <SavedLessonView id={searchParams.get("lesson")} />;
+  return <StyleGuideGallery />;
 }
+
+function StudioShell() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = new URLSearchParams(location.search);
+  const view = params.get("view");
+  const modal = view === "lesson-create" || view === "lesson-target" || (view === "lesson-build" && params.get("next") === "target");
+  const background = (location.state as { background?: Location } | null)?.background;
+  const pageLocation = modal ? background || { ...location, search: "", state: null } : location;
+  function close() { if (background) navigate(background.pathname + background.search, { replace: true }); else navigate("/?view=sessions", { replace: true }); }
+  return <div className="site-shell"><a className="skip-link" href="#main-content">Skip to the artwork</a>
+    <Routes location={pageLocation}><Route path="*" element={<><AppNav /><main id="main-content"><StudioPage /></main></>} /></Routes>
+    <footer className="site-footer"><span>Wanderline</span><p>Look closely. Choose boldly. Make it yours.</p><Link to="/?view=settings">Studio settings</Link></footer>
+    <StudioDialog open={modal} onClose={close} wide={view !== "lesson-create"}>
+      <div hidden={view !== "lesson-create"}><LessonCreator active={view === "lesson-create"} /></div>
+      {view === "lesson-target" && <LessonTargetReview id={params.get("lesson")} />}
+      {view === "lesson-build" && params.get("next") === "target" && <LessonAssembly id={params.get("lesson")} runId={params.get("run")} next="target" />}
+    </StudioDialog>
+  </div>;
+}
+
+export function StyleStudioApp() { return <StudioConfirmationProvider><StudioShell /></StudioConfirmationProvider>; }
