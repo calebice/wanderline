@@ -11,6 +11,7 @@ import {
 } from "./style-catalog";
 import { FEELING_FIRST_GALLERY } from "./emotion-study-catalog";
 import { FeelingFirstStudy } from "./feeling-first";
+import { ColorStudy } from "./color-study";
 import { StartPaintingLink, StudioDialog, StudioConfirmationProvider } from "./studio-ui";
 import { PaintingSessions, StudioSettings } from "./studio-pages";
 import { AppNav } from "./navigation";
@@ -179,6 +180,10 @@ export function StyleGuideGallery() {
           </aside>
         </div>
       </section>
+      <section className="color-study-entry" aria-labelledby="color-study-entry-title">
+        <div><h2 id="color-study-entry-title">Spend a little time with color.</h2><p>Explore gentle neighbors, bold opposites, and the colors in between.</p></div>
+        <Link className="button-link" to="/?view=color-study">Explore Color Study</Link>
+      </section>
       <section className="feeling-first-card" aria-labelledby="feeling-first-card-title">
         <img
           src={FEELING_FIRST_GALLERY.thumbnail.src}
@@ -331,6 +336,7 @@ function StudioPage() {
   }, [guide, setSearchParams, view]);
   if (view === "guide" && guide) return <StyleGuideDetail entry={guide} />;
   if (view === "feeling-first") return <FeelingFirstStudy />;
+  if (view === "color-study") return <ColorStudy />;
   if (view === "sessions") return <PaintingSessions />;
   if (view === "settings") return <StudioSettings />;
   if (view === "watercolor-lesson") return <WatercolorLesson />;
