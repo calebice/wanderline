@@ -1,5 +1,9 @@
 # Codex Implementation Brief
 
+Status: Current
+Authority: Stable implementation contract and working rules
+Last reviewed: 2026-09-09
+
 You are implementing **Wanderline**, a containerized, paper-first drawing studio designed to run within the user's Terminus project ecosystem.
 
 Treat this file as the primary implementation contract.
@@ -407,7 +411,9 @@ At minimum:
 
 ## Codex working instructions
 
-1. Read this file, `README.md`, and all files in `docs/` before making architectural changes.
+1. Read this file, `README.md`, `docs/PROJECT_STATE.md`, and `docs/README.md` before making changes.
+   Load only the product, architecture, feature, decision, and regression documents relevant to
+   the task. Read all of `docs/` only when performing a documentation audit.
 2. Work in small, reviewable commits.
 3. Maintain a running checklist in the pull request or task output.
 4. Add tests with each behavior.
@@ -424,7 +430,13 @@ At minimum:
 11. For responsive UI changes, test component bounds—not only document scroll width—at
     narrow widths and 200% text sizing. Verify every content variant, especially the longest.
 
-## First Codex task
+## Foundation task history
+
+The following section describes the original foundation task. It is historical context, not the
+default current implementation target. Use `docs/PROJECT_STATE.md` and `docs/ROADMAP.md` to
+determine the current next task.
+
+## First Codex task (Historical)
 
 Implement Phase 0 and the smallest Phase 1 vertical slice:
 

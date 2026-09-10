@@ -1,5 +1,9 @@
 # Architecture
 
+Status: Current
+Authority: System boundaries and technical architecture
+Last reviewed: 2026-09-09
+
 ## System overview
 
 ```text
@@ -15,7 +19,7 @@ FastAPI service ---- PostgreSQL
   |
   +---- Redis ---- Worker
   |                 |
-  |                 +-- local CV or external vision provider
+  |                 +-- lesson text/study providers or local demo provider
   |
   +---- S3-compatible object storage
 ```
@@ -63,15 +67,38 @@ Source of truth for users, exercises, sessions, sketches, analyses, and progress
 
 ### Redis
 
-Used for background jobs and short-lived coordination. It is not a durable source of truth.
+Carries the lesson-generation queue and short-lived coordination. PostgreSQL remains the source of
+truth for job state, attempts, recoverable errors, and generated snapshots; Redis is not the lesson
+record.
 
 ### Object storage
 
 Stores private sketches, generated thumbnails, optional reference captures, and imported models. Curated style-guide assets ship with the web application rather than object storage.
 
+### Lesson providers
+
+`LessonTextProvider` and `StudyImageProvider` are isolated protocols. The deterministic demo text
+provider is used when `LESSON_GENERATION_PROVIDER=auto` has no OpenAI key. The OpenAI text provider
+sends a primary display image and optional secondary context images to the Responses API with a
+strict JSON schema and `store: false`. The optional study provider uses one primary-image edit with
+the configured image model. Routes and persistence do not contain provider-specific calls.
+
+### Photo-to-lesson persistence
+
+Migration `0009` adds `painting_lessons`, `lesson_assets`, and `lesson_generation_runs`. A lesson
+belongs to the local learner, stores versioned metadata/content and an optimistic revision, and is
+listed only after `saved_at` is set. Original upload bytes and display renditions are private S3
+objects. A partial unique index guarantees one primary original reference per lesson; deleting the
+primary compacts order and promotes the first remaining asset.
+
+The worker consumes `wanderline:lesson-generation`, updates queued/running/completed/failed state,
+and records JSON logs with run, lesson, scope, provider, model, attempt, and error fields. Full
+generation writes a draft content snapshot; section regeneration writes only a provisional run
+snapshot until the editor saves the complete lesson.
+
 ## Curated style-guide boundary
 
-The style guide is a typed frontend catalog backed by original, deterministic PNG assets under
+The style guide is a typed frontend catalog backed by original, deterministic WebP assets under
 `apps/web/public/style-guide/`. It makes no learner API calls. Thumbnails are precached with the
 application shell; full references and process sheets enter the service-worker cache after they are
 viewed. Research notes, final prompt summaries, and approval history live in `docs/` so the visual
@@ -108,7 +135,7 @@ Start with a local development user. Keep authorization boundaries compatible wi
 
 ## Observability
 
-- JSON logs
+- JSON logs from the lesson worker
 - Request ID propagation
 - Health and readiness endpoints
 - OpenTelemetry hooks

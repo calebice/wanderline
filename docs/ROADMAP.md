@@ -1,5 +1,9 @@
 # Delivery Roadmap
 
+Status: Current
+Authority: Delivery sequencing
+Last reviewed: 2026-09-09
+
 ## Milestone 1: Runnable foundation
 
 - Monorepo
@@ -79,6 +83,19 @@ attainable reference, and follow four concrete stages to make a study without a 
 generation dependency.
 
 ## Later opportunities
+
+### Photo-to-lesson workflow — delivered
+
+- Creator flow with multi-photo upload, primary selection, HEIC handling, optional metadata, and
+  an off-by-default study-image toggle
+- Versioned `PaintingLessonV1` content model and additive migration `0009`
+- Private S3 source/display assets, Redis-backed full/section jobs, worker retries, and structured
+  failure logging
+- Shared lemon/custom lesson renderer, editable review view, optimistic Save, and saved-lesson
+  library
+
+Definition of done: a learner can create, edit, save, and reopen a watercolor lesson from a photo;
+the lemon lesson remains canonical content rendered by the same template.
 
 - Style-differentiation pass for the shared coastal-stairway comparison: move beyond
   surface treatment by varying style-specific shape design, proportion, edge logic,
