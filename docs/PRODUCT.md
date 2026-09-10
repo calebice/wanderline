@@ -1,5 +1,9 @@
 # Product Requirements
 
+Status: Current
+Authority: Product requirements
+Last reviewed: 2026-09-09
+
 ## Elevator pitch
 
 Wanderline is a calm, paper-first drawing studio for true beginners. It invites learners to explore through one approachable 15-minute practice at a time and a four-week fundamentals path. Interactive references and sketch guidance support curiosity without becoming requirements or grades.
@@ -38,6 +42,7 @@ The app recommends the earliest incomplete lesson, but every visible lesson rema
 - Relevant lessons embed a keyboard-accessible 3D reference without requiring a modeling tool.
 - Local deployment requires one documented Compose command.
 - A learner can browse five original interpretations of one setting, move from a finished reference to an attainable version, and follow four written drawing stages without receiving a style score.
+- A learner can start a reusable watercolor lesson from up to six private photographs, review and edit structured guidance, and reopen the saved lesson through the same calm lesson template as the canonical lemon example.
 
 ## Non-goals for MVP
 
@@ -53,4 +58,5 @@ The app recommends the earliest incomplete lesson, but every visible lesson rema
 - Automated anatomy diagnosis
 - Automated style grading or imitation of named living artists
 - Generative style matching or runtime generation of guide references
+- Social sharing or collaborative editing of saved photo lessons
 - Training custom machine-learning models

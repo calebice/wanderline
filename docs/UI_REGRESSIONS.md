@@ -1,5 +1,9 @@
 # UI Regression Register
 
+Status: Current
+Authority: Project-wide UI invariants and regression record
+Last reviewed: 2026-09-09
+
 This file records recurring visual failures that must remain fixed across Wanderline.
 Treat these checks as project-wide layout invariants, not page-specific polish.
 
@@ -50,3 +54,12 @@ Changing an emotion required scrolling up to the control and back down to see th
 
 **Automated guard:** `apps/web/e2e/style-studio.spec.ts`, test
 `Feeling First keeps its compact selector attached to the artwork`.
+
+## R-004: Tracing print disabled by a cached image response
+
+The display image may be cached without CORS headers before the tracing canvas requests it.
+Do not prepare a canvas by reusing that cross-origin image response. Fetch the outline with
+`cache: no-store`, decode a local blob URL, and revoke it on cleanup. Abort requests on unmount.
+Keep loading/error feedback visible and provide a retry action. The browser regression supplies
+CORS headers only for the fetch, not the ordinary image, and verifies a one-page outline print.
+Verified against the saved apple in the live local app as well as mocked browser tests.

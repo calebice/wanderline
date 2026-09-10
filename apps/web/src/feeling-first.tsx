@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 
 import { FEELING_FIRST_GALLERY, isEmotionSlug, type EmotionInterpretation } from "./emotion-study-catalog";
@@ -21,6 +21,7 @@ function EmotionArtwork({ interpretation }: { interpretation: EmotionInterpretat
 export function FeelingFirstStudy() {
   const [searchParams, setSearchParams] = useSearchParams();
   const artworkRef = useRef<HTMLElement>(null);
+  const pendingScrollRef = useRef(false);
   const emotionParam = searchParams.get("emotion");
   const activeSlug = isEmotionSlug(emotionParam) ? emotionParam : gallery.defaultInterpretation;
   const activeIndex = gallery.interpretations.findIndex((interpretation) => interpretation.slug === activeSlug);
@@ -45,14 +46,19 @@ export function FeelingFirstStudy() {
     }
   }, [activeIndex]);
 
+  useLayoutEffect(() => {
+    if (!pendingScrollRef.current) return;
+    pendingScrollRef.current = false;
+    const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    if (typeof artworkRef.current?.scrollIntoView === "function") {
+      artworkRef.current.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
+    }
+  }, [activeIndex]);
+
   function chooseInterpretation(index: number, replace = false) {
     const interpretation = gallery.interpretations[index];
     if (!interpretation) return;
-    const artwork = artworkRef.current;
-    if (typeof artwork?.scrollIntoView === "function") {
-      const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
-      artwork.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "center" });
-    }
+    pendingScrollRef.current = true;
     const next = new URLSearchParams(searchParams);
     next.set("view", "feeling-first");
     next.set("emotion", interpretation.slug);

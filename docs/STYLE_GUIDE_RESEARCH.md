@@ -1,5 +1,9 @@
 # Curated Style Reference Guide research
 
+Status: Reference
+Authority: Visual research, synthesis, and approval history
+Last reviewed: 2026-09-09
+
 This document records the recurring visual principles used to develop Wanderline's
 original style references. Sources are research inputs, not visual templates,
 endorsements, or generation-prompt language. No source composition, location,

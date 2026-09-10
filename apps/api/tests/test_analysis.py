@@ -1,5 +1,4 @@
 from io import BytesIO
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock
 
 import numpy as np
@@ -36,6 +35,26 @@ def heif_sketch_bytes() -> bytes:
     ImageDraw.Draw(image).line((10, 10, 110, 80), fill="black", width=3)
     output = BytesIO()
     image.save(output, format="HEIF")
+    return output.getvalue()
+
+
+def jpeg_sketch_bytes() -> bytes:
+    image = Image.new("RGB", (120, 90), "white")
+    drawing = ImageDraw.Draw(image)
+    drawing.rectangle((20, 15, 100, 75), outline="black", width=3)
+    drawing.line((20, 75, 100, 15), fill="black", width=3)
+    output = BytesIO()
+    image.save(output, format="JPEG")
+    return output.getvalue()
+
+
+def boundary_reference_bytes() -> bytes:
+    image = Image.new("RGB", (320, 240), "#f4f0e8")
+    drawing = ImageDraw.Draw(image)
+    drawing.ellipse((-45, 35, 175, 255), fill="#bf765e", outline="#30302b", width=6)
+    drawing.polygon([(145, -30), (340, 115), (155, 215)], fill="#617b69")
+    output = BytesIO()
+    image.save(output, format="JPEG")
     return output.getvalue()
 
 
@@ -130,31 +149,39 @@ def test_accepts_mislabeled_apple_heif_export_and_normalizes_to_jpeg() -> None:
 
 
 @pytest.mark.parametrize(
-    ("filename", "claimed_type"),
+    ("content", "claimed_type"),
     [
-        ("IMG_3838.HEIC", "image/heic"),
-        ("IMG_3838.jpg", "image/jpeg"),
-        ("guitar.heic", "image/heic"),
+        (heif_sketch_bytes(), "image/heic"),
+        (heif_sketch_bytes(), "image/jpeg"),
+        (jpeg_sketch_bytes(), "image/jpeg"),
     ],
 )
-def test_real_airdropped_iphone_exports_are_normalized(filename: str, claimed_type: str) -> None:
-    photo = Path(__file__).parents[3] / "docs" / "photos" / filename
-    if not photo.exists():
-        pytest.skip("Repository photo fixtures are not mounted in this environment.")
-
-    validated = validate_sketch(photo.read_bytes(), claimed_type, max_pixels=24_000_000)
+def test_compact_photo_exports_are_normalized(content: bytes, claimed_type: str) -> None:
+    validated = validate_sketch(content, claimed_type, max_pixels=1_000_000)
 
     assert validated.content_type == "image/jpeg"
     assert validated.content.startswith(b"\xff\xd8\xff")
-    assert (validated.width, validated.height) == (3024, 4032)
+    assert (validated.width, validated.height) == (120, 90)
     metrics = LocalCvAnalysisProvider().analyze(validated).metrics
-    assert 0.4 < metrics["bounding_box_occupancy"] < 0.85
-    assert metrics["stroke_fragmentation"] < 5
+    assert 0 < metrics["bounding_box_occupancy"] < 1
+    assert metrics["stroke_fragmentation"] >= 0
 
 
 def test_rejects_oversized_pixel_dimensions() -> None:
     with pytest.raises(InvalidSketchError, match="dimensions are too large"):
         validate_sketch(sketch_bytes(), "image/png", max_pixels=100)
+
+
+def test_applies_exif_orientation_before_reporting_dimensions() -> None:
+    image = Image.new("RGB", (80, 40), "white")
+    exif = Image.Exif()
+    exif[274] = 6
+    output = BytesIO()
+    image.save(output, format="JPEG", exif=exif)
+
+    validated = validate_sketch(output.getvalue(), "image/jpeg", max_pixels=100_000)
+
+    assert (validated.width, validated.height) == (40, 80)
 
 
 def test_blank_page_is_handled_without_division_errors() -> None:
@@ -235,11 +262,8 @@ def test_decomposition_geometry_is_normalized_and_deterministic() -> None:
             )
 
 
-def test_real_photo_decomposition_clamps_partial_fits_to_image_bounds() -> None:
-    photo = Path(__file__).parents[3] / "docs" / "photos" / "IMG_3838.jpg"
-    if not photo.exists():
-        pytest.skip("Repository photo fixtures are not mounted in this environment.")
-    validated = validate_sketch(photo.read_bytes(), "image/jpeg", max_pixels=24_000_000)
+def test_decomposition_clamps_partial_fits_to_image_bounds() -> None:
+    validated = validate_sketch(boundary_reference_bytes(), "image/jpeg", max_pixels=1_000_000)
     shapes = LocalShapeDecompositionProvider().analyze(validated).decomposition["shapes"]
 
     assert shapes

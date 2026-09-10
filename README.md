@@ -1,5 +1,9 @@
 # Wanderline
 
+Status: Current
+Authority: Product overview and local development guide
+Last reviewed: 2026-09-09
+
 Wanderline is a container-first, paper-first drawing studio that gives a true beginner one inviting 15-minute practice at a time. A four-week fundamentals path, gentle pacing, durable reflections, optional 3D references, and on-demand sketch guidance help learners explore their creativity without grades or streak pressure.
 
 The product is intended to fit into the **Terminus project ecosystem** as an independently deployable service with clear API boundaries, health checks, persistent storage, and Docker Compose support.
@@ -31,6 +35,7 @@ Sketch upload and critique remain a separate, optional tool.
 - Sketch upload and session history
 - Rule-based image measurements
 - Local geometric image decomposition with SVG/PNG study exports
+- Reusable photo-to-watercolor lessons with private references, editable stages, and saved drafts
 - AI-assisted critique
 - Skill profiles and progress history
 - Personalized daily practice plans
@@ -74,6 +79,25 @@ The feature describes geometry rather than recognizing objects or semantic parts
 with one well-separated subject and reports limitations when low contrast, texture, or clutter
 make the decomposition uncertain.
 
+The reusable photo-to-watercolor workflow is documented in
+[docs/PHOTO_TO_LESSON.md](docs/PHOTO_TO_LESSON.md). It covers the creator, review/editor, saved
+library, provider configuration, API endpoints, private assets, and the current verification
+matrix.
+
+## Photo-to-lesson workflow
+
+The Style Reference Studio includes a **Create lesson from photo** flow and an on-demand saved
+lesson library. A draft accepts up to six private JPEG, PNG, WebP, or HEIC/HEIF references; the
+first is primary until another is selected. Source bytes remain in S3-compatible storage and the
+UI receives an orientation-corrected, bounded WebP rendition through a private API response.
+
+Lesson text and optional study-image creation run as durable Redis jobs. Set
+`LESSON_GENERATION_PROVIDER=auto` to use OpenAI when `OPENAI_API_KEY` is present, or the clearly
+labeled deterministic demo provider otherwise. The study-image option is off by default. OpenAI
+text generation uses `OPENAI_LESSON_MODEL` and image edits use `OPENAI_IMAGE_MODEL`; credentials
+are server-side only. Edited lessons save with optimistic revisions, and a stale revision returns
+HTTP 409.
+
 ## Recommended stack
 
 - Web: React, TypeScript, Vite
@@ -95,6 +119,10 @@ make the decomposition uncertain.
 cp .env.example .env
 docker compose up --build
 ```
+
+Run that command from the repository root. The web service builds from `apps/web/Dockerfile`; if
+you run Compose from another directory, pass the compose file explicitly:
+`docker compose -f /path/to/wanderline/compose.yaml up --build`.
 
 The API container applies migrations and idempotently seeds three exercises before serving traffic.
 Wait for all services to report healthy, then open the web application. Stop the stack with
@@ -118,6 +146,7 @@ apps/
 docs/
   PRODUCT.md
   ARCHITECTURE.md
+  PHOTO_TO_LESSON.md
   ROADMAP.md
 infra/
 CODEX.md     Primary Codex implementation brief
@@ -177,3 +206,15 @@ The routed endpoints are:
 - Sketch analysis: `http://wanderline.localhost:8080/upload`
 - API: `http://wanderline-api.localhost:8080`
 - Readiness: `http://wanderline-api.localhost:8080/health/ready`
+
+If ports 9000 or 9001 are already in use on your machine, override the host-side MinIO ports in
+`.env` while keeping the container-side S3 endpoint unchanged:
+
+```dotenv
+MINIO_API_PORT=9002
+MINIO_CONSOLE_PORT=9003
+S3_PUBLIC_ENDPOINT_URL=http://localhost:9002
+```
+
+Then rerun `docker compose up --build`. The API and worker continue using
+`http://minio:9000` inside the Compose network.

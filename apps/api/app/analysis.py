@@ -14,10 +14,11 @@ SUPPORTED_CLAIMED_TYPES = {
     "application/octet-stream",
     "image/jpeg",
     "image/png",
+    "image/webp",
     "image/heic",
     "image/heif",
 }
-SUPPORTED_DETECTED_TYPES = {"image/jpeg", "image/png", "image/heif", "image/mpo"}
+SUPPORTED_DETECTED_TYPES = {"image/jpeg", "image/png", "image/webp", "image/heif", "image/mpo"}
 HEIF_TYPES = {"image/heic", "image/heif"}
 JPEG_TYPES = {"image/jpeg", "image/mpo"}
 
@@ -54,7 +55,7 @@ class LocalDecompositionResult:
 
 def validate_sketch(content: bytes, claimed_content_type: str, max_pixels: int) -> ValidatedSketch:
     if claimed_content_type not in SUPPORTED_CLAIMED_TYPES:
-        raise InvalidSketchError("Only JPEG, PNG, and HEIC/HEIF sketches are supported.")
+        raise InvalidSketchError("Only JPEG, PNG, WebP, and HEIC/HEIF images are supported.")
     try:
         with Image.open(BytesIO(content)) as source:
             source.verify()
@@ -62,7 +63,7 @@ def validate_sketch(content: bytes, claimed_content_type: str, max_pixels: int) 
             detected_type = Image.MIME.get(source.format or "")
             if detected_type not in SUPPORTED_DETECTED_TYPES:
                 raise InvalidSketchError(
-                    "The file signature is not a supported JPEG, PNG, or HEIC/HEIF image."
+                    "The file signature is not a supported JPEG, PNG, WebP, or HEIC/HEIF image."
                 )
             generic_claim = claimed_content_type in {"", "application/octet-stream"}
             matching_family = (

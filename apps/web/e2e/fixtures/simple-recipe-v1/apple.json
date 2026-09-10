@@ -1,0 +1,244 @@
+{
+  "id": "d03d356d-fb83-4753-8df9-5224be944f91",
+  "schema_version": "painting-lesson.v2",
+  "template": "watercolor",
+  "medium": "watercolor",
+  "title": "A Red Apple \u2014 Simple Recipe",
+  "subject": "A red apple",
+  "artistic_context": null,
+  "difficulty": "beginner",
+  "estimated_duration_minutes": 20,
+  "source_mode": "upload",
+  "scene_prompt": null,
+  "generation_brief": {
+    "source_mode": "upload",
+    "sequence_style": "simple_recipe",
+    "scene_prompt": null,
+    "stage_count": 3,
+    "mood": "as_shown",
+    "background": "plain_paper",
+    "treatment": "natural",
+    "custom_mood": null,
+    "custom_background": null,
+    "custom_treatment": null,
+    "additional_direction": null
+  },
+  "latest_run_id": "deacf94e-f4fb-474c-982b-b56ff32e13ce",
+  "latest_run_scope": "full",
+  "sequence_style_configured": true,
+  "approved_target_asset_id": "5ecbe743-2b74-4dff-a4ae-8361e0b1713f",
+  "active_render_set_id": null,
+  "image_generation_available": true,
+  "content": {
+    "recipe": {
+      "finishing": null
+    },
+    "overview": "Paint this simple red apple with a soft shine and a short brown stem.",
+    "learning_objective": "Enjoy a few simple washes.",
+    "composition_crop": "One subject with room around it.",
+    "focal_point": "A red apple",
+    "large_value_shapes": "Light, middle and a few dark marks.",
+    "palette": [
+      {
+        "id": "m1",
+        "name": "Light red",
+        "swatch": "#f28b86",
+        "formula": "1 part red",
+        "dilution": "Very watery like tea.",
+        "water_parts": null,
+        "ingredients": [
+          {
+            "color": "red",
+            "parts": 1.0
+          }
+        ],
+        "consistency": "very watery"
+      },
+      {
+        "id": "m2",
+        "name": "Dark red",
+        "swatch": "#df4038",
+        "formula": "1 part red",
+        "dilution": "Less water for a stronger red.",
+        "water_parts": null,
+        "ingredients": [
+          {
+            "color": "red",
+            "parts": 1.0
+          }
+        ],
+        "consistency": "less water"
+      },
+      {
+        "id": "m3",
+        "name": "Brown",
+        "swatch": "#70442d",
+        "formula": "1 part brown",
+        "dilution": "Lightly creamy like milk.",
+        "water_parts": null,
+        "ingredients": [
+          {
+            "color": "brown",
+            "parts": 1.0
+          }
+        ],
+        "consistency": "lightly creamy"
+      }
+    ],
+    "light_shadow": "Keep the first wash pale.",
+    "materials": [
+      "watercolor paper with tracing outline",
+      "watercolor paints",
+      "small round brush",
+      "palette or plate",
+      "water cup"
+    ],
+    "underdrawing": "Trace the outline lightly onto watercolor paper.",
+    "wash_control": "Try each mix on scrap paper first. Let each wash dry before the next.",
+    "edges": {
+      "hard": "Paint on dry paper.",
+      "soft": "A damp brush can soften an edge.",
+      "lost": "Leave a small gap."
+    },
+    "details": {
+      "preserve": [
+        "Main shape"
+      ],
+      "simplify": [
+        "Small marks"
+      ],
+      "exaggerate": [],
+      "omit": [
+        "Background"
+      ]
+    },
+    "common_mistakes": [
+      {
+        "id": "too-dark",
+        "mistake": "The first wash feels dark.",
+        "correction": "Add water and test on scrap paper."
+      },
+      {
+        "id": "too-wet",
+        "mistake": "Colors run together.",
+        "correction": "Let the paper dry before continuing."
+      }
+    ],
+    "stages": [
+      {
+        "id": "recipe-1",
+        "title": "1",
+        "short_title": "1",
+        "time": "About 6 min",
+        "water_state": "dry paper",
+        "principle": "A few marks are enough.",
+        "instruction": "Paint the apple light red, leaving the shine and stem unpainted.",
+        "checkpoint_action": "Paint the apple light red, leaving the shine and stem unpainted.",
+        "approach_steps": [],
+        "process_phase": null,
+        "look_for": "Keep some white paper showing.",
+        "move_on": "Let it dry completely.",
+        "palette_mix_ids": [
+          "m1"
+        ]
+      },
+      {
+        "id": "recipe-2",
+        "title": "2",
+        "short_title": "2",
+        "time": "About 6 min",
+        "water_state": "dry paper",
+        "principle": "A few marks are enough.",
+        "instruction": "Paint dark red along the lower left and bottom edge, then let it dry.",
+        "checkpoint_action": "Paint dark red along the lower left and bottom edge, then let it dry.",
+        "approach_steps": [],
+        "process_phase": null,
+        "look_for": "Keep some white paper showing.",
+        "move_on": "Let it dry completely.",
+        "palette_mix_ids": [
+          "m2"
+        ]
+      },
+      {
+        "id": "recipe-3",
+        "title": "3",
+        "short_title": "3",
+        "time": "About 6 min",
+        "water_state": "dry paper",
+        "principle": "A few marks are enough.",
+        "instruction": "Paint the stem brown and add a small brown curve at its base.",
+        "checkpoint_action": "Paint the stem brown and add a small brown curve at its base.",
+        "approach_steps": [],
+        "process_phase": null,
+        "look_for": "Keep some white paper showing.",
+        "move_on": "Let it dry completely.",
+        "palette_mix_ids": [
+          "m3"
+        ]
+      }
+    ],
+    "timed_study": {
+      "duration_minutes": 20,
+      "notice": "Find the main shape.",
+      "start": "Trace lightly.",
+      "check": "Leave a little white."
+    },
+    "teaching_guide": [
+      {
+        "id": "trace",
+        "title": "Begin with the outline",
+        "body": "Trace lightly. It is fine to leave out small details."
+      },
+      {
+        "id": "mix",
+        "title": "Test your mix",
+        "body": "Ratios are starting points; pigment strength varies."
+      }
+    ],
+    "reflection_prompts": [],
+    "completion_notes": "Let it dry. You made time to paint.",
+    "user_notes": ""
+  },
+  "revision": 4,
+  "saved_at": "2026-09-09T15:16:39.340434Z",
+  "generation_status": "completed",
+  "generation_error": null,
+  "provider_mode": "openai",
+  "is_demo": false,
+  "assets": [
+    {
+      "id": "5ecbe743-2b74-4dff-a4ae-8361e0b1713f",
+      "role": "target_reference",
+      "order_index": 0,
+      "is_primary": false,
+      "stage_id": "recipe-3",
+      "render_set_id": null,
+      "is_current": true,
+      "original_content_type": "image/png",
+      "display_content_type": "image/png",
+      "width": 768,
+      "height": 1024,
+      "filename": "watercolor-target.png",
+      "alt_text": "Generated watercolor target for A Red Apple \u2014 Simple Recipe",
+      "image_url": "/api/v1/lesson-assets/5ecbe743-2b74-4dff-a4ae-8361e0b1713f/image"
+    },
+    {
+      "id": "f7b385b3-207f-4684-bb50-e8b4e6a1a134",
+      "role": "tracing_outline",
+      "order_index": 0,
+      "is_primary": false,
+      "stage_id": "5ecbe743-2b74-4dff-a4ae-8361e0b1713f",
+      "render_set_id": null,
+      "is_current": true,
+      "original_content_type": "image/png",
+      "display_content_type": "image/png",
+      "width": 768,
+      "height": 1024,
+      "filename": "tracing-outline.png",
+      "alt_text": "Tracing outline for A Red Apple \u2014 Simple Recipe",
+      "image_url": "/api/v1/lesson-assets/f7b385b3-207f-4684-bb50-e8b4e6a1a134/image"
+    }
+  ],
+  "created_at": "2026-09-09T15:02:17.816753Z",
+  "updated_at": "2026-09-09T15:16:39.342667Z"
+}

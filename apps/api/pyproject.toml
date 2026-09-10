@@ -14,7 +14,8 @@ dependencies = [
   "pillow>=11,<12",
   "pillow-heif>=1,<2",
   "opencv-python-headless>=4.12,<5",
-  "python-multipart>=0.0.20,<1"
+  "python-multipart>=0.0.20,<1",
+  "openai>=2.0,<3"
 ]
 
 [project.optional-dependencies]
