@@ -159,7 +159,17 @@ body { margin: 0; min-width: 280px; line-height: 1.5; background: var(--surface-
 .skip-link { position: fixed; top: -100px; z-index: 100; padding: 12px 18px; background: var(--surface-panel); color: var(--theme-primary-strong); border-radius: 12px; }
 .skip-link:focus { top: 8px; }
 .creator-fields { min-width: 0; padding: 0; margin: 0; border: 0; }
-.creator-defaults { padding: 14px 16px; border-radius: 12px; background: var(--theme-primary-soft); }
+.creator-inspiration-note, .creator-options-note { color: var(--text-secondary); }
+.creator-basics { display: grid; gap: 12px; margin: 20px 0; padding: 20px; border-radius: 16px; background: var(--theme-primary-soft); }
+.creator-basics p { margin: 0; }
+.lesson-creator .creator-basics > button { justify-self: stretch; width: 100%; }
+.lesson-creator .creator-recipe-option { display: flex; align-items: flex-start; margin-top: 16px; }
+.lesson-creator .creator-recipe-option input { flex: 0 0 auto; }
+.creator-basics > p:last-child { font-size: .875rem; color: var(--text-secondary); }
+.creator-defaults { font-weight: 600; }
+.lesson-creator :where(button, label, span, fieldset, section) { min-width: 0; overflow-wrap: anywhere; }
+.lesson-creator .creator-customize { font-weight: 500; }
+.creator-options { border-top: 1px solid var(--theme-border); padding-top: 16px; }
 .creator-options { margin-top: 24px; }
 .creator-submit { margin: 24px 0 12px; }
 .lesson-source-tabs { margin-top: 0; }
