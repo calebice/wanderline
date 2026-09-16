@@ -4,6 +4,15 @@ Status: Current
 Authority: Feature behavior and verification record
 Last reviewed: 2026-09-09
 
+## Creation dialog
+
+The dialog leads with photo upload or an imagined scene, followed by the existing Simple
+painting recipe choice. **Just stick to basics** is the primary action above optional controls;
+it keeps the source and recipe selection and uses the existing beginner defaults.
+**Make it yours** reveals art direction and sequence choices, with title, guidance, timing,
+and context inside **A few more touches**. **Create my preview** submits those custom choices.
+Both actions retain the existing preview approval, generation, review, and save workflow.
+
 ## Current status
 
 ### Simple painting recipe

@@ -373,14 +373,18 @@ test("basics resets customization and double submission queues only one preview"
   expect(previewCalls).toBe(1);
 });
 
-test("modal controls stay inside their components at 200 percent text", async ({ page }) => {
+for (const source of ["photo", "idea", "recipe"]) {
+test(`modal ${source} controls stay inside their components at 200 percent text`, async ({ page }) => {
   await mockStudio(page);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/?view=lesson-create");
   await page.getByRole("button", { name: "Make it yours" }).click();
   await page.addStyleTag({ content: "html { font-size: 200% !important; }" });
   const dialog = page.getByRole("dialog", { name: "Start a painting session" });
-  const overflows = await dialog.evaluate((element) => [...element.querySelectorAll("fieldset, input, textarea, button, label")].filter((child) => {
+  if (source !== "photo") await dialog.getByRole("button", { name: "Describe an idea" }).click();
+  if (source === "recipe") await dialog.getByRole("checkbox", { name: /Simple painting recipe/ }).check();
+  await dialog.getByText("A few more touches", { exact: true }).click();
+  const overflows = await dialog.evaluate((element) => [...element.querySelectorAll("fieldset, input, textarea, button, label, p, span, section")].filter((child) => {
     const parent = child.parentElement;
     if (!parent) return false;
     const rect = child.getBoundingClientRect(), bounds = parent.getBoundingClientRect();
@@ -389,6 +393,8 @@ test("modal controls stay inside their components at 200 percent text", async ({
   expect(overflows).toEqual([]);
   await expectNoHorizontalOverflow(page);
 });
+
+}
 
 test("Explore places artwork and a next action in the opening desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 900 });

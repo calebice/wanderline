@@ -132,6 +132,50 @@ afterEach(() => {
 });
 
 describe("image-first lesson workflow", () => {
+  it("puts basics before optional direction and keeps that action available when expanded", () => {
+    render(<MemoryRouter initialEntries={["/?view=lesson-create"]}><StyleStudioApp /></MemoryRouter>);
+    const basics = screen.getByRole("button", { name: "Just stick to basics" });
+    const customize = screen.getByRole("button", { name: "Make it yours" });
+    expect(basics.compareDocumentPosition(customize) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(basics).toHaveAccessibleDescription(/3 steps · 30 minutes.*approve before building your lesson/);
+    expect(screen.queryByRole("button", { name: "Create my preview →" })).not.toBeInTheDocument();
+    fireEvent.click(customize);
+    expect(customize).toHaveAttribute("aria-expanded", "true");
+    expect(basics).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Create my preview →" })).toBeInTheDocument();
+    expect(screen.getByText("A few more touches").closest("details")).not.toHaveAttribute("open");
+    fireEvent.click(customize);
+    expect(screen.queryByRole("slider")).not.toBeInTheDocument();
+  });
+
+  it.each(["upload", "prompt"] as const)("submits customized %s previews through the existing target workflow", async (source) => {
+    const lesson = checkpointLesson();
+    const requests: Record<string, unknown>[] = [];
+    vi.stubGlobal("fetch", vi.fn((input, init) => {
+      const url = String(input);
+      if (url.endsWith("/capabilities")) return response({ image_generation_available: true });
+      if (url.endsWith("/painting-lessons") && init?.method === "POST") requests.push(JSON.parse(init.body));
+      if (url.includes("target-generations")) return response(generationRun({ scope: "target" }));
+      return response(lesson);
+    }));
+    render(<MemoryRouter initialEntries={["/?view=lesson-create"]}><StyleStudioApp /></MemoryRouter>);
+    if (source === "prompt") {
+      await waitFor(() => expect(screen.getByRole("button", { name: "Describe an idea" })).toBeEnabled());
+      fireEvent.click(screen.getByRole("button", { name: "Describe an idea" }));
+      fireEvent.change(screen.getByLabelText("What’s in your imagination?"), { target: { value: "A quiet garden" } });
+    } else {
+      fireEvent.change(screen.getByLabelText(/Drop a photo that inspires you/), { target: { files: [new File(["photo"], "garden.jpg", { type: "image/jpeg" })] } });
+    }
+    fireEvent.click(screen.getByRole("button", { name: "Make it yours" }));
+    fireEvent.change(screen.getByRole("slider"), { target: { value: "5" } });
+    fireEvent.click(screen.getByRole("button", { name: "Calm" }));
+    fireEvent.click(screen.getByRole("button", { name: "Create my preview →" }));
+    await waitFor(() => expect(fetch).toHaveBeenCalledWith(expect.stringContaining("/target-generations"), expect.objectContaining({ method: "POST" })));
+    expect(requests[0].generation_brief).toMatchObject({ source_mode: source, stage_count: 5, mood: "calm" });
+    const uploads = vi.mocked(fetch).mock.calls.filter(([url]) => String(url).endsWith("/references"));
+    expect(uploads).toHaveLength(source === "upload" ? 1 : 0);
+  });
+
   it("keeps a simple recipe selected when starting with basics", async () => {
     const lesson = checkpointLesson();
     const requests: Record<string, unknown>[] = [];
