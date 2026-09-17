@@ -63,3 +63,14 @@ Do not prepare a canvas by reusing that cross-origin image response. Fetch the o
 Keep loading/error feedback visible and provide a retry action. The browser regression supplies
 CORS headers only for the fetch, not the ordinary image, and verifies a one-page outline print.
 Verified against the saved apple in the live local app as well as mocked browser tests.
+
+## R-005: Shared styling must preserve the Feeling First selector
+
+The owner explicitly approved the existing slider and its surrounding selector. Application
+styling must exclude the entire `.emotion-gallery__selector` subtree. Preserve its labels,
+controls, appearance, sticky placement, keyboard behavior, and artwork scrolling.
+
+`apps/web/e2e/garden-adoption.spec.ts` compares computed selector styles with and without the
+application styling layer at phone, tablet, and desktop widths. It also checks active-view
+component bounds at normal and 200% text size. Subject cards and lesson navigation labels
+must wrap; intentional scrolling navigation remains scrollable.

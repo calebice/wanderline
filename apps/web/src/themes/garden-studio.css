@@ -66,4 +66,31 @@
   --studio-plum-soft: var(--theme-reflective-soft);
   --studio-border: var(--theme-border);
   --studio-shadow: var(--theme-shadow);
+
+  /* Garden Studio reference: additive until the reviewed migration. */
+  --garden-font-body: "Avenir Next", Avenir, "Segoe UI", system-ui, sans-serif;
+  --garden-font-display: "Iowan Old Style", Palatino, Georgia, serif;
+  --garden-space-1: .25rem;
+  --garden-space-2: .5rem;
+  --garden-space-3: .75rem;
+  --garden-space-4: 1rem;
+  --garden-space-6: 1.5rem;
+  --garden-space-8: 2rem;
+  --garden-space-12: 3rem;
+  --garden-space-16: 4rem;
+  --garden-radius-control: .75rem;
+  --garden-radius-panel: 1.125rem;
+  --garden-radius-frame: 1.5rem;
+  --garden-radius-pigment: 44% 56% 54% 46%;
+  --garden-border-control: #7a857e;
+  --garden-focus: var(--theme-primary-strong);
+  --garden-error: var(--theme-accent-strong);
+  --garden-error-surface: var(--theme-accent-soft);
+  --garden-success: var(--theme-primary-strong);
+  --garden-success-surface: var(--theme-primary-soft);
+  --garden-stage: #151c38;
+  --garden-stage-text: #f8edcf;
+  --garden-stage-muted: #d0d2dc;
+  --garden-shadow-panel: 0 .5rem 1.5rem var(--theme-shadow);
+  --garden-duration: 160ms;
 }

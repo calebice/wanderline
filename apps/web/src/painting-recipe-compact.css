@@ -1,0 +1,33 @@
+/* Opt-in reference presentation. The frozen production recipe and print rules stay intact. */
+@media screen {
+  .recipe-sheet.recipe-sheet--compact { width: 100%; max-width: none; padding: 1rem; border: 0; border-radius: 0; box-shadow: none; background: transparent; color: var(--text-primary); font-size: 1rem; line-height: 1.45; }
+  .recipe-sheet--compact .recipe-sheet__heading { align-items: center; gap: 1rem; padding-bottom: .625rem; flex-wrap: nowrap; }
+  .recipe-sheet--compact .recipe-sheet__heading h1 { font-size: 1.5rem; margin: 0; line-height: 1.2; }
+  .recipe-sheet--compact .recipe-sheet__heading > .recipe-print-action { margin-top: 0; }
+  .recipe-sheet--compact .recipe-sheet__workspace { grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 1.25rem; margin: .75rem 0; }
+  .recipe-sheet--compact .recipe-sheet__art figure { padding: 0; border: 0; background: transparent; }
+  .recipe-sheet--compact .recipe-sheet__enlarge { display: grid; width: 100%; gap: .25rem; padding: .25rem; background: white; border: 1px solid var(--theme-border); border-radius: .75rem; color: var(--interactive-primary); font: inherit; cursor: zoom-in; }
+  .recipe-sheet--compact .recipe-sheet__enlarge span { font-size: 1rem; line-height: 1.35; text-decoration: underline; text-underline-offset: .15em; }
+  .recipe-sheet--compact .recipe-sheet__workspace .recipe-sheet__art img { display: block; width: 100%; height: clamp(280px, 44.3vh, 360px); max-height: none; object-fit: contain; }
+  .recipe-sheet--compact .recipe-sheet__steps { padding-left: 1.5rem; }
+  .recipe-sheet--compact .recipe-sheet__steps > li { padding: .5rem .25rem; line-height: 1.45; }
+  .recipe-sheet--compact .recipe-sheet__steps > li::marker { color: var(--text-secondary); }
+  .recipe-sheet--compact .recipe-sheet__workspace .recipe-sheet__quick-colors { margin: .25rem 0 0; }
+  .recipe-sheet--compact .recipe-sheet__quick-colors a { font-size: 1rem; padding: .125rem .5rem; }
+  .recipe-sheet--compact .recipe-sheet__mixing { margin-top: .5rem; padding: .625rem .75rem; background: var(--theme-primary-soft); }
+  .recipe-sheet--compact .recipe-sheet__mixing h2 { font-size: 1.125rem; margin: 0 0 .25rem; }
+  .recipe-sheet--compact .recipe-sheet__mixing > p { margin: 0 0 .5rem; font-size: 1rem; color: var(--text-secondary); }
+  .recipe-sheet--compact .recipe-sheet__mixing ul { grid-template-columns: repeat(3,minmax(0,1fr)); gap: .75rem; margin: 0; }
+  .recipe-sheet--compact .recipe-sheet__mixing li div { font-size: 1rem; line-height: 1.4; gap: .125rem; }
+  .recipe-sheet--compact footer { margin: .5rem 0 0; font-size: 1rem; color: var(--text-secondary); }
+  .recipe-sheet--compact footer p { margin: 0; }
+  .recipe-sheet--compact > .recipe-sheet__tools { margin-top: .25rem; }
+  .recipe-art-dialog.recipe-art-dialog h2 { font-size: 1.5rem; margin: 0 3rem .75rem 0; }
+  .recipe-art-dialog.recipe-art-dialog img { display: block; width: 100%; height: auto; max-height: calc(100dvh - 160px); object-fit: contain; background: white; }
+  @media (max-width: 600px) {
+    .recipe-sheet.recipe-sheet--compact { padding: .5rem; }
+    .recipe-sheet--compact .recipe-sheet__heading { flex-wrap: wrap; }
+    .recipe-sheet--compact .recipe-sheet__workspace { grid-template-columns: minmax(0,1fr); }
+    .recipe-sheet--compact .recipe-sheet__mixing ul { grid-template-columns: minmax(0,1fr); }
+  }
+}

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" preserveAspectRatio="none">
+<defs>
+ <filter id="bloom" x="-30%" y="-30%" width="160%" height="160%"><feTurbulence type="fractalNoise" baseFrequency=".018 .026" numOctaves="3" seed="23" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="48" xChannelSelector="R" yChannelSelector="G"/><feGaussianBlur stdDeviation="2"/></filter>
+ <radialGradient id="sage"><stop stop-color="#72947c" stop-opacity=".27"/><stop offset=".72" stop-color="#90ad91" stop-opacity=".18"/><stop offset=".93" stop-color="#63866d" stop-opacity=".23"/><stop offset="1" stop-color="#90ad91" stop-opacity="0"/></radialGradient>
+ <radialGradient id="gold"><stop stop-color="#e0ad40" stop-opacity=".18"/><stop offset=".8" stop-color="#e0ad40" stop-opacity=".1"/><stop offset=".94" stop-color="#b98c38" stop-opacity=".19"/><stop offset="1" stop-color="#e0ad40" stop-opacity="0"/></radialGradient>
+ <radialGradient id="coral"><stop stop-color="#d97666" stop-opacity=".18"/><stop offset=".85" stop-color="#d97666" stop-opacity=".08"/><stop offset=".96" stop-color="#b76757" stop-opacity=".17"/><stop offset="1" stop-color="#d97666" stop-opacity="0"/></radialGradient>
+</defs>
+<g filter="url(#bloom)"><ellipse cx="28" cy="110" rx="340" ry="295" fill="url(#sage)"/><ellipse cx="1170" cy="700" rx="300" ry="370" fill="url(#sage)"/><ellipse cx="1060" cy="45" rx="300" ry="160" fill="url(#gold)"/><ellipse cx="70" cy="835" rx="260" ry="200" fill="url(#coral)"/><ellipse cx="120" cy="270" rx="160" ry="130" fill="url(#sage)"/></g>
+</svg>

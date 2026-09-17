@@ -16,6 +16,7 @@ import { StartPaintingLink, StudioDialog, StudioConfirmationProvider } from "./s
 import { PaintingSessions, StudioSettings } from "./studio-pages";
 import { AppNav } from "./navigation";
 import { WatercolorLesson } from "./watercolor-lesson";
+import { DesignSystem } from "./design-system";
 import { LessonAssembly, LessonCreator, LessonEditor, LessonTargetReview, SavedLessonLibrary, SavedLessonView } from "./lesson-workflow";
 
 const STUDY_LENSES: Record<StyleGuideSlug, { notice: string; start: string; check: string }> = {
@@ -92,10 +93,9 @@ export function StyleGuideGallery() {
     <>
       <header className="style-guide-hero style-guide-hero--compact">
         <div>
-          <p className="eyebrow">Follow your curiosity</p>
-          <h1>What will you make today?</h1>
+          <h1>Choose a painting</h1>
           <p className="lede">
-            Find something that catches your eye. Try a new style. See where it takes you.
+            Choose a subject and a style.
           </p>
           <StartPaintingLink />
         </div>
@@ -194,7 +194,6 @@ export function StyleGuideGallery() {
           decoding="async"
         />
         <div>
-          <p className="eyebrow">NEW · EMOTIONAL SPACE GALLERY</p>
           <h2 id="feeling-first-card-title">One premise. Five feelings.</h2>
           <p>Move from sadness to joy through five completely different celestial interpretations. See how setting, viewpoint, light, and subject change what an image feels like.</p>
           <Link className="button-link" to="/?view=feeling-first&emotion=pensive">Explore the gallery →</Link>
@@ -335,6 +334,7 @@ function StudioPage() {
     if (view === "guide" && !guide) setSearchParams({ view: "guide", style: STYLE_GUIDE_ENTRIES[0].slug }, { replace: true });
   }, [guide, setSearchParams, view]);
   if (view === "guide" && guide) return <StyleGuideDetail entry={guide} />;
+  if (view === "design-system") return <DesignSystem />;
   if (view === "feeling-first") return <FeelingFirstStudy />;
   if (view === "color-study") return <ColorStudy />;
   if (view === "sessions") return <PaintingSessions />;
@@ -355,7 +355,7 @@ function StudioShell() {
   const background = (location.state as { background?: Location } | null)?.background;
   const pageLocation = modal ? background || { ...location, search: "", state: null } : location;
   function close() { if (background) navigate(background.pathname + background.search, { replace: true }); else navigate("/?view=sessions", { replace: true }); }
-  return <div className="site-shell"><a className="skip-link" href="#main-content">Skip to the artwork</a>
+  return <div className="site-shell studio-aligned"><a className="skip-link" href="#main-content">Skip to the artwork</a>
     <Routes location={pageLocation}><Route path="*" element={<><AppNav /><main id="main-content"><StudioPage /></main></>} /></Routes>
     <footer className="site-footer"><span>Wanderline</span><p>Look closely. Choose boldly. Make it yours.</p><Link to="/?view=settings">Studio settings</Link></footer>
     <StudioDialog open={modal} onClose={close} wide={view !== "lesson-create"}>

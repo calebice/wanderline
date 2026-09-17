@@ -29,6 +29,11 @@ Last reviewed: 2026-09-10
 
 ## Read for visual or generated-artifact work
 
+- `docs/DESIGN_SYSTEM.md` for application UX, styling, and interface copy; inspect the live
+  `?view=design-system` reference. This is separate from the artwork teaching style guides.
+  Shared production styling lives in `apps/web/src/garden-application.css`; its responsive
+  and protected-selector checks live in `apps/web/e2e/garden-adoption.spec.ts`.
+- `docs/UI_REGRESSIONS.md` for permanent UI invariants
 - The relevant review document
 - The relevant style-guide or prompt record
 - `docs/PROJECT_STATE.md` for approval and revision state
