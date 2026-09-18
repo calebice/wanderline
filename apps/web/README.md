@@ -1,10 +1,16 @@
-# Wanderline Style Studio
+# Wanderline web
 
-A static, Sites-native reference studio for exploring how subject, drawing language, and composition change an image. The production app contains three source-controlled experiences:
+React/Vite frontend using query-based views for Explore, teaching guides, Feeling First,
+Color Study, painting sessions, lesson creation and review, watercolor lessons, and settings.
+Curated artwork is local; saved lessons and generation use the API.
 
-- A 5 × 5 subject and style comparison at `/`
-- Five long-form teaching guides at `/?view=guide&style=realism`
-- Feeling First at `/?view=feeling-first&emotion=pensive`
+## Application design reference
+
+Read [the Garden Studio contract](../../docs/DESIGN_SYSTEM.md) for interface design and copy.
+Run `npm --prefix apps/web run dev -- --host 127.0.0.1 --port 4173` from the repository root,
+then open [the live reference](http://localhost:4173/?view=design-system). It uses local examples
+and is intentionally absent from everyday navigation. It is the approved reference for
+application-wide reuse; preserve its documented protected exceptions.
 
 ## Local checks
 
@@ -18,4 +24,4 @@ npm run check:static
 npm run test:e2e
 ```
 
-The Sites manifest is in `.openai/hosting.json`; Vite writes the static deployment to `dist`.
+Vite writes the frontend build to `dist`.

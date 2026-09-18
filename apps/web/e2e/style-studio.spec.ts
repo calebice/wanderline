@@ -108,7 +108,7 @@ test("root restores and updates a shareable comparison", async ({ page }) => {
   const requests: string[] = [];
   page.on("request", (request) => requests.push(request.url()));
   await page.goto("/?subject=bouquet&style=watercolor");
-  await expect(page.getByRole("heading", { name: "What will you make today?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Choose a painting" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Bouquets & vessels/ })).toHaveAttribute("aria-pressed", "true");
   const styles = page.getByRole("group", { name: /Choose a style/ });
   await expect(styles.getByRole("button", { name: /Watercolor/ })).toHaveAttribute("aria-pressed", "true");
@@ -279,7 +279,7 @@ for (const viewport of [
   test(`${viewport.name} layout has no horizontal clipping`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport);
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: "What will you make today?" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Choose a painting" })).toBeVisible();
     await expectNoHorizontalOverflow(page);
     await page.goto("/?view=guide&style=anime-environment");
     await expect(page.getByRole("heading", { name: "Anime environment", level: 1 })).toBeVisible();

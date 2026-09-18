@@ -254,6 +254,9 @@ Use UUID primary keys and UTC timestamps.
 
 ## UX requirements
 
+- For application UI and copy work, read `docs/DESIGN_SYSTEM.md` and inspect the live
+  `?view=design-system` reference. Revision 04 is approved for application-wide reuse. Preserve the Feeling First selector and frozen recipe.
+  Reuse approved patterns; obtain owner approval before introducing a new pattern or departure.
 - Desktop-first but responsive
 - Keyboard-accessible controls
 - Avoid a cluttered professional-art-tool interface

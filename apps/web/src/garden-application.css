@@ -1,0 +1,55 @@
+/* Approved Garden Studio application layer. Keep feature layout and art data intact.
+   Feeling First's complete selector and frozen Simple Recipe/print are explicit exceptions. */
+@media screen {
+body:has(.studio-aligned) { background-image: url('./textures/paper.svg'); }
+.studio-aligned { --garden-action-fill: var(--theme-primary-soft); --garden-action-hover: #c7dacd; }
+
+.studio-aligned :is(button, .button-link):not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { color: var(--interactive-primary); background: var(--surface-panel); border: 1px solid var(--interactive-primary); border-radius: .4rem .65rem .45rem .6rem; box-shadow: none; min-height: 44px; min-width: 0; overflow-wrap: anywhere; transition: background-color 160ms, border-color 160ms; }
+
+.studio-aligned :is(.button-link, button[type="submit"], button.is-selected, button[aria-pressed="true"], .creator-basics > button, .creator-submit > button):not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { color: var(--interactive-primary); background: var(--garden-action-fill) url('./textures/paper.svg'); box-shadow: inset 0 -3px var(--interactive-primary); }
+
+.studio-aligned :is(button.is-selected, button[aria-pressed="true"]):not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { text-decoration: underline; text-underline-offset: .22em; }
+
+.studio-aligned :is(button,.button-link):not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)):hover:not(:disabled) { background-color: var(--garden-action-hover); color: var(--interactive-primary); }
+
+.studio-aligned button:not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)):disabled { opacity: 1; color: var(--text-secondary); background: var(--surface-page); border-color: var(--garden-border-control); box-shadow: none; }
+
+.studio-aligned :is(input:not([type="range"]):not([type="checkbox"]):not([type="radio"]):not([type="file"]),textarea,select):not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { min-height: 44px; background: var(--surface-panel); color: var(--text-primary); border: 0; border-bottom: 2px solid var(--garden-border-control); border-radius: .3rem; }
+
+.studio-aligned :is(h1,h2,h3):not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { line-height: 1.2; }
+
+.studio-aligned h1:not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { font-size: clamp(1.5rem,2vw,1.75rem); margin: .5rem 0; }
+
+.studio-aligned h2:not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { font-size: clamp(1.125rem,1.6vw,1.375rem); }
+
+.studio-aligned h3:not(:where(.recipe-sheet *, .tracing-print-dialog *, .tracing-print *, .emotion-gallery__selector *, .design-reference *)) { font-size: 1.125rem; }
+
+.studio-aligned :is(.style-guide-hero--compact,.style-guide-detail__header,.watercolor-lesson__header,.checkpoint-lesson__header,.studio-page-heading) { padding-block: .5rem; margin-bottom: 1rem; gap: 1rem; }
+.studio-aligned :is(.style-guide-hero--compact,.studio-page-heading) p { margin-block: .5rem; }
+.studio-aligned .style-guide-hero--compact .button-link { margin-top: .5rem; }
+.studio-aligned .lede { font-size: 1rem; }
+.studio-aligned :is(.studio-empty,.session-invitation,.usage-explainer,.starter-session,.studio-guide-details,.lesson-creator,.lesson-target-review,.lesson-assembly) { padding: 1rem; border: 1px solid var(--theme-border); border-radius: 1rem; box-shadow: none; background: var(--surface-panel); }
+.studio-aligned :is(.starter-session,.session-grid) { gap: 1rem; }
+.studio-aligned .session-card > div:not(.session-card__blank) { padding: 1rem; }
+.studio-aligned .usage-summary article { padding: 1rem; }
+.studio-aligned .usage-summary strong { font-size: 1.75rem; }
+.studio-aligned .color-study { background: transparent; padding: .5rem 0 1.5rem; }
+.studio-aligned .style-reference-workspace aside { padding: 1rem; }
+.studio-aligned .watercolor-lesson__header { grid-template-columns: minmax(0,1fr); }
+.studio-aligned .watercolor-lesson__header aside { background: var(--surface-panel); padding: 1rem; border-radius: 1rem; }
+.studio-aligned .watercolor-lesson__header .text-link { margin-bottom: .5rem; }
+.studio-aligned .app-nav > div > .button-link { color: var(--interactive-primary); }
+.studio-aligned .app-nav a.is-active { text-decoration: underline; text-underline-offset: .22em; }
+.studio-dialog.studio-aligned, .studio-aligned .studio-dialog:not(.recipe-sheet *) { background: var(--surface-panel) url('./textures/paper.svg'); }
+.studio-aligned .studio-dialog :is(.lesson-creator,.lesson-target-review,.lesson-assembly) { border: 0; background: transparent; padding: 0; }
+.studio-aligned .studio-dialog header { margin-bottom: 1rem; }
+.studio-aligned .studio-dialog h1 { margin-right: 3rem; }
+.studio-aligned .style-reference-styles button strong { min-width: 0; overflow-wrap: anywhere; }
+.studio-aligned .checkpoint-lesson__rail strong { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+/* Decorative surfaces stay off text; artwork, swatches, wheel, and range tracks retain data colors. */
+.studio-aligned .style-reference-subjects button { padding: 0; min-width: 0; grid-template-columns: minmax(0,1fr); grid-template-rows: 56px auto; }
+.studio-aligned .style-reference-subjects button img { width: 100%; height: 56px; }
+.studio-aligned .style-reference-subjects button :is(span,strong) { min-width: 0; overflow-wrap: anywhere; }
+.studio-aligned :is(.lesson-error,[role="alert"]) { border-left: 3px solid var(--garden-error); }
+@media (prefers-reduced-motion: reduce) { .studio-aligned :is(button,.button-link) { transition: none; } }
+}

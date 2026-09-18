@@ -6,7 +6,7 @@ export function StartPaintingLink({ children = "Start painting", className = "bu
   return <Link className={className} to="/?view=lesson-create" state={{ background: location }}>{children}</Link>;
 }
 
-export function StudioDialog({ open, onClose, children, wide = false, label = "Start a painting session" }: { open: boolean; onClose: () => void; children: ReactNode; wide?: boolean; label?: string }) {
+export function StudioDialog({ open, onClose, children, wide = false, label = "Start a painting session", className = "" }: { open: boolean; onClose: () => void; children: ReactNode; wide?: boolean; label?: string; className?: string }) {
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const dialog = ref.current;
@@ -17,7 +17,7 @@ export function StudioDialog({ open, onClose, children, wide = false, label = "S
     document.body.style.overflow = "hidden";
     return () => { dialog.close(); document.body.style.overflow = overflow; previous?.focus(); };
   }, [open]);
-  return <dialog ref={ref} className={`studio-dialog${wide ? " studio-dialog--wide" : ""}`} aria-label={label} onKeyDown={(event) => {
+  return <dialog ref={ref} className={`studio-dialog${wide ? " studio-dialog--wide" : ""}${className ? ` ${className}` : ""}`} aria-label={label} onKeyDown={(event) => {
     if (event.key !== "Tab") return;
     const dialog = ref.current;
     const controls = Array.from(dialog?.querySelectorAll<HTMLElement>('a[href], button:not(:disabled), input:not(:disabled), textarea:not(:disabled), select:not(:disabled), summary, [tabindex="0"]') || []).filter((element) => element.getClientRects().length > 0);
@@ -37,7 +37,7 @@ export function StudioConfirmationProvider({ children }: { children: ReactNode }
   const [confirmation, setConfirmation] = useState<Confirmation | null>(null);
   const ask = useCallback((message: string) => new Promise<boolean>((resolve) => setConfirmation({ message, resolve })), []);
   function finish(value: boolean) { confirmation?.resolve(value); setConfirmation(null); }
-  return <ConfirmationContext.Provider value={ask}>{children}<StudioDialog open={Boolean(confirmation)} onClose={() => finish(false)} label="Review this change"><h2>A small pause before we change things.</h2><p>{confirmation?.message}</p><div className="studio-actions"><button type="button" className="button-secondary" onClick={() => finish(false)}>Keep this version</button><button type="button" onClick={() => finish(true)}>Continue</button></div></StudioDialog></ConfirmationContext.Provider>;
+  return <ConfirmationContext.Provider value={ask}>{children}<StudioDialog open={Boolean(confirmation)} onClose={() => finish(false)} label="Review this change" className="studio-aligned"><h2>Review this change</h2><p>{confirmation?.message}</p><div className="studio-actions"><button type="button" className="button-secondary" onClick={() => finish(false)}>Keep this version</button><button type="button" onClick={() => finish(true)}>Continue</button></div></StudioDialog></ConfirmationContext.Provider>;
 }
 
 // These hooks share the dialog's context and navigation state.

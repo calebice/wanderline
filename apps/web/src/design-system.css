@@ -1,0 +1,197 @@
+.design-reference { font: 1rem/1.6 var(--garden-font-body); color: var(--text-primary); overflow-wrap: anywhere; }
+.design-reference :where(h1,h2,h3,p,figure,dl) { margin-top: 0; }
+.design-reference *, .design-reference *::before, .design-reference *::after { min-width: 0; }
+.design-reference :where(h1,h2,h3,p,a,button,code,dd,dt) { overflow-wrap: anywhere; }
+.design-masthead { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,.85fr); align-items: center; gap: 2rem; padding: 3rem 1rem; }
+.design-reference .design-masthead h1 { margin: 1rem 0 1.5rem; font-size: 1rem; font-family: var(--garden-font-body); font-weight: 650; letter-spacing: 0; }
+.design-masthead h1 span { display: block; margin-top: 1rem; font: 500 clamp(3rem, 5.5vw, 5rem)/1.05 var(--garden-font-display); letter-spacing: -.04em; }
+.design-masthead > div > p:last-child { margin: 0; color: var(--text-secondary); font-size: 1.125rem; }
+.design-pigment-study { position: relative; height: 300px; isolation: isolate; overflow: clip; }
+.design-pigment-study i { position: absolute; border-radius: 44% 56% 62% 38% / 48% 54% 46% 52%; }
+.design-pigment-study i:first-child { inset: 5% 10% 10% 20%; background: var(--theme-primary-soft); transform: rotate(-14deg); }
+.design-pigment-study i:nth-child(2) { inset: 33% 36% 5% 0; background: var(--theme-accent); opacity: .8; transform: rotate(20deg); }
+.design-pigment-study i:nth-child(3) { inset: 5% 0 42% 57%; background: var(--theme-highlight); opacity: .85; transform: rotate(-16deg); }
+.design-pigment-study span { position: absolute; inset: 0; display: grid; place-content: center; font: italic 1.7rem var(--garden-font-display); color: var(--theme-ink); transform: rotate(-9deg); }
+.design-review-note { display: flex; gap: 1rem; flex-wrap: wrap; align-items: baseline; border-block: 1px solid var(--theme-border); padding: 1rem; }
+.design-review-note > span { font-size: .8rem; font-weight: 750; color: var(--theme-accent-strong); }
+.design-review-note p { margin: 0; color: var(--text-secondary); font-size: .875rem; }
+.design-index { display: flex; flex-wrap: wrap; gap: .5rem 2rem; padding: 1rem; }
+.design-index a { display: inline-flex; align-items: center; min-height: 44px; color: var(--interactive-primary); font-size: .875rem; font-weight: 650; text-underline-offset: .25em; }
+.design-section { padding: 3.5rem 0; border-bottom: 1px solid var(--theme-border); scroll-margin-top: 1rem; }
+.design-section__label { margin-bottom: 2rem; max-width: 65ch; }
+.design-section__label > span { color: var(--text-secondary); font-size: .75rem; font-weight: 750; text-transform: uppercase; letter-spacing: .1em; }
+.design-section__label h2 { margin: .75rem 0; }
+.design-section__label p { margin: 0; color: var(--text-secondary); }
+.design-palette { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 1rem; }
+.design-palette > div { display: grid; align-content: start; gap: .5rem; }
+.design-palette__paint { display: block; width: 100%; height: 90px; border: 1px solid var(--theme-border); border-radius: var(--garden-radius-pigment); background: var(--paint); }
+.design-palette small { color: var(--text-secondary); }
+.design-palette code { font-size: .7rem; color: var(--text-secondary); }
+.design-type-grid, .design-voice-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2rem; margin-top: 3rem; }
+.design-type-grid article { border-top: 1px solid var(--theme-border); padding-top: 1.5rem; }
+.design-type-specimen { font: 500 clamp(2rem,3.5vw,3rem)/1.15 var(--garden-font-display); margin-bottom: 1rem; }
+.design-body-specimen { font-size: 1.25rem; line-height: 1.6; max-width: 36ch; }
+.design-type-grid article > p:last-child { color: var(--text-secondary); font-size: .875rem; }
+.design-rules { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 1.5rem; padding: 1.5rem; margin: 2rem 0 0; background: var(--theme-primary-soft); border-radius: var(--garden-radius-panel); }
+.design-rules dt { font-weight: 750; margin-bottom: .5rem; }
+.design-rules dd { margin: 0; font-size: .875rem; }
+.design-example-note { max-width: 80ch; margin: 1rem 0 1.5rem; color: var(--text-secondary); font-size: .875rem; }
+.design-example-frame { border: 1px solid var(--theme-border); border-radius: var(--garden-radius-frame); background: var(--surface-panel); padding: clamp(1rem, 2.5vw, 2rem); box-shadow: var(--garden-shadow-panel); }
+.garden-page-example { display: grid; gap: 1.5rem; }
+.garden-page-example > .garden-heading { margin: 0; }
+.garden-art-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,14rem),1fr)); gap: 1.5rem; }
+.garden-art-card.garden-art-card { display: grid; align-content: start; padding: 0; border: 0; border-radius: 0; background: transparent; color: var(--text-primary); font-weight: 400; text-align: left; }
+.garden-art-card img { width: 100%; aspect-ratio: 3/2; object-fit: cover; border-radius: var(--garden-radius-control); }
+.garden-art-card > span { display: grid; gap: .25rem; padding-top: .5rem; }
+.garden-art-card strong { font: 600 1.5rem/1.2 var(--garden-font-display); }
+.garden-art-card > span > span { font-size: .875rem; color: var(--interactive-primary); }
+.garden-art-card:hover strong { text-decoration: underline; text-underline-offset: .2em; }
+.garden-art-stage__controls { position: sticky; top: .5rem; z-index: 1; padding: .75rem; background: var(--surface-panel); border: 1px solid var(--theme-border); border-radius: var(--garden-radius-control); margin-bottom: .75rem; }
+.garden-art-stage figure { margin: 0; background: var(--garden-stage); color: var(--garden-stage-text); border-radius: var(--garden-radius-panel); }
+.garden-art-stage img { display: block; width: 100%; height: auto; max-height: 65vh; object-fit: contain; border-radius: var(--garden-radius-panel) var(--garden-radius-panel) 0 0; }
+.garden-art-stage figcaption { padding: 1.5rem; }
+.garden-art-stage h3 { margin: 0 0 .5rem; font-size: 1.75rem; }
+.garden-art-stage figcaption p { max-width: 60ch; margin: 0; color: var(--garden-stage-muted); }
+.garden-session-example { display: grid; grid-template-columns: minmax(0,.7fr) minmax(0,1fr); align-items: center; gap: 2rem; }
+.garden-session-example img { width: 100%; max-height: 300px; object-fit: contain; background: white; border-radius: var(--garden-radius-control); }
+.garden-session-example h3 { font-size: 2rem; margin: .5rem 0; }
+.garden-form-example { max-width: 40rem; width: 100%; margin-inline: auto; }
+.garden-form-example form { display: grid; gap: 1.5rem; }
+.garden-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-block: 1rem; }
+.garden-small { font-size: .875rem; color: var(--text-secondary); }
+.garden-metrics { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1.5rem; border-block: 1px solid var(--theme-border); padding-block: 1.5rem; }
+.garden-metrics strong { display: block; font: 600 2.5rem/1.4 var(--garden-font-display); }
+.garden-table { max-width: 100%; overflow-x: auto; }
+.garden-table table { width: 100%; border-collapse: collapse; text-align: left; }
+.garden-table caption { text-align: left; font-size: .875rem; color: var(--text-secondary); padding-bottom: 1rem; }
+.garden-table :is(th,td) { padding: .75rem; border-bottom: 1px solid var(--theme-border); overflow-wrap: anywhere; }
+.design-component-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 2rem; }
+.design-component-grid > article { padding: 1.5rem; background: var(--surface-panel); border: 1px solid var(--theme-border); border-radius: var(--garden-radius-panel); }
+.design-component-grid h3 { font-size: 1.5rem; }
+.design-component-grid .garden-field + .garden-field, .design-component-grid .garden-notice { margin-top: 1.5rem; }
+.design-voice-grid article { padding: 2rem; border-radius: var(--garden-radius-panel); background: var(--theme-primary-soft); }
+.design-voice-grid .design-avoid { background: var(--theme-accent-soft); }
+.design-verdict { display: block; color: var(--text-primary); font-size: .75rem; font-weight: 750; text-transform: uppercase; letter-spacing: .1em; margin-bottom: 1.5rem; }
+.design-voice-grid h3 { font-size: 1.75rem; margin-bottom: .75rem; }
+.design-copy-action { font-weight: 750; color: var(--interactive-primary); }
+.design-voice-grid ul { margin: 1.5rem 0 0; padding-left: 1.25rem; font-size: .875rem; }
+.design-copy-table { margin-top: 2rem; }
+.design-copy-table > div { display: grid; grid-template-columns: minmax(0, .25fr) minmax(0,1fr); gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--theme-border); }
+.design-boundary { max-width: 75ch; margin-top: 2rem; }
+.design-boundary h3 { font-size: 1.5rem; }
+.design-boundary p { color: var(--text-secondary); }
+/* Compact reference chrome. Texture is in the background, never above text. */
+.design-reference .design-masthead { grid-template-columns: minmax(0,1fr) 160px; padding: .75rem 0; gap: 1rem; }
+.design-reference .design-masthead h1 { font: 600 1.75rem/1.2 var(--garden-font-display); margin: 0; }
+.design-reference .design-masthead > div > p:last-child { font-size: 1rem; margin: .25rem 0 0; }
+.design-reference .design-pigment-study { height: 72px; width: 160px; }
+.design-reference .design-pigment-study i { mask: url('./textures/wash.svg') center / 100% 100% no-repeat; border-radius: 0; }
+.design-reference .design-review-note { padding: .5rem 0; }
+.design-reference .design-index { padding: .25rem 0; gap: .5rem 1.5rem; }
+.design-reference .design-section { padding-block: 1.5rem; }
+.design-reference .design-section__label { margin-bottom: .75rem; max-width: none; }
+.design-reference .design-section__label > span { display: none; }
+.design-reference .design-section__label h2 { margin: 0 0 .25rem; font-size: 1.25rem; line-height: 1.2; }
+.design-reference .design-section__label p { font-size: 1rem; }
+.design-reference .design-example-note { margin: .5rem 0; font-size: 1rem; }
+.design-reference .design-example-frame { padding: .75rem; scroll-margin-top: 12px; box-shadow: none; background-image: url('./textures/paper.svg'); }
+.design-reference .design-example-frame:has(.recipe-sheet--compact) { padding: 0; }
+.design-reference .design-palette__paint { background-image: url('./textures/paper.svg'); mask: url('./textures/wash.svg') center / 100% 100% no-repeat; border-radius: 0; }
+.design-reference .design-type-grid, .design-reference .design-voice-grid { margin-top: 1.5rem; gap: 1.25rem; }
+.design-reference .design-type-specimen { font-size: 1.5rem; margin-bottom: .5rem; }
+.design-reference .design-body-specimen { font-size: 1rem; }
+.design-reference .design-rules { margin-top: 1rem; padding: 1rem; }
+.design-reference .garden-page-example { gap: 1rem; }
+.design-reference .garden-art-card strong, .design-reference .garden-session-example h3, .design-reference .garden-art-stage h3 { font-size: 1.25rem; }
+.design-reference .garden-metrics strong { font-size: 1.75rem; }
+.design-reference .garden-form-example { padding: 1rem; border-radius: var(--garden-radius-panel); background-image: url('./textures/paper.svg'), radial-gradient(ellipse at 100% 0%, var(--theme-highlight-soft), transparent 65%); }
+.design-reference .design-component-grid h3, .design-reference .design-voice-grid h3, .design-reference .design-boundary h3 { font-size: 1.25rem; }
+.design-reference .design-component-grid > article, .design-reference .design-rules, .design-reference .design-voice-grid article { background-image: url('./textures/paper.svg'); }
+.design-reference .design-voice-grid article { padding: 1rem; }
+.design-reference .design-verdict { margin-bottom: .5rem; }
+@media (max-width: 960px) {
+  .design-palette { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .design-rules { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 720px) {
+  .design-masthead { grid-template-columns: minmax(0,1fr); padding: 1.5rem 0; gap: 0; }
+  .design-pigment-study { height: 160px; width: min(100%, 300px); justify-self: end; }
+  .design-masthead h1 span { font-size: 3rem; }
+  .design-section { padding-block: 2rem; }
+  .design-type-grid, .design-voice-grid, .design-component-grid, .garden-art-grid, .garden-session-example { grid-template-columns: minmax(0,1fr); }
+  .design-palette { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .design-rules, .garden-metrics { grid-template-columns: minmax(0,1fr); }
+  .design-copy-table > div { grid-template-columns: minmax(0,1fr); gap: .5rem; }
+  .garden-art-grid { gap: 2rem; }
+  .garden-art-stage__controls { position: static; }
+}
+
+/* Revision 03: shared edge washes leave the center of each working sheet clear. */
+body:has(.design-reference) { background-color: var(--surface-page); background-image: url('./textures/paper.svg'), url('./textures/painted-paper.svg'); background-size: auto, 100% 100vh; background-attachment: fixed; }
+.design-reference .design-example-frame,
+.design-reference .design-component-grid > article,
+.design-reference .garden-form-example { background-color: var(--surface-panel); background-image: url('./textures/paper.svg'), url('./textures/painted-paper.svg'); background-size: auto, 100% 100%; }
+.design-reference .garden-form-example { border-radius: 1rem .8rem 1.2rem .65rem / .7rem 1.1rem .8rem 1rem; }
+
+/* Review-only alternatives: identical content, isolated from revision 03 decoration. */
+body:has(.material-comparison) { background-image: url('./textures/paper.svg'); background-size: auto; }
+.material-comparison__grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 1.5rem; }
+.material-comparison__grid > article > h3 { font-size: 1.25rem; margin-bottom: .5rem; }
+.material-comparison__grid > article > p { min-height: 3.2em; color: var(--text-secondary); }
+.design-reference .material-sample, .garden-dialog.material-sample { padding: 1.25rem; background-color: var(--surface-panel); border: 1px solid var(--theme-border); border-radius: 1rem; }
+.design-reference .material-sample--paper, .garden-dialog.material-sample--paper { background-image: url('./textures/paper.svg'), radial-gradient(ellipse at 0 15%, #73978312, transparent 35%); background-size: auto, 100% 100%; }
+.design-reference .material-sample--wash, .garden-dialog.material-sample--wash { background-image: url('./textures/paper.svg'), url('./textures/continuous-wash.svg'); background-size: auto, 100% 100%; }
+.material-sample figure { margin: .75rem 0; }
+.material-sample figure img { display: block; height: 230px; width: 100%; object-fit: contain; }
+.material-sample figcaption { margin-top: .5rem; font-size: 1rem; }
+.material-sample .garden-action.garden-action--secondary { background-color: var(--surface-panel); background-image: url('./textures/paper.svg'); }
+.material-sample .garden-heading::before, .material-sample .garden-heading::after { content: none; }
+.material-sample .garden-heading { background: none; }
+@media (max-width: 700px) { .material-comparison__grid { grid-template-columns: minmax(0,1fr); } .material-comparison__grid > article > p { min-height: 0; } }
+
+/* Control studies are isolated proposals on the preferred A paper surface. */
+.control-comparison__grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 1rem; }
+.control-study { padding: 1.25rem; border: 1px solid var(--theme-border); border-radius: 1rem; background: var(--surface-panel) url('./textures/paper.svg'); }
+.control-study h3 { font-size: 1.25rem; margin-bottom: .5rem; }
+.control-study__note { color: var(--text-secondary); min-height: 5em; }
+.control-study__controls { display: grid; gap: 1rem; }
+.control-study__label { font-weight: 650; }
+.control-study .garden-actions { margin: -.5rem 0 0; gap: .5rem; }
+.control-study .garden-action.garden-action--secondary:not([aria-pressed="true"]) { background: var(--surface-panel) url('./textures/paper.svg'); }
+.control-study .garden-field :is(input,select) { background: var(--surface-panel); }
+.control-study--paint .garden-field :is(input,select) { border-radius: .65rem .85rem .6rem .75rem; }
+.control-study--edge .garden-action.garden-action:not(.garden-action--quiet) { border-radius: .4rem .65rem .45rem .6rem; background: var(--surface-panel); color: var(--interactive-primary); box-shadow: none; border: 1px solid var(--interactive-primary); }
+.control-study--edge .garden-action.garden-action--primary,
+.control-study--edge .garden-action.garden-action[aria-pressed="true"] { background: var(--theme-primary-soft) url('./textures/paper.svg'); box-shadow: inset 0 -3px var(--interactive-primary); }
+.control-study--edge .garden-action.garden-action:hover:not(:disabled):not(.garden-action--quiet) { background-color: #c7dacd; }
+.control-study--edge .garden-field :is(input,select) { border-radius: .3rem; border-width: 0 0 2px; }
+.control-study--ink .garden-action.garden-action { border-radius: .375rem; background-image: none; box-shadow: none; }
+.control-study--ink .garden-action.garden-action::before { content: none; }
+.control-study--ink .garden-action.garden-action--secondary:not([aria-pressed="true"]) { background-image: none; }
+.control-study--ink .garden-field :is(input,select) { border-radius: .375rem; }
+.control-study--edge .garden-action.garden-action:disabled { color: var(--text-secondary); background: var(--surface-page); border-color: var(--garden-border-control); box-shadow: none; }
+.control-study .garden-action.garden-action:active:not(:disabled) { box-shadow: inset 0 2px 4px #163e3230; }
+@media (max-width: 800px) { .control-comparison__grid { grid-template-columns: minmax(0,1fr); } .control-study__note { min-height: 0; } }
+
+/* Consolidated revision 04. Comparison studies below retain their original treatments. */
+.design-reference .design-masthead { grid-template-columns: minmax(0,1fr); }
+.design-current .design-example-frame,
+.design-current .garden-dialog.garden-dialog { background-color: var(--surface-panel); background-image: url('./textures/paper.svg'), radial-gradient(ellipse at 0 15%, #73978312, transparent 35%); background-size: auto, 100% 100%; }
+.design-current .garden-heading.garden-heading--expressive { padding: .5rem 0; background: transparent; }
+.design-current .garden-heading--expressive::before,
+.design-current .garden-heading--expressive::after { content: none; }
+.design-current .garden-form-example,
+.design-current .garden-dialog .garden-form-example { background: transparent; }
+.design-current .design-component-grid > article { background: var(--surface-panel); }
+.design-current .garden-empty { background: transparent; }
+.design-current .garden-empty .garden-pigment { display: none; }
+.design-current .garden-action.garden-action:not(.garden-action--quiet),
+.design-current .recipe-sheet--compact .recipe-print-action { border-radius: .4rem .65rem .45rem .6rem; background: var(--surface-panel); color: var(--interactive-primary); box-shadow: none; border: 1px solid var(--interactive-primary); }
+.design-current .garden-action.garden-action--primary:not(:disabled),
+.design-current .garden-action.garden-action[aria-pressed="true"],
+.design-current .recipe-sheet--compact .recipe-print-action { background: var(--theme-primary-soft) url('./textures/paper.svg'); box-shadow: inset 0 -3px var(--interactive-primary); }
+.design-current .garden-action.garden-action:hover:not(:disabled):not(.garden-action--quiet),
+.design-current .recipe-sheet--compact .recipe-print-action:hover:not(:disabled) { background-color: #c7dacd; }
+.design-current .garden-action.garden-action:active:not(:disabled) { box-shadow: inset 0 2px 4px #163e3230; }
+.design-current .garden-field :is(input,select) { border-radius: .3rem; border-width: 0 0 2px; }
+.design-current .garden-action.garden-action:disabled { color: var(--text-secondary); background: var(--surface-page); border-color: var(--garden-border-control); box-shadow: none; }

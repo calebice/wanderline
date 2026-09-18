@@ -4,6 +4,7 @@ import { BrowserRouter } from "react-router-dom";
 
 import { StyleStudioApp } from "./style-lab";
 import "./style-studio.css";
+import "./garden-application.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
