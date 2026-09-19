@@ -2,61 +2,57 @@
 
 Status: Current
 Authority: Product requirements
-Last reviewed: 2026-09-09
+Last reviewed: 2026-09-18
 
-## Elevator pitch
+## Product promise
 
-Wanderline is a calm, paper-first drawing studio for true beginners. It invites learners to explore through one approachable 15-minute practice at a time and a four-week fundamentals path. Interactive references and sketch guidance support curiosity without becoming requirements or grades.
+Wanderline is a calm, watercolor-first painting studio. It helps a learner begin or resume a painting,
+turn a photo or idea into an approval-gated painting session, explore authored visual references, and
+remember what worked when mixing color.
 
-## Target users
+The first release is optimized for one local learner while preserving ownership boundaries for future
+identity. Watercolor is the only production medium; domain names and versions must allow later media.
 
-### Primary
+## Primary journey
 
-True beginners who want to draw consistently but do not know what to practice or in what order. The first release is intentionally optimized for one local learner before broad account support.
+1. Open Home and see the active painting session or a dominant **Start painting** action.
+2. Begin from a private photo or supported idea, with calm defaults and optional choices.
+3. Review and explicitly approve the generated target.
+4. Prepare, review, and edit the painting steps.
+5. Paint from the session or Simple Recipe and save it for later.
+6. Use Explore, Feeling First, Color Study, and Color Mixing when seeking direction.
 
-### Secondary
+## Production capabilities
 
-- Hobbyists returning to drawing
-- People who practice traditionally on paper
-- 3D-printing and CAD users who want to draw forms from different angles
-- Users who benefit from short, highly directed practice sessions
+- Action-first Home, recent sessions, and durable session URLs
+- Static authored style references and five teaching guides
+- Frozen Feeling First interaction and canonical lemon watercolor lesson
+- Color Study for local, illustrative color relationships
+- Private photo-to-painting-session workflow with provider-backed generation and retry
+- Saved sessions, optimistic editing, Simple Recipe v1, tracing/print, and usage reporting
+- Versioned Emily Lex color catalog with 36 authored starting recipes
+- Learner-scoped color trials with ordered adjustments, notes, revision, and history
 
-## Core user journey
+Every color recipe must say that screen swatches and directions are illustrative starting points. Do
+not imply guaranteed physical outcomes until paint/paper testing is recorded.
 
-1. Open the dashboard and see one recommended lesson.
-2. Read one visual concept and common mistake.
-3. Practice on paper with a gentle, pausable 15-minute timer.
-4. Mark the level as too easy, right level, or too hard.
-5. Optionally save one short takeaway.
-6. See the next lesson and curriculum milestone without streak pressure.
+## Success criteria
 
-The app recommends the earliest incomplete lesson, but every visible lesson remains available. A too-hard response offers a simpler replay without blocking progress.
+- A learner can start or resume a painting from Home in one clear action.
+- Bookmarked sessions and exploration selections survive the clean-route migration.
+- A generated target is never mistaken for approved guidance.
+- Saved painting sessions and color trials reopen with the version that created them.
+- Empty, loading, failure, phone, tablet, desktop, enlarged-text, and keyboard states remain usable.
+- The stack starts healthily with one Compose command and no browser-held infrastructure credentials.
 
-## MVP success criteria
+## Non-goals
 
-- A new learner can begin the recommended lesson in under one minute.
-- A normal lesson fits into approximately 15 minutes and can be paused, extended, or ended early.
-- The dashboard makes a flexible three-session weekly goal and the current milestone legible.
-- Completion, difficulty, and optional takeaways persist across restarts.
-- The learner can revisit or skip ahead without penalty.
-- Relevant lessons embed a keyboard-accessible 3D reference without requiring a modeling tool.
-- Local deployment requires one documented Compose command.
-- A learner can browse five original interpretations of one setting, move from a finished reference to an attainable version, and follow four written drawing stages without receiving a style score.
-- A learner can start a reusable watercolor lesson from up to six private photographs, review and edit structured guidance, and reopen the saved lesson through the same calm lesson template as the canonical lemon example.
+- Drawing curriculum, generic exercises, progress/talent scoring, or adaptive practice recommendations
+- Sketch critique, image decomposition, or digital drawing exports
+- Production 3D scene/model configuration
+- Full-featured digital painting, accounts/social features, marketplaces, or collaboration
+- Guaranteed color matching or automatic recipes inferred from screen colors
+- Changes to frozen Simple Recipe v1 or the Feeling First selector
 
-## Non-goals for MVP
-
-- Full-featured digital painting
-- Social network or public follower system
-- Marketplace
-- Professional-grade 3D model editing
-- Real-time multiplayer drawing
-- Claims of objective artistic grading
-- Required uploads or automated critique in the guided path
-- Streak penalties, opaque recommendations, or talent scores
-- Accounts, notifications, or social features in the personal-first pilot
-- Automated anatomy diagnosis
-- Automated style grading or imitation of named living artists
-- Generative style matching or runtime generation of guide references
-- Social sharing or collaborative editing of saved photo lessons
-- Training custom machine-learning models
+Drawing-era APIs and persistence have been removed after export; they are not product capabilities.
+See `docs/FEATURE_API_AUDIT.md`.

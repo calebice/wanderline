@@ -2,7 +2,7 @@
 
 Status: Current — revision 04 approved; application styling adopted
 Authority: Approved application UX and visual design contract
-Last reviewed: 2026-09-16
+Last reviewed: 2026-09-18
 
 ## Start here
 
@@ -11,9 +11,9 @@ organic shapes, and an encouraging voice. The frame invites exploration through 
 Titles provide quiet orientation rather than occupying hero sections. **Remove before adding.** Personality must not become extra panels,
 extra prose, or extra steps.
 
-Open the [live reference](http://localhost:4173/?view=design-system) after running
+Open the [live reference](http://localhost:4173/internal/design-system) after running
 `npm --prefix apps/web run dev -- --host 127.0.0.1 --port 4173` from the repository root.
-On another host or base path, append `?view=design-system` to the application URL.
+On another host or base path, append `/internal/design-system` to the application URL.
 The reference is available by direct link, outside everyday navigation. All examples use local
 data and artwork. Its save/retry controls are demonstrations with memory-only state, not API calls.
 
@@ -25,7 +25,8 @@ layout and art data separate from shared control and typography rules.
 **Protected exceptions:** the complete Feeling First selector stays unchanged, including its
 slider, labels, appearance, sticky placement, and artwork scrolling. The frozen Simple Recipe
 v1 presentation, content, assets, and printing also remain unchanged. The compact recipe is an
-opt-in reference example. The color-mixing proposal remains a reference-only feature.
+opt-in reference example. Color mixing uses the approved production composition; the design-system
+instance remains reference-only and never reads or writes learner trials.
 
 ## Identity and foundations
 
@@ -136,9 +137,14 @@ invitation for an exploratory opening, never routine controls, costs, errors, or
 | Error | Your sessions couldn’t load. Try again. | Something went wrong on your creative journey. |
 | Success | Painting saved. | You took another wonderful step on your journey! |
 | Guidance | Let the wash dry before adding the next color. | Pause and embrace the patient rhythm of watercolor. |
+| Destructive | Delete this session forever? This cannot be undone. | Clear it away. |
 
 Do not rewrite frozen/generated lesson content as a copy cleanup. Apply voice rules to application
 chrome. Changes to generated guidance belong to a separately reviewed generation contract.
+
+Discard is reversible and moves a session to the **Discarded** view. Permanent deletion appears only
+there, requires the standard confirmation dialog, and states that images and usage history are also
+removed. Restore remains the quieter alternative.
 
 ## Access and responsive acceptance
 
@@ -166,11 +172,12 @@ chrome. Changes to generated guidance belong to a separately reviewed generation
 
 ## Adoption and future work
 
-### Color construction proposal — pending owner review
+### Color mixing — production-approved composition
 
-The live reference now includes **Color mixing** in Page patterns. This is a layout-only
-proposal with 36 Emily Lex targets and memory-only feedback; it does not enable the
-production feature or change the Simple Recipe contract. Paint names and chart order come
+The live reference includes **Color mixing** in Page patterns, and the approved composition is now
+used by the production `/color-mixing` feature. It has 36 versioned Emily Lex targets with persisted,
+learner-scoped notes and ordered adjustment history. The design-system instance remains an isolated
+reference example so it cannot alter learner data. Paint names and chart order come
 from the owner's supplied 18-color card. Screen colors are illustrative; the sample guidance
 has not been tested with these paints.
 
@@ -196,19 +203,17 @@ spans both shade selection and mixing content so it does not push the instructio
 the current next step remains visible. Selecting the active shade again preserves work; changing
 shade or family resets example adjustments and notes.
 
-Owner review is required for this composition before production implementation. Approval of
-this feature proposal does not imply approval of application-wide Garden Studio migration.
-After approval, the production plan adds reviewed recipes for two confirmed palette
-presets, editable pan arrangement, and learner-scoped saved mixes with optimistic revisions.
+The owner approved this composition for production as part of the consolidation plan. Production
+updates use optimistic revisions and retain the recipe snapshot/catalog version that created each
+trial. Additional palettes, editable pan arrangement, or physically validated formula changes are
+new product work and require a versioned proposal; they are not implied by this approval.
 
 General teaching reference: [Jane Blundell on two- and three-color mixing](https://danielsmith.com/artists/insights/jane-blundell-the-ultimate-watercolor-mixing-selection/).
 That reference uses other paints and does not validate the Emily Lex formulas or amounts.
 
-1. Review the written contract and live examples with the owner. Record requested changes here
-   and iterate until the reference is approved.
-2. Migrate all active query views: Explore, teaching guides, Feeling First, Color Study, sessions,
-   lesson creation/target/build/review/saved rendering, watercolor lessons, and settings. Preserve
-   current routing and data flow. Archived source is excluded; no selectable themes are added.
+1. Keep the live reference and this written contract synchronized when production patterns change.
+2. Keep active routes under the durable Home, Explore, Sessions, Color Mixing, settings, and internal
+   route structure. Compatibility query URLs redirect; archived source remains excluded.
 3. Replace duplicated structural styles with shared patterns. Do not hide information without
    keeping it available where needed. Preserve Simple Recipe v1 content, imagery, generation, and print. Its existing production layout
    remains frozen while the opt-in compact layout is reviewed.
