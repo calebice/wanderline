@@ -19,7 +19,7 @@ documented but not shipped; **active** describes the consolidated surface.
 
 | Surface / durable route | Evidence | Classification | Disposition / compatibility | Removal release |
 | --- | --- | --- | --- | --- |
-| Home `/` | `StudioHome`; lists all painting lessons | active, retained | Action-first current session, Start painting, recent sessions, exploration | — |
+| Home `/` | `StudioHome`; lists all painting lessons | active, retained | Ready generated-reference carousel, unfinished-work recovery, Start painting, exploration | — |
 | Explore `/explore` | `StyleGuideGallery`, static typed catalog | retained | Keep; subject/style query state is bookmarkable | — |
 | Style guide `/explore/styles/:style` | five authored guides and local WebP assets | retained | Keep | — |
 | Feeling First `/explore/feeling-first` | protected selector and gallery | retained | Keep entire selector unchanged; preserve `emotion` | — |

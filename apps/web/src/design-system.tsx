@@ -10,6 +10,8 @@ import applePainting from "../e2e/fixtures/simple-recipe-v1/painting.png";
 import appleOutline from "../e2e/fixtures/simple-recipe-v1/outline.png";
 import "./design-system.css";
 import { ColorMixingProposal } from "./color-mixing-proposal";
+import { readyPaintingReferences } from "./reference-model";
+import { ReferenceRail } from "./reference-rail";
 
 // Reuse the frozen content without changing its fixture or contacting the lesson API.
 const referenceLesson: PaintingLesson = {
@@ -17,6 +19,7 @@ const referenceLesson: PaintingLesson = {
   assets: apple.assets.map((asset) => ({ ...asset, image_url: asset.role === "tracing_outline" ? appleOutline : applePainting })) as PaintingLesson["assets"],
 };
 const exampleOptions = [
+  { value: "home", label: "Reference carousel" },
   { value: "explore", label: "Explore" },
   { value: "artwork", label: "Artwork stage" },
   { value: "recipe", label: "Painting recipe" },
@@ -27,6 +30,7 @@ const exampleOptions = [
 ] as const;
 type Example = (typeof exampleOptions)[number]["value"];
 const exampleNotes: Record<Example, string> = {
+  home: "Approved home pattern: a manual horizontal rail of completed generated references. It supports touch, keyboard, and visible controls, never advances on its own, and leaves the next card partly visible.",
   mixing: "Production-approved composition: choose a family, then a shade. The 36 versioned starting mixtures use one to three paints; numbered highlights show order. Saving here remains a local demonstration and never changes learner history.",
   explore: "Compact heading, one action, and artwork. Paper grain and pigment provide the character.",
   artwork: "The artwork can set the mood. The production Feeling First slider is preserved unchanged; these buttons demonstrate the general artwork-control pattern.",
@@ -35,6 +39,12 @@ const exampleNotes: Record<Example, string> = {
   form: "Visible labels, short hints, and errors beside the field. Secondary decisions belong in a dialog. This example saves only in memory.",
   settings: "Utility pages use the same typography and controls, with restrained surfaces and explicit labels. Figures here are local sample data.",
 };
+
+const referenceCarouselExamples = readyPaintingReferences([
+  { ...referenceLesson, id: "reference-apple", title: "A red apple", estimated_duration_minutes: 20 },
+  { ...referenceLesson, id: "reference-orchard", title: "Quiet orchard light", estimated_duration_minutes: 30, updated_at: "2026-09-10T15:16:39.342667Z" },
+  { ...referenceLesson, id: "reference-window", title: "Herbs by the window", estimated_duration_minutes: 25, updated_at: "2026-09-11T15:16:39.342667Z" },
+]);
 
 const controlDirections = [
   { id: "paint", title: "1 · Soft pigment", note: "Filled green, softly uneven corners, and subtle pigment depth." },
@@ -93,6 +103,10 @@ function ExploreExample({ onPaint }: { onPaint: () => void }) {
       return <button className="garden-art-card" key={subject.slug} onClick={onPaint} type="button"><img src={art.thumbnail.src} alt={art.thumbnail.alt} /><span><strong>{subject.label}</strong><span>Watercolor study <span aria-hidden="true">↗</span></span></span></button>;
     })}</div>
   </div>;
+}
+
+function ReferenceCarouselExample({ onPaint }: { onPaint: () => void }) {
+  return <div className="garden-page-example"><ReferenceRail references={referenceCarouselExamples} action={() => <GardenButton onClick={onPaint}>Paint this reference</GardenButton>} /></div>;
 }
 
 function ArtworkExample() {
@@ -189,6 +203,7 @@ export function DesignSystem() {
       <GardenChoices label="Page pattern" options={exampleOptions} value={example} onChange={navigateExample} />
       <p className="design-example-note">{exampleNotes[example]}</p>
       <div className="design-example-frame" ref={exampleFrame} tabIndex={-1} role="region" aria-label={`${exampleOptions.find((item) => item.value === example)!.label} page example`}>
+        {example === "home" && <ReferenceCarouselExample onPaint={showRecipe} />}
         {example === "explore" && <ExploreExample onPaint={showRecipe} />}
         {example === "artwork" && <ArtworkExample />}
         {example === "recipe" && <PaintingRecipeSheet presentation="compact" lesson={referenceLesson} actions={<GardenButton variant="quiet" onClick={() => navigateExample("sessions")}>Your painting sessions</GardenButton>} />}

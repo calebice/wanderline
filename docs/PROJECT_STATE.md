@@ -6,7 +6,8 @@ Last reviewed: 2026-09-18
 
 ## Current milestone
 
-The watercolor-first consolidation release is implemented. Wanderline now has an action-first Home,
+The watercolor-first consolidation release is implemented. Wanderline now has an action-first Home
+with a manual horizontal carousel of completed generated references,
 durable path-based routes, shared primary navigation, production color mixing, and an instrumented
 painting-session workflow. ADR 0005 and `FEATURE_API_AUDIT.md` are authoritative.
 
@@ -40,8 +41,8 @@ frontend type checks.
 ## Consolidation verification
 
 September 18: backend lint, formatting, strict types, and **69 retained tests** pass. Frontend lint,
-types, **44 unit tests**, production build, and static validation pass (86 files, 17.6 MB). All **40
-Playwright tests** pass across Home, production color trials, clean/compatibility routes, responsive
+types, **45 unit tests**, production build, and static validation pass (86 files, 17.6 MB). All **41
+Playwright tests** pass across the reference-carousel Home, production color trials, clean/compatibility routes, responsive
 and enlarged-text layouts, Feeling First preservation, and frozen Simple Recipe/print screenshots.
 
 Compose rebuilt successfully with all six services healthy and PostgreSQL at Alembic `0014`. Sessions

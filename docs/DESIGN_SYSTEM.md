@@ -102,6 +102,7 @@ Explore/teaching guides, artwork stages, sessions, creation/review/editing, less
 
 | Pattern | Composition and behavior |
 | --- | --- |
+| Home reference carousel | A manual horizontal rail of completed generated references, ordered newest first. Each card keeps uncropped artwork, title, duration, steps, and one “Paint this reference” action together. Show a partial next card, visible previous/next controls, touch/trackpad scrolling, scroll snapping, and Left/Right keyboard navigation. Never auto-advance. Drafts and failures stay outside the rail in one compact recovery link. |
 | Explore / teaching entry | Compact heading, one main action, artwork immediately below; no introductory feature-card wall. Long teaching content follows the reference or uses optional disclosure. |
 | Artwork with controls | Compact controls immediately adjacent to the preview; preserve the user's selection. Controls remain keyboard accessible. In a full feature page, keep them sticky during viewing, account for navigation, and bring changed artwork into view. |
 | Focused lesson | Complete artwork beside concise numbered actions, with enlargement available in the compact reference; stack on phones. Reuse the actual Simple Recipe renderer and frozen fixture. Keep swatches adjacent, mixing below, optional detail closed, print controls in the existing dialog. |

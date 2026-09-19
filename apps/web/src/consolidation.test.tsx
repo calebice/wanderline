@@ -37,17 +37,38 @@ describe("consolidated application", () => {
     vi.stubGlobal("fetch", vi.fn(() => response([])));
     render(<MemoryRouter initialEntries={["/"]}><StyleStudioApp /></MemoryRouter>);
 
-    expect(await screen.findByRole("heading", { name: "No painting sessions yet." })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: "Create your first painting reference." })).toBeInTheDocument();
     expect(screen.getAllByRole("link", { name: "Start painting" }).length).toBeGreaterThanOrEqual(2);
   });
 
-  it("surfaces the active painting session and its durable URL", async () => {
-    const lesson = { ...structuredClone(LEMON_LESSON), id: "current-session", title: "Quiet lemons", is_demo: false, saved_at: null };
+  it("surfaces a ready painting reference and keeps its durable session URL", async () => {
+    const lesson = { ...structuredClone(LEMON_LESSON), id: "current-session", title: "Quiet lemons", is_demo: false, saved_at: null, approved_target_asset_id: LEMON_LESSON.assets[0].id };
     vi.stubGlobal("fetch", vi.fn(() => response([lesson])));
     render(<MemoryRouter initialEntries={["/"]}><StyleStudioApp /></MemoryRouter>);
 
     expect(await screen.findByRole("heading", { name: "Quiet lemons" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Open session" })).toHaveAttribute("href", "/sessions/current-session/edit");
+    expect(screen.getByRole("link", { name: "Paint this reference" })).toHaveAttribute("href", "/sessions/current-session/edit");
+  });
+
+  it("orders ready references, excludes unusable work, and offers one recovery link", async () => {
+    Element.prototype.scrollIntoView = vi.fn();
+    const older = { ...structuredClone(LEMON_LESSON), id: "older", title: "Older reference", updated_at: "2026-09-10T12:00:00Z", approved_target_asset_id: LEMON_LESSON.assets[0].id };
+    const newer = { ...structuredClone(LEMON_LESSON), id: "newer", title: "Newer reference", updated_at: "2026-09-12T12:00:00Z", approved_target_asset_id: LEMON_LESSON.assets[0].id };
+    const unfinished = { ...structuredClone(LEMON_LESSON), id: "unfinished", title: "Rainy window", content: null, approved_target_asset_id: null, generation_status: "generating", latest_run_id: "run-1" };
+    const missingImage = { ...structuredClone(LEMON_LESSON), id: "missing-image", title: "Missing image", assets: [] };
+    vi.stubGlobal("fetch", vi.fn(() => response([older, unfinished, missingImage, newer])));
+    render(<MemoryRouter initialEntries={["/"]}><StyleStudioApp /></MemoryRouter>);
+
+    const carousel = await screen.findByRole("region", { name: "Painting references" });
+    const slides = carousel.querySelectorAll(".reference-carousel__slide");
+    expect(slides).toHaveLength(2);
+    expect(slides[0]).toHaveTextContent("Newer reference");
+    expect(slides[1]).toHaveTextContent("Older reference");
+    expect(screen.queryByText("Missing image")).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Continue preparing Rainy window →" })).toHaveAttribute("href", "/sessions/unfinished/build/run-1?next=review");
+
+    fireEvent.keyDown(carousel, { key: "ArrowRight" });
+    expect(screen.getByText("Reference 2 of 2")).toBeInTheDocument();
   });
 
   it("keeps the start action available when session loading fails", async () => {

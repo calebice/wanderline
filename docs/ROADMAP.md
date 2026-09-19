@@ -44,6 +44,27 @@ reconcile; no deprecated operation remains in OpenAPI.
 
 ## Later opportunities
 
+### P2: Generated references
+
+- Rename Sessions to References throughout navigation, application copy, durable routes, API
+  contracts, persistence, and usage reporting.
+- Preserve existing IDs and generated assets through a data-preserving migration; redirect
+  `/sessions/...` bookmarks to matching `/references/...` routes with query parameters intact.
+- Keep `/api/v1/painting-lessons` as a deprecated alias for one compatibility release while
+  `/api/v1/references` becomes canonical.
+- Preserve generation recovery, editing, discard/restore, permanent deletion, and usage history.
+
+### P3: Painting journal foundation
+
+- Allow multiple dated painting attempts per generated reference.
+- Store automatic timestamps, an editable `painted_on` date, notes, normalized free-form tags,
+  one primary artwork photo, and optional process/detail photos.
+- Add reference-scoped journal collection APIs and entry-scoped read/update/delete and image
+  management APIs with optimistic revision checks and learner isolation.
+- Preserve original uploads privately and serve normalized display derivatives. Prepare the data
+  for a later gallery ordered by painted date and filterable by reference and tags; do not build
+  the gallery presentation in this stage.
+
 - A physical color-testing workflow where the learner records real mixes, uploads or samples the
   dried result, and compares the resulting color with the authored target before publishing a new
   validated catalog version

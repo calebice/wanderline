@@ -15,7 +15,8 @@ identity. Watercolor is the only production medium; domain names and versions mu
 
 ## Primary journey
 
-1. Open Home and see the active painting session or a dominant **Start painting** action.
+1. Open Home and choose a completed painting reference from the manual carousel, continue preparing
+   unfinished work, or use the dominant **Start painting** action.
 2. Begin from a private photo or supported idea, with calm defaults and optional choices.
 3. Review and explicitly approve the generated target.
 4. Prepare, review, and edit the painting steps.
@@ -24,7 +25,7 @@ identity. Watercolor is the only production medium; domain names and versions mu
 
 ## Production capabilities
 
-- Action-first Home, recent sessions, and durable session URLs
+- Action-first Home with a newest-first generated-reference carousel and durable session URLs
 - Static authored style references and five teaching guides
 - Frozen Feeling First interaction and canonical lemon watercolor lesson
 - Color Study for local, illustrative color relationships
@@ -38,7 +39,8 @@ not imply guaranteed physical outcomes until paint/paper testing is recorded.
 
 ## Success criteria
 
-- A learner can start or resume a painting from Home in one clear action.
+- A learner can paint from a ready reference, continue preparing unfinished work, or start a new
+  painting from Home in one clear action.
 - Bookmarked sessions and exploration selections survive the clean-route migration.
 - A generated target is never mistaken for approved guidance.
 - Saved painting sessions and color trials reopen with the version that created them.

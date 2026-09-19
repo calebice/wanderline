@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { deleteLessonPermanently, getUsageSummary, listLessons, restoreLesson, type UsageSummary } from "./lesson-api";
 import { LEMON_LESSON, type PaintingLesson } from "./lesson-model";
+import { readyPaintingReferences } from "./reference-model";
+import { ReferenceRail } from "./reference-rail";
 import { sessionPath } from "./session-path";
 import { StartPaintingLink } from "./studio-ui";
 import { useStudioConfirm } from "./studio-ui";
@@ -11,17 +13,17 @@ export function StudioHome() {
   const [state, setState] = useState<"loading" | "ready" | "failed">("loading");
   const [attempt, setAttempt] = useState(0);
   useEffect(() => { let active = true; setState("loading"); listLessons("all").then((value) => { if (active) { setLessons(value); setState("ready"); } }).catch(() => active && setState("failed")); return () => { active = false; }; }, [attempt]);
-  const current = lessons.find((lesson) => !lesson.saved_at || ["queued", "generating", "failed"].includes(lesson.generation_status)) || lessons[0];
-  const recent = lessons.filter((lesson) => lesson.id !== current?.id).slice(0, 3);
-  const image = current?.assets.find((asset) => asset.id === current.approved_target_asset_id) || current?.assets.find((asset) => asset.role === "target_reference") || current?.assets.find((asset) => asset.is_primary);
+  const references = readyPaintingReferences(lessons);
+  const referenceIds = new Set(references.map((reference) => reference.lesson.id));
+  const unfinished = lessons.find((lesson) => !referenceIds.has(lesson.id));
   return <div className="studio-home">
-    <header className="studio-home__hero"><div><p className="eyebrow">YOUR PAINTING STUDIO</p><h1>Ready to paint?</h1><p>Pick up where you left off, or begin with a photo or an idea.</p></div><div className="studio-actions">{current && <Link className="button-link" to={sessionPath(current)}>Continue {current.title}</Link>}<StartPaintingLink className={current ? "button-link button-secondary" : "button-link"} /></div></header>
+    <header className="studio-home__hero"><div><p className="eyebrow">YOUR PAINTING STUDIO</p><h1>Choose what to paint.</h1><p>Return to a reference you made, or begin with a photo or an idea.</p></div><StartPaintingLink /></header>
     {state === "loading" && <p role="status">Loading your studio…</p>}
-    {state === "failed" && <div className="lesson-error" role="alert"><p>Your sessions couldn’t load. You can still start a new painting.</p><button type="button" onClick={() => setAttempt(attempt + 1)}>Try again</button></div>}
-    {state === "ready" && current && <section className="studio-home__current" aria-labelledby="current-session-title">{image ? <img src={image.image_url} alt={image.alt_text} /> : <div className="session-card__blank" aria-hidden="true">✦</div>}<div><p className="eyebrow">YOUR CURRENT SESSION</p><h2 id="current-session-title">{current.title}</h2><p>{current.generation_status === "failed" ? "This session needs your attention." : current.content ? `${current.generation_brief.stage_count} steps · ${current.estimated_duration_minutes} minutes` : "Your next painting is taking shape."}</p><Link className="button-link" to={sessionPath(current)}>Open session</Link></div></section>}
-    {state === "ready" && !current && <section className="studio-empty"><h2>No painting sessions yet.</h2><p>Start with a photo you love, or describe something you’ve been imagining.</p><StartPaintingLink /></section>}
+    {state === "failed" && <div className="lesson-error" role="alert"><p>Your painting references couldn’t load. You can still start a new painting.</p><button type="button" onClick={() => setAttempt(attempt + 1)}>Try again</button></div>}
+    {state === "ready" && references.length > 0 && <ReferenceRail references={references} action={(reference) => <Link className="button-link" to={sessionPath(reference.lesson)}>Paint this reference</Link>} />}
+    {state === "ready" && references.length === 0 && <section className="studio-empty"><h2>{lessons.length ? "No painting references are ready yet." : "Create your first painting reference."}</h2><p>{lessons.length ? "Finish preparing a reference, or begin another from a photo or idea." : "Start with a photo you love, or describe something you’ve been imagining."}</p><StartPaintingLink /></section>}
+    {state === "ready" && unfinished && <aside className="studio-home__unfinished"><span>Still taking shape</span><Link className="text-link" to={sessionPath(unfinished)}>Continue preparing {unfinished.title} →</Link></aside>}
     <section className="studio-home__explore" aria-labelledby="home-explore-title"><div className="section-heading"><div><p className="eyebrow">EXPLORE</p><h2 id="home-explore-title">Find your next direction.</h2></div><Link className="text-link" to="/explore">See all references →</Link></div><div className="studio-home__links"><Link to="/explore">Style references<span>Choose a subject and visual language.</span></Link><Link to="/explore/feeling-first?emotion=pensive">Feeling First<span>See how choices change a painting’s mood.</span></Link><Link to="/explore/color-study">Color Study<span>Explore relationships around the color wheel.</span></Link><Link to="/color-mixing">Mix colors<span>Try authored starting mixtures with your paints.</span></Link></div></section>
-    {recent.length > 0 && <section aria-labelledby="recent-sessions-title"><div className="section-heading"><h2 id="recent-sessions-title">Recent sessions</h2><Link className="text-link" to="/sessions">View all →</Link></div><div className="session-grid">{recent.map((lesson) => <article className="session-card" key={lesson.id}><div><p className="eyebrow">{lesson.saved_at ? "Saved" : "In progress"}</p><h3>{lesson.title}</h3><Link className="text-link" to={sessionPath(lesson)}>Open session →</Link></div></article>)}</div></section>}
   </div>;
 }
 
