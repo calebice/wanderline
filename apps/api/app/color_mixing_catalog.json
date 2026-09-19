@@ -1,0 +1,1045 @@
+{
+  "schema_version": "color-mix-catalog.v1",
+  "version": 1,
+  "palette": {
+    "id": "emily-lex-18",
+    "name": "Emily Lex · 18 colors",
+    "paints": [
+      {
+        "name": "White",
+        "color": "#eee9dc"
+      },
+      {
+        "name": "Lemon Yellow",
+        "color": "#ded33c"
+      },
+      {
+        "name": "Yellow Middle",
+        "color": "#e9b631"
+      },
+      {
+        "name": "Orange Yellow",
+        "color": "#dc942f"
+      },
+      {
+        "name": "Yellow Ochre",
+        "color": "#b88b39"
+      },
+      {
+        "name": "Scarlet",
+        "color": "#bd3934"
+      },
+      {
+        "name": "Vermillion Hue",
+        "color": "#cf5132"
+      },
+      {
+        "name": "Rose",
+        "color": "#bd4f7e"
+      },
+      {
+        "name": "Violet",
+        "color": "#61507e"
+      },
+      {
+        "name": "Cerulean Blue",
+        "color": "#6a9eb3"
+      },
+      {
+        "name": "Ultramarine",
+        "color": "#476294"
+      },
+      {
+        "name": "Prussian Blue",
+        "color": "#28465e"
+      },
+      {
+        "name": "Yellow Green",
+        "color": "#99ad40"
+      },
+      {
+        "name": "Permanent Green",
+        "color": "#659854"
+      },
+      {
+        "name": "Green Deep",
+        "color": "#346847"
+      },
+      {
+        "name": "Hooker’s Green",
+        "color": "#428056"
+      },
+      {
+        "name": "Burnt Umber",
+        "color": "#775039"
+      },
+      {
+        "name": "Lamp Black",
+        "color": "#33342f"
+      }
+    ]
+  },
+  "families": [
+    {
+      "id": "reds",
+      "name": "Reds",
+      "color": "#bc4541"
+    },
+    {
+      "id": "oranges",
+      "name": "Oranges",
+      "color": "#d88742"
+    },
+    {
+      "id": "yellows",
+      "name": "Yellows",
+      "color": "#d6bb42"
+    },
+    {
+      "id": "greens",
+      "name": "Greens",
+      "color": "#73884c"
+    },
+    {
+      "id": "teals",
+      "name": "Teals",
+      "color": "#4e9390"
+    },
+    {
+      "id": "blues",
+      "name": "Blues",
+      "color": "#527ba3"
+    },
+    {
+      "id": "purples",
+      "name": "Purples",
+      "color": "#7c658e"
+    },
+    {
+      "id": "pinks",
+      "name": "Pinks",
+      "color": "#cd8d9f"
+    },
+    {
+      "id": "browns",
+      "name": "Browns",
+      "color": "#98724f"
+    },
+    {
+      "id": "grays",
+      "name": "Grays",
+      "color": "#7a8180"
+    }
+  ],
+  "recipes": [
+    {
+      "family": "reds",
+      "id": "poppy-red",
+      "name": "Poppy red",
+      "color": "#c65040",
+      "ingredients": [
+        {
+          "paint": "Scarlet",
+          "amount": "2 parts",
+          "role": "gives the red base"
+        },
+        {
+          "paint": "Vermillion Hue",
+          "amount": "1 part",
+          "role": "warms it toward orange-red"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too orange",
+        "paint": "Scarlet",
+        "instruction": "Add a little Scarlet to pull the mixture back toward red."
+      }
+    },
+    {
+      "family": "reds",
+      "id": "berry-red",
+      "name": "Berry red",
+      "color": "#a64964",
+      "ingredients": [
+        {
+          "paint": "Rose",
+          "amount": "2 parts",
+          "role": "gives a cool red base"
+        },
+        {
+          "paint": "Scarlet",
+          "amount": "1 part",
+          "role": "brings it toward red"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "a tiny touch",
+          "role": "deepens the cool note"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too purple",
+        "paint": "Scarlet",
+        "instruction": "Add a small touch of Scarlet to bring the mixture back toward red."
+      }
+    },
+    {
+      "family": "reds",
+      "id": "brick-red",
+      "name": "Brick red",
+      "color": "#a9634c",
+      "ingredients": [
+        {
+          "paint": "Scarlet",
+          "amount": "2 parts",
+          "role": "gives the red base"
+        },
+        {
+          "paint": "Yellow Ochre",
+          "amount": "1 part",
+          "role": "adds earthy warmth"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a small touch",
+          "role": "quiets the bright red"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too brown",
+        "paint": "Scarlet",
+        "instruction": "Add Scarlet to a separate portion to restore its red character."
+      }
+    },
+    {
+      "family": "oranges",
+      "id": "tangerine",
+      "name": "Tangerine",
+      "color": "#d9893d",
+      "ingredients": [
+        {
+          "paint": "Orange Yellow",
+          "amount": "2 parts",
+          "role": "gives the golden base"
+        },
+        {
+          "paint": "Vermillion Hue",
+          "amount": "1 part",
+          "role": "turns the yellow toward orange"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too red",
+        "paint": "Orange Yellow",
+        "instruction": "Add Orange Yellow a little at a time to recover a golden orange."
+      }
+    },
+    {
+      "family": "oranges",
+      "id": "apricot",
+      "name": "Apricot",
+      "color": "#e7b47f",
+      "ingredients": [
+        {
+          "paint": "Yellow Middle",
+          "amount": "3 parts",
+          "role": "gives a warm yellow base"
+        },
+        {
+          "paint": "Rose",
+          "amount": "a small touch",
+          "role": "adds a soft red note"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too pink",
+        "paint": "Yellow Middle",
+        "instruction": "Add a little Yellow Middle, then dilute a test portion again."
+      }
+    },
+    {
+      "family": "oranges",
+      "id": "terracotta",
+      "name": "Terracotta",
+      "color": "#b67c59",
+      "ingredients": [
+        {
+          "paint": "Orange Yellow",
+          "amount": "2 parts",
+          "role": "gives the warm base"
+        },
+        {
+          "paint": "Scarlet",
+          "amount": "1 part",
+          "role": "brings in a red-orange note"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a small touch",
+          "role": "adds an earthy finish"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too brown",
+        "paint": "Orange Yellow",
+        "instruction": "Add a little Orange Yellow to return some orange warmth."
+      }
+    },
+    {
+      "family": "yellows",
+      "id": "lemon-wash",
+      "name": "Lemon wash",
+      "color": "#dfd76c",
+      "ingredients": [
+        {
+          "paint": "Lemon Yellow",
+          "amount": "a small puddle",
+          "role": "supplies the cool yellow hue"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too pale",
+        "paint": "Lemon Yellow",
+        "instruction": "Add more prepared Lemon Yellow, using less additional water."
+      }
+    },
+    {
+      "family": "yellows",
+      "id": "golden-yellow",
+      "name": "Golden yellow",
+      "color": "#d7b448",
+      "ingredients": [
+        {
+          "paint": "Yellow Middle",
+          "amount": "3 parts",
+          "role": "gives the sunny base"
+        },
+        {
+          "paint": "Orange Yellow",
+          "amount": "1 part",
+          "role": "adds a golden warmth"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too orange",
+        "paint": "Yellow Middle",
+        "instruction": "Add Yellow Middle gradually to bring the mix toward yellow."
+      }
+    },
+    {
+      "family": "yellows",
+      "id": "antique-gold",
+      "name": "Antique gold",
+      "color": "#b79a51",
+      "ingredients": [
+        {
+          "paint": "Yellow Ochre",
+          "amount": "2 parts",
+          "role": "gives the earthy base"
+        },
+        {
+          "paint": "Yellow Middle",
+          "amount": "1 part",
+          "role": "adds a yellow glow"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a tiny touch",
+          "role": "quiets the gold"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too brown",
+        "paint": "Yellow Middle",
+        "instruction": "Add Yellow Middle to a separate portion to restore yellow warmth."
+      }
+    },
+    {
+      "family": "greens",
+      "id": "olive-green",
+      "name": "Olive green",
+      "color": "#85904f",
+      "ingredients": [
+        {
+          "paint": "Lemon Yellow",
+          "amount": "2 parts",
+          "role": "sets a yellow-led base"
+        },
+        {
+          "paint": "Green Deep",
+          "amount": "1 part, added gradually",
+          "role": "builds the green"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a tiny touch, added last",
+          "role": "mutes the green toward earthy olive"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too brown",
+        "paint": "Lemon Yellow",
+        "instruction": "Try a little Lemon Yellow in a separate portion. If it stays muddy, start fresh and use less Burnt Umber."
+      }
+    },
+    {
+      "family": "greens",
+      "id": "fresh-leaf",
+      "name": "Fresh leaf",
+      "color": "#91ae58",
+      "ingredients": [
+        {
+          "paint": "Lemon Yellow",
+          "amount": "2 parts",
+          "role": "gives the light yellow base"
+        },
+        {
+          "paint": "Permanent Green",
+          "amount": "1 part",
+          "role": "builds a fresh yellow-green"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too yellow",
+        "paint": "Permanent Green",
+        "instruction": "Add Permanent Green in small touches until the yellow becomes leafy green."
+      }
+    },
+    {
+      "family": "greens",
+      "id": "forest-green",
+      "name": "Forest green",
+      "color": "#45674f",
+      "ingredients": [
+        {
+          "paint": "Green Deep",
+          "amount": "2 parts",
+          "role": "gives the green base"
+        },
+        {
+          "paint": "Prussian Blue",
+          "amount": "a small touch",
+          "role": "deepens and cools the green"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a tiny touch",
+          "role": "softens the brightness"
+        }
+      ],
+      "water": "Use a concentrated puddle with just enough water for a flowing stroke. Test and let it dry before deepening it.",
+      "correction": {
+        "label": "Too blue",
+        "paint": "Green Deep",
+        "instruction": "Add Green Deep to a separate portion to restore its green character."
+      }
+    },
+    {
+      "family": "teals",
+      "id": "turquoise",
+      "name": "Turquoise",
+      "color": "#629fa5",
+      "ingredients": [
+        {
+          "paint": "Cerulean Blue",
+          "amount": "3 parts",
+          "role": "gives a blue base"
+        },
+        {
+          "paint": "Permanent Green",
+          "amount": "a small touch",
+          "role": "turns it toward turquoise"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too green",
+        "paint": "Cerulean Blue",
+        "instruction": "Add Cerulean Blue a little at a time to restore a blue-led turquoise."
+      }
+    },
+    {
+      "family": "teals",
+      "id": "lagoon",
+      "name": "Lagoon",
+      "color": "#447c83",
+      "ingredients": [
+        {
+          "paint": "Prussian Blue",
+          "amount": "2 parts",
+          "role": "gives a deep blue base"
+        },
+        {
+          "paint": "Permanent Green",
+          "amount": "1 part",
+          "role": "brings in the green note"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too green",
+        "paint": "Prussian Blue",
+        "instruction": "Add a tiny touch of Prussian Blue; stop before blue takes over."
+      }
+    },
+    {
+      "family": "teals",
+      "id": "sea-glass",
+      "name": "Sea glass",
+      "color": "#9fbab0",
+      "ingredients": [
+        {
+          "paint": "Cerulean Blue",
+          "amount": "2 parts",
+          "role": "gives the blue base"
+        },
+        {
+          "paint": "Permanent Green",
+          "amount": "1 part",
+          "role": "brings in green"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a tiny touch",
+          "role": "softens the brightness"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too earthy",
+        "paint": "Cerulean Blue",
+        "instruction": "Add a little Cerulean Blue to a separate portion, then dilute another test stroke."
+      }
+    },
+    {
+      "family": "blues",
+      "id": "sky-blue",
+      "name": "Sky blue",
+      "color": "#9bbaca",
+      "ingredients": [
+        {
+          "paint": "Cerulean Blue",
+          "amount": "a small puddle",
+          "role": "supplies the sky-blue hue"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too pale",
+        "paint": "Cerulean Blue",
+        "instruction": "Add more prepared Cerulean Blue, using less additional water."
+      }
+    },
+    {
+      "family": "blues",
+      "id": "cornflower",
+      "name": "Cornflower",
+      "color": "#7186b0",
+      "ingredients": [
+        {
+          "paint": "Ultramarine",
+          "amount": "2 parts",
+          "role": "gives a warm blue base"
+        },
+        {
+          "paint": "Cerulean Blue",
+          "amount": "1 part",
+          "role": "brings it toward a softer sky blue"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too violet",
+        "paint": "Cerulean Blue",
+        "instruction": "Add a little Cerulean Blue to soften the violet-blue direction."
+      }
+    },
+    {
+      "family": "blues",
+      "id": "midnight-blue",
+      "name": "Midnight blue",
+      "color": "#3e5069",
+      "ingredients": [
+        {
+          "paint": "Prussian Blue",
+          "amount": "2 parts",
+          "role": "gives the deep blue base"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "1 part",
+          "role": "adds a warmer blue note"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a tiny touch",
+          "role": "quiets the strong blue"
+        }
+      ],
+      "water": "Use a concentrated puddle with just enough water for a flowing stroke. Test and let it dry before deepening it.",
+      "correction": {
+        "label": "Too gray",
+        "paint": "Prussian Blue",
+        "instruction": "Add a small touch of Prussian Blue to restore the blue character."
+      }
+    },
+    {
+      "family": "purples",
+      "id": "lavender",
+      "name": "Lavender",
+      "color": "#aaa0bd",
+      "ingredients": [
+        {
+          "paint": "Violet",
+          "amount": "a small puddle",
+          "role": "supplies the violet hue"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too pale",
+        "paint": "Violet",
+        "instruction": "Add a little more prepared Violet to a separate portion of the wash."
+      }
+    },
+    {
+      "family": "purples",
+      "id": "plum",
+      "name": "Plum",
+      "color": "#83627e",
+      "ingredients": [
+        {
+          "paint": "Rose",
+          "amount": "2 parts",
+          "role": "gives a red-violet base"
+        },
+        {
+          "paint": "Violet",
+          "amount": "1 part",
+          "role": "deepens the purple note"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too pink",
+        "paint": "Violet",
+        "instruction": "Add Violet in small touches until the mixture feels more purple."
+      }
+    },
+    {
+      "family": "purples",
+      "id": "dusky-mauve",
+      "name": "Dusky mauve",
+      "color": "#a38b9a",
+      "ingredients": [
+        {
+          "paint": "Rose",
+          "amount": "2 parts",
+          "role": "gives the rosy base"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "1 part",
+          "role": "turns it toward violet"
+        },
+        {
+          "paint": "Yellow Ochre",
+          "amount": "a tiny touch",
+          "role": "softens the bright violet"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too earthy",
+        "paint": "Rose",
+        "instruction": "Add a little Rose to restore its rosy character, then test a diluted stroke."
+      }
+    },
+    {
+      "family": "pinks",
+      "id": "soft-rose",
+      "name": "Soft rose",
+      "color": "#d99aaa",
+      "ingredients": [
+        {
+          "paint": "Rose",
+          "amount": "a small puddle",
+          "role": "supplies the rosy hue"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too strong",
+        "paint": "Rose",
+        "instruction": "Move some of the Rose wash to a clean well and add a little water."
+      }
+    },
+    {
+      "family": "pinks",
+      "id": "coral-pink",
+      "name": "Coral pink",
+      "color": "#df9b8c",
+      "ingredients": [
+        {
+          "paint": "Rose",
+          "amount": "2 parts",
+          "role": "gives the pink base"
+        },
+        {
+          "paint": "Orange Yellow",
+          "amount": "a small touch",
+          "role": "warms the pink toward coral"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too orange",
+        "paint": "Rose",
+        "instruction": "Add a little Rose to bring the mixture back toward pink."
+      }
+    },
+    {
+      "family": "pinks",
+      "id": "dusty-pink",
+      "name": "Dusty pink",
+      "color": "#bb9396",
+      "ingredients": [
+        {
+          "paint": "Rose",
+          "amount": "3 parts",
+          "role": "gives the pink base"
+        },
+        {
+          "paint": "Yellow Ochre",
+          "amount": "a small touch",
+          "role": "warms it"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "a tiny touch",
+          "role": "softens the brightness"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too gray",
+        "paint": "Rose",
+        "instruction": "Add a little Rose to a separate portion to restore the pink."
+      }
+    },
+    {
+      "family": "browns",
+      "id": "warm-brown",
+      "name": "Warm brown",
+      "color": "#997252",
+      "ingredients": [
+        {
+          "paint": "Burnt Umber",
+          "amount": "3 parts",
+          "role": "gives the earthy base"
+        },
+        {
+          "paint": "Yellow Ochre",
+          "amount": "1 part",
+          "role": "adds golden warmth"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too golden",
+        "paint": "Burnt Umber",
+        "instruction": "Add a small touch of Burnt Umber to quiet the gold."
+      }
+    },
+    {
+      "family": "browns",
+      "id": "sand",
+      "name": "Sand",
+      "color": "#cbb792",
+      "ingredients": [
+        {
+          "paint": "Yellow Ochre",
+          "amount": "3 parts",
+          "role": "gives a warm earth-yellow base"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "a small touch",
+          "role": "softens it toward tan"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too brown",
+        "paint": "Yellow Ochre",
+        "instruction": "Add Yellow Ochre to restore the golden note, then dilute a test portion."
+      }
+    },
+    {
+      "family": "browns",
+      "id": "caramel",
+      "name": "Caramel",
+      "color": "#ad824e",
+      "ingredients": [
+        {
+          "paint": "Yellow Ochre",
+          "amount": "2 parts",
+          "role": "gives the golden base"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "1 part",
+          "role": "turns it toward brown"
+        },
+        {
+          "paint": "Orange Yellow",
+          "amount": "a small touch",
+          "role": "adds orange warmth"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too orange",
+        "paint": "Burnt Umber",
+        "instruction": "Add a small touch of Burnt Umber to quiet the orange."
+      }
+    },
+    {
+      "family": "browns",
+      "id": "chestnut",
+      "name": "Chestnut",
+      "color": "#8e5e4c",
+      "ingredients": [
+        {
+          "paint": "Burnt Umber",
+          "amount": "2 parts",
+          "role": "gives the brown base"
+        },
+        {
+          "paint": "Scarlet",
+          "amount": "1 part",
+          "role": "adds a red warmth"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "a tiny touch",
+          "role": "softens the red"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too red",
+        "paint": "Burnt Umber",
+        "instruction": "Add Burnt Umber to bring the mixture back toward an earthy brown."
+      }
+    },
+    {
+      "family": "browns",
+      "id": "walnut",
+      "name": "Walnut",
+      "color": "#675747",
+      "ingredients": [
+        {
+          "paint": "Burnt Umber",
+          "amount": "3 parts",
+          "role": "gives the brown base"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "a small touch",
+          "role": "cools and deepens the brown"
+        }
+      ],
+      "water": "Use a concentrated puddle with just enough water for a flowing stroke. Test and let it dry before deepening it.",
+      "correction": {
+        "label": "Too gray",
+        "paint": "Burnt Umber",
+        "instruction": "Add Burnt Umber to restore the earthy brown character."
+      }
+    },
+    {
+      "family": "browns",
+      "id": "taupe",
+      "name": "Taupe",
+      "color": "#a49787",
+      "ingredients": [
+        {
+          "paint": "Burnt Umber",
+          "amount": "2 parts",
+          "role": "gives the brown base"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "1 part, added gradually",
+          "role": "quiets it toward gray-brown"
+        },
+        {
+          "paint": "Yellow Ochre",
+          "amount": "a small touch",
+          "role": "returns some warm earth color"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too blue",
+        "paint": "Burnt Umber",
+        "instruction": "Add a little Burnt Umber to pull the mixture back toward gray-brown."
+      }
+    },
+    {
+      "family": "grays",
+      "id": "slate-gray",
+      "name": "Slate gray",
+      "color": "#727d82",
+      "ingredients": [
+        {
+          "paint": "Ultramarine",
+          "amount": "1 part",
+          "role": "gives the cool blue base"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "about 1 part, added gradually",
+          "role": "quiets the blue toward gray"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too blue",
+        "paint": "Burnt Umber",
+        "instruction": "Add a small touch of Burnt Umber to a separate portion. Stop as the blue softens."
+      }
+    },
+    {
+      "family": "grays",
+      "id": "pearl-gray",
+      "name": "Pearl gray",
+      "color": "#c1c2be",
+      "ingredients": [
+        {
+          "paint": "Lamp Black",
+          "amount": "a small puddle",
+          "role": "gives the neutral base"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too pale",
+        "paint": "Lamp Black",
+        "instruction": "Add a tiny amount of prepared Lamp Black to deepen the wash."
+      }
+    },
+    {
+      "family": "grays",
+      "id": "warm-stone",
+      "name": "Warm stone",
+      "color": "#a49b8c",
+      "ingredients": [
+        {
+          "paint": "Burnt Umber",
+          "amount": "1 part",
+          "role": "gives a warm base"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "about 1 part, added gradually",
+          "role": "quiets the brown"
+        },
+        {
+          "paint": "Yellow Ochre",
+          "amount": "a tiny touch",
+          "role": "adds a warm stone note"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too golden",
+        "paint": "Ultramarine",
+        "instruction": "Test a tiny touch of Ultramarine in a separate portion to quiet the gold."
+      }
+    },
+    {
+      "family": "grays",
+      "id": "blue-smoke",
+      "name": "Blue smoke",
+      "color": "#9aaab6",
+      "ingredients": [
+        {
+          "paint": "Ultramarine",
+          "amount": "2 parts",
+          "role": "gives the blue base"
+        },
+        {
+          "paint": "Burnt Umber",
+          "amount": "1 part, added gradually",
+          "role": "softens the blue without removing it"
+        }
+      ],
+      "water": "Move a little prepared paint into a clean well and add water gradually for a pale wash. Test and let it dry.",
+      "correction": {
+        "label": "Too blue",
+        "paint": "Burnt Umber",
+        "instruction": "Add a small touch of Burnt Umber until the blue feels quieter."
+      }
+    },
+    {
+      "family": "grays",
+      "id": "violet-shadow",
+      "name": "Violet shadow",
+      "color": "#8d8595",
+      "ingredients": [
+        {
+          "paint": "Violet",
+          "amount": "2 parts",
+          "role": "gives the violet base"
+        },
+        {
+          "paint": "Yellow Ochre",
+          "amount": "a small touch",
+          "role": "quiets the violet"
+        },
+        {
+          "paint": "Ultramarine",
+          "amount": "a small touch",
+          "role": "adds a cool shadow note"
+        }
+      ],
+      "water": "Add water gradually until the wash flows easily. Test on your painting paper and compare after it dries.",
+      "correction": {
+        "label": "Too purple",
+        "paint": "Yellow Ochre",
+        "instruction": "Test a tiny touch of Yellow Ochre in a separate portion to soften the purple."
+      }
+    },
+    {
+      "family": "grays",
+      "id": "charcoal",
+      "name": "Charcoal",
+      "color": "#525653",
+      "ingredients": [
+        {
+          "paint": "Lamp Black",
+          "amount": "a small puddle",
+          "role": "supplies the dark neutral"
+        }
+      ],
+      "water": "Use a concentrated puddle with just enough water for a flowing stroke. Test and let it dry before deepening it.",
+      "correction": {
+        "label": "Too pale",
+        "paint": "Lamp Black",
+        "instruction": "Add more prepared Lamp Black and less additional water for the next test."
+      }
+    }
+  ]
+}

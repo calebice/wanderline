@@ -276,6 +276,93 @@ async def test_draft_references_generation_save_conflict_and_private_stream(
 
 
 @pytest.mark.asyncio
+async def test_discarded_session_is_hidden_but_retained(
+    client: AsyncClient, db: AsyncSession
+) -> None:
+    from app.models import PaintingLesson
+
+    created = await client.post(
+        "/api/v1/painting-lessons",
+        json={"title": "A failed beginning", "subject": "Mountain"},
+    )
+    lesson_id = created.json()["id"]
+
+    discarded = await client.delete(f"/api/v1/painting-lessons/{lesson_id}")
+
+    assert discarded.status_code == 204
+    assert (await client.get(f"/api/v1/painting-lessons/{lesson_id}")).status_code == 404
+    assert (await client.get("/api/v1/painting-lessons?state=all")).json() == []
+    assert [
+        lesson["id"]
+        for lesson in (await client.get("/api/v1/painting-lessons?state=discarded")).json()
+    ] == [lesson_id]
+    retained = await db.get(PaintingLesson, uuid.UUID(lesson_id))
+    assert retained is not None
+    assert retained.discarded_at is not None
+    assert retained.generation_status == "discarded"
+
+    restored = await client.post(f"/api/v1/painting-lessons/{lesson_id}/restore")
+    assert restored.status_code == 200
+    assert restored.json()["generation_status"] == "idle"
+    assert (await client.get(f"/api/v1/painting-lessons/{lesson_id}")).status_code == 200
+
+    assert (await client.delete(f"/api/v1/painting-lessons/{lesson_id}")).status_code == 204
+    purged = await client.delete(f"/api/v1/painting-lessons/{lesson_id}/permanent")
+    assert purged.status_code == 204
+    assert await db.get(PaintingLesson, uuid.UUID(lesson_id)) is None
+
+
+@pytest.mark.asyncio
+async def test_permanent_delete_removes_private_objects_runs_and_usage(db: AsyncSession) -> None:
+    from app.models import GenerationUsage, LessonGenerationRun, PaintingLesson
+
+    storage = MemoryStorage()
+    service = LessonService(Settings(lesson_generation_provider="demo"), storage, db, MemoryQueue())  # type: ignore[arg-type]
+    draft = await service.create(LessonCreate(title="Temporary study", subject="Pear"))
+    await service.upload_references(
+        draft.id,
+        [
+            UploadFile(
+                filename="pear.png",
+                file=BytesIO(image_bytes()),
+                headers=Headers({"content-type": "image/png"}),
+            )
+        ],
+    )
+    run = await service.create_target_generation(draft.id)
+    stored_run = await db.get(LessonGenerationRun, run.id)
+    assert stored_run is not None
+    stored_run.status = "failed"
+    lesson = await db.get(PaintingLesson, draft.id)
+    assert lesson is not None
+    lesson.generation_status = "failed"
+    usage = GenerationUsage(
+        lesson_id=draft.id,
+        run_id=run.id,
+        operation="target",
+        attempt=1,
+        model="demo",
+        request_id=None,
+        parameters={},
+        tokens=None,
+        estimated_cost_usd=0.01,
+        pricing_version="test",
+        latency_ms=10,
+        outcome="failed",
+    )
+    db.add(usage)
+    await db.commit()
+
+    await service.discard(draft.id)
+    await service.purge(draft.id)
+
+    assert storage.objects == {}
+    assert await db.get(PaintingLesson, draft.id) is None
+    assert await db.get(LessonGenerationRun, run.id) is None
+    assert await db.get(GenerationUsage, usage.id) is None
+
+
+@pytest.mark.asyncio
 async def test_primary_removal_promotes_first_remaining_and_section_is_provisional(
     db: AsyncSession,
 ) -> None:
