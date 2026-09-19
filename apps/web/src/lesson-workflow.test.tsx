@@ -238,7 +238,7 @@ describe("image-first lesson workflow", () => {
   it("keeps uploads and text prompts exclusive and validates both paths", async () => {
     render(<MemoryRouter initialEntries={["/?view=lesson-create"]}><StyleStudioApp /></MemoryRouter>);
     fireEvent.click(screen.getByRole("button", { name: "Just stick to basics" }));
-    expect(screen.getByRole("alert")).toHaveTextContent("Add at least one photo");
+    expect(screen.getAllByRole("alert").at(-1)).toHaveTextContent("Add at least one photo");
     await waitFor(() => expect(screen.getByRole("button", { name: "Describe an idea" })).toBeEnabled());
     fireEvent.click(screen.getByRole("button", { name: "Describe an idea" }));
     fireEvent.click(screen.getByRole("button", { name: "Make it yours" }));
@@ -248,7 +248,7 @@ describe("image-first lesson workflow", () => {
     expect(screen.getByRole("button", { name: /Individual step images/, pressed: true })).toBeInTheDocument();
     expect(screen.getAllByRole("button", { name: "Let Wanderline decide" }).length).toBe(2);
     fireEvent.click(screen.getByRole("button", { name: "Just stick to basics" }));
-    expect(screen.getByRole("alert")).toHaveTextContent("Describe the scene you’d like to paint");
+    expect(screen.getAllByRole("alert").at(-1)).toHaveTextContent("Describe the scene you’d like to paint");
   });
 
   it("previews uploads, changes the primary reference, and removes files", () => {
@@ -362,7 +362,7 @@ describe("image-first lesson workflow", () => {
 
     const stageNavigation = screen.getByRole("navigation", { name: "Review session steps" });
     fireEvent.click(within(stageNavigation).getAllByRole("button")[lesson.content!.stages.length - 1]);
-    expect(screen.getByRole("link", { name: "Adjust finished painting →" })).toHaveAttribute("href", "/?view=lesson-target&lesson=photo-lesson-1");
+    expect(screen.getByRole("link", { name: "Adjust finished painting →" })).toHaveAttribute("href", "/sessions/photo-lesson-1/target");
     expect(screen.queryByRole("button", { name: /Repaint/ })).not.toBeInTheDocument();
   });
 
@@ -391,11 +391,38 @@ describe("image-first lesson workflow", () => {
     await waitFor(() => expect(retryCalls).toBe(1));
   });
 
-  it("loads saved lessons only when requested", async () => {
+  it("spaces terminal failure actions and can safely discard the failed session", async () => {
+    const lesson = { ...customLesson(), approved_target_asset_id: null };
+    let discarded = false;
+    vi.mocked(fetch).mockImplementation((input, init) => {
+      const url = String(input);
+      if (url.includes("/painting-lessons/photo-lesson-1") && init?.method === "DELETE") {
+        discarded = true;
+        return Promise.resolve(new Response(null, { status: 204 }));
+      }
+      if (url.includes("/painting-lessons/photo-lesson-1")) return response(lesson);
+      if (url.includes("/lesson-generations/run-1")) return response(generationRun({ status: "failed", scope: "target", recoverable: false, error_message: "The preview did not pass validation." }));
+      if (url.endsWith("/painting-lessons?state=all")) return response([]);
+      throw new Error(`Unexpected request: ${url}`);
+    });
+    render(<MemoryRouter initialEntries={["/sessions/photo-lesson-1/build/run-1?next=target"]}><StyleStudioApp /></MemoryRouter>);
+
+    expect(await screen.findByText("The preview did not pass validation.")).toBeInTheDocument();
+    const actions = screen.getByRole("link", { name: "Review AI usage" }).parentElement;
+    expect(actions).toHaveClass("lesson-error__actions");
+    expect(within(actions!).getByRole("link", { name: "Try a new version" })).toBeInTheDocument();
+    fireEvent.click(within(actions!).getByRole("button", { name: "Discard this session" }));
+    expect(await screen.findByText(/AI usage will remain/i)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Continue" }));
+    await waitFor(() => expect(discarded).toBe(true));
+  });
+
+  it("loads sessions for the action-first home and carries them into the library", async () => {
     vi.mocked(fetch).mockImplementation(() => response([customLesson()]));
     render(<MemoryRouter initialEntries={["/"]}><StyleStudioApp /></MemoryRouter>);
-    expect(fetch).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole("link", { name: "Painting sessions" }));
     await screen.findByRole("heading", { name: "Garden shadows" });
+    expect(fetch).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("link", { name: "Sessions" }));
+    expect(await screen.findAllByRole("heading", { name: "Garden shadows" })).not.toHaveLength(0);
   });
 });

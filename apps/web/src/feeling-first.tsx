@@ -30,7 +30,6 @@ export function FeelingFirstStudy() {
   useEffect(() => {
     if (!isEmotionSlug(emotionParam)) {
       const next = new URLSearchParams(searchParams);
-      next.set("view", "feeling-first");
       next.set("emotion", gallery.defaultInterpretation);
       setSearchParams(next, { replace: true });
     }
@@ -60,7 +59,6 @@ export function FeelingFirstStudy() {
     if (!interpretation) return;
     pendingScrollRef.current = true;
     const next = new URLSearchParams(searchParams);
-    next.set("view", "feeling-first");
     next.set("emotion", interpretation.slug);
     setSearchParams(next, { replace });
   }
@@ -68,7 +66,7 @@ export function FeelingFirstStudy() {
   return (
       <article className="emotion-gallery">
         <header className="emotion-gallery__hero">
-          <Link className="text-link" to="/">← Style reference studio</Link>
+          <Link className="text-link" to="/explore">← Style reference studio</Link>
           <p className="eyebrow">{gallery.eyebrow}</p>
           <h1>{gallery.title}</h1>
           <p className="lede">{gallery.description}</p>

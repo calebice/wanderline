@@ -78,7 +78,7 @@ describe("Sites-native Style Studio", () => {
   });
 
   it("restores comparison state and updates its bookmarkable URL", () => {
-    renderPath("/?subject=bouquet&style=watercolor");
+    renderPath("/explore?subject=bouquet&style=watercolor");
     expect(screen.getByRole("button", { name: /Bouquets & vessels/ })).toHaveAttribute("aria-pressed", "true");
     const styles = screen.getByRole("group", { name: /Choose a style/ });
     expect(within(styles).getByRole("button", { name: /Watercolor/ })).toHaveAttribute("aria-pressed", "true");
@@ -90,7 +90,7 @@ describe("Sites-native Style Studio", () => {
   });
 
   it("turns each reference into an actionable study and supports a value check", () => {
-    renderPath("/?subject=greenhouse&style=watercolor");
+    renderPath("/explore?subject=greenhouse&style=watercolor");
     expect(screen.getByRole("heading", { name: "Turn looking into drawing." })).toBeInTheDocument();
     expect(screen.getByText(/Reserve the brightest light/)).toBeInTheDocument();
 
@@ -142,7 +142,7 @@ describe("Sites-native Style Studio", () => {
   });
 
   it("uses explicit defaults for invalid comparison values", () => {
-    renderPath("/?subject=missing&style=missing");
+    renderPath("/explore?subject=missing&style=missing");
     expect(screen.getByRole("button", { name: /Japanese seaside town/ })).toHaveAttribute("aria-pressed", "true");
     const styles = screen.getByRole("group", { name: /Choose a style/ });
     expect(within(styles).getByRole("button", { name: /^Realism/ })).toHaveAttribute("aria-pressed", "true");
@@ -158,13 +158,13 @@ describe("Sites-native Style Studio", () => {
     }
 
     renderPath("/?view=guide&style=watercolor");
-    expect(screen.getByRole("link", { name: /Anime environment/ })).toHaveAttribute("href", "/?view=guide&style=anime-environment");
+    expect(screen.getByRole("link", { name: /Anime environment/ })).toHaveAttribute("href", "/explore/styles/anime-environment");
   });
 
   it("normalizes an invalid guide to the first teaching guide", async () => {
     renderPath("/?view=guide&style=unknown");
     await waitFor(() => expect(screen.getByRole("heading", { name: "Realism", level: 1 })).toBeInTheDocument());
-    expect(screen.getByTestId("location")).toHaveTextContent("?view=guide&style=realism");
+    expect(screen.getByTestId("location")).toHaveTextContent("/explore/styles/realism");
   });
 
   it("restores Feeling First and keeps all five labeled states keyboard-accessible", () => {
@@ -175,7 +175,7 @@ describe("Sites-native Style Studio", () => {
     expect(screen.getAllByRole("button", { pressed: false })).toHaveLength(4);
 
     fireEvent.click(screen.getByRole("button", { name: "Heaviness" }));
-    expect(screen.getByTestId("location")).toHaveTextContent("?view=feeling-first&emotion=heaviness");
+    expect(screen.getByTestId("location")).toHaveTextContent("/explore/feeling-first?emotion=heaviness");
     expect(screen.getByAltText(/bend toward the glowing rim/)).toBeInTheDocument();
   });
 
@@ -189,7 +189,7 @@ describe("Sites-native Style Studio", () => {
 
   it("makes no API request while changing the comparison", () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch");
-    renderPath("/");
+    renderPath("/explore");
     const styles = screen.getByRole("group", { name: /Choose a style/ });
     fireEvent.click(within(styles).getByRole("button", { name: /Watercolor/ }));
     expect(fetchSpy).not.toHaveBeenCalled();

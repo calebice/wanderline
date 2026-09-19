@@ -46,7 +46,7 @@ export function ColorStudy() {
         <feComposite in="textured" in2="edge" operator="in"/>
       </filter>
     </defs></svg>
-    <header className="wc-header"><div><p className="eyebrow">Wanderline / The watercolor palette</p><h1>Color Study</h1><p>Choose a color. See what it can become.</p></div><Link to="/">← Explore</Link></header>
+    <header className="wc-header"><div><p className="eyebrow">Wanderline / The watercolor palette</p><h1>Color Study</h1><p>Choose a color. See what it can become.</p></div><Link to="/explore">← Explore</Link></header>
     <div className="wc-workspace">
       <section className="wc-wheel-panel" aria-label="Color and wash strength">
         <svg className="wc-wheel" viewBox="0 0 500 500" role="group" aria-label="Watercolor wheel with four wash strengths per hue">

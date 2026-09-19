@@ -135,7 +135,7 @@ test("teaching guides restore, paginate, and retain accessible landmarks", async
   await expect(page.getByRole("heading", { name: "Seven decisions behind the result." })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Browse style guides" })).toBeVisible();
   await page.getByRole("link", { name: /Anime environment/ }).click();
-  await expect(page).toHaveURL(/view=guide&style=anime-environment/);
+  await expect(page).toHaveURL(/\/explore\/styles\/anime-environment/);
   await expect(page.getByRole("heading", { name: "Anime environment", level: 1 })).toBeVisible();
 });
 
@@ -212,7 +212,8 @@ test("Feeling First keeps its compact selector attached to the artwork", async (
     { width: 1366, height: 900 },
   ]) {
     await page.setViewportSize(viewport);
-    await page.goto("/?view=feeling-first&emotion=pensive");
+    await page.goto("/explore/feeling-first?emotion=pensive");
+    await expect(page.getByRole("heading", { name: "Feeling First", level: 1 })).toBeVisible();
     const layout = await page.evaluate(() => {
       const selector = document.querySelector<HTMLElement>(".emotion-gallery__selector");
       const artwork = document.querySelector<HTMLElement>(".emotion-gallery__artwork");
@@ -234,7 +235,7 @@ test("Feeling First keeps its compact selector attached to the artwork", async (
   }
 
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/?view=feeling-first&emotion=pensive");
+  await page.goto("/explore/feeling-first?emotion=pensive");
   await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
   await page.getByRole("button", { name: "Joy" }).click();
   await expect(page).toHaveURL(/emotion=joy/);
@@ -278,7 +279,7 @@ for (const viewport of [
 ]) {
   test(`${viewport.name} layout has no horizontal clipping`, async ({ page }, testInfo) => {
     await page.setViewportSize(viewport);
-    await page.goto("/");
+    await page.goto("/explore");
     await expect(page.getByRole("heading", { name: "Choose a painting" })).toBeVisible();
     await expectNoHorizontalOverflow(page);
     await page.goto("/?view=guide&style=anime-environment");
@@ -367,7 +368,7 @@ test("basics resets customization and double submission queues only one preview"
   await dialog.getByRole("slider", { name: "Number of session steps" }).fill("5");
   await dialog.getByRole("button", { name: "Joyous", exact: true }).click();
   await dialog.getByRole("button", { name: "Just stick to basics" }).dblclick();
-  await expect(page).toHaveURL(/run=preview-run/);
+  await expect(page).toHaveURL(/\/sessions\/checkpoint-e2e\/build\/preview-run\?next=target/);
   expect(created?.generation_brief).toMatchObject({ source_mode: "prompt", scene_prompt: "Sunflowers near a rainy window", stage_count: 3, sequence_style: "layer_study", mood: "as_shown", treatment: "natural" });
   expect(created).toMatchObject({ difficulty: "beginner", estimated_duration_minutes: 30, title: null });
   expect(previewCalls).toBe(1);
@@ -398,7 +399,7 @@ test(`modal ${source} controls stay inside their components at 200 percent text`
 
 test("Explore places artwork and a next action in the opening desktop viewport", async ({ page }) => {
   await page.setViewportSize({ width: 1366, height: 900 });
-  await page.goto("/");
+  await page.goto("/explore");
   await expect(page.locator(".style-reference-workspace__image")).toBeInViewport();
   await expect(page.getByRole("link", { name: "Start painting", exact: true }).first()).toBeInViewport();
 });

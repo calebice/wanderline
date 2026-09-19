@@ -184,3 +184,19 @@ body { margin: 0; min-width: 280px; line-height: 1.5; background: var(--surface-
 
 .assembly-preview { max-width: 720px; margin: 24px auto; text-align: center; }
 .assembly-preview img { width: 100%; max-height: 420px; object-fit: contain; border-radius: var(--radius); }
+
+.studio-home { display: grid; gap: 32px; }
+.studio-home__hero { display: flex; align-items: end; justify-content: space-between; gap: 24px; padding: 24px 0; }
+.studio-home__hero > * { min-width: 0; }
+.studio-home__hero p { max-width: 620px; margin: 8px 0; }
+.studio-home__hero .studio-actions { justify-content: flex-end; margin: 0; }
+.studio-home__current { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); align-items: center; gap: 28px; padding: 20px; border: 1px solid var(--theme-border); border-radius: var(--radius); background: var(--surface-panel); }
+.studio-home__current > * { min-width: 0; }
+.studio-home__current > img, .studio-home__current > .session-card__blank { width: 100%; height: min(42vw, 360px); object-fit: contain; border-radius: 12px; background: var(--theme-primary-soft); }
+.studio-home__current h2 { margin: 8px 0; }
+.studio-home__links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.studio-home__links a { display: grid; align-content: start; gap: 8px; min-width: 0; min-height: 132px; padding: 18px; border: 1px solid var(--theme-border); border-radius: var(--radius); background: var(--surface-panel); color: var(--theme-primary-strong); font-weight: 700; text-decoration: none; }
+.studio-home__links span { color: var(--text-secondary); font-weight: 400; }
+@media (max-width: 900px) { .studio-home__links { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px) { .studio-home__hero { align-items: start; flex-direction: column; } .studio-home__hero .studio-actions { justify-content: flex-start; } .studio-home__current { grid-template-columns: minmax(0, 1fr); } .studio-home__current > img, .studio-home__current > .session-card__blank { height: 260px; } }
+@media (max-width: 440px) { .studio-home__links { grid-template-columns: minmax(0, 1fr); } }

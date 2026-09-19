@@ -13,7 +13,7 @@ async function generationAction(path: string, body: Record<string, unknown> = {}
 
 const apiBase = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBase}${path}`, init);
   if (!response.ok) {
     const payload = await response.json().catch(() => null) as { detail?: string | Array<{ msg: string }> } | null;
@@ -26,9 +26,18 @@ export function hydrateLesson(lesson: PaintingLesson): PaintingLesson {
   return { ...lesson, assets: lesson.assets.map((asset) => ({ ...asset, image_url: asset.image_url.startsWith("http") ? asset.image_url : `${apiBase}${asset.image_url}` })) };
 }
 
-export async function listLessons(state: "saved" | "drafts" | "all" = "saved") { return (await request<PaintingLesson[]>(`/api/v1/painting-lessons${state === "saved" ? "" : `?state=${state}`}`)).map(hydrateLesson); }
+export async function listLessons(state: "saved" | "drafts" | "all" | "discarded" = "saved") { return (await request<PaintingLesson[]>(`/api/v1/painting-lessons${state === "saved" ? "" : `?state=${state}`}`)).map(hydrateLesson); }
 export async function getLesson(id: string) { return hydrateLesson(await request<PaintingLesson>(`/api/v1/painting-lessons/${id}`)); }
 export async function createLesson(metadata: Record<string, unknown>) { return request<PaintingLesson>("/api/v1/painting-lessons", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(metadata) }); }
+export async function discardLesson(id: string) {
+  const response = await fetch(`${apiBase}/api/v1/painting-lessons/${id}`, { method: "DELETE" });
+  if (!response.ok) throw new Error("We couldn’t discard that session. Try again.");
+}
+export async function restoreLesson(id: string) { return hydrateLesson(await request<PaintingLesson>(`/api/v1/painting-lessons/${id}/restore`, { method: "POST" })); }
+export async function deleteLessonPermanently(id: string) {
+  const response = await fetch(`${apiBase}/api/v1/painting-lessons/${id}/permanent`, { method: "DELETE" });
+  if (!response.ok) throw new Error("We couldn’t permanently delete that session. Try again.");
+}
 export async function getLessonCapabilities() { return request<{ image_generation_available: boolean }>("/api/v1/painting-lessons/capabilities"); }
 export async function updateLessonBrief(id: string, generationBrief: LessonGenerationBrief, metadata: Record<string, unknown> = {}) { return request<PaintingLesson>(`/api/v1/painting-lessons/${id}/brief`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ generation_brief: generationBrief, ...metadata }) }); }
 export async function startTargetGeneration(id: string, adjustment = "") { return generationAction(`/api/v1/painting-lessons/${id}/target-generations`, { adjustment: adjustment || null }); }

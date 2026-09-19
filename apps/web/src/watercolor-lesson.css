@@ -256,6 +256,8 @@
 .lesson-error strong { display: block; margin-bottom: 3px; }
 .lesson-error { background: color-mix(in srgb, #c96d63 15%, var(--surface-panel)); }
 .lesson-error p { margin: 4px 0 0; }
+.lesson-error__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
+.lesson-error__actions :is(button,.button-link,.text-link) { margin: 0; }
 
 .watercolor-guidance { display: grid; gap: 14px; }
 .watercolor-guidance details { overflow: hidden; border: 1px solid var(--theme-border); border-radius: 22px; background: var(--surface-panel); }
