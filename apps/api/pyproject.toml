@@ -13,7 +13,7 @@ dependencies = [
   "boto3>=1.39,<2",
   "pillow>=11,<12",
   "pillow-heif>=1,<2",
-  "opencv-python-headless>=4.12,<5",
+  "numpy>=2,<3",
   "python-multipart>=0.0.20,<1",
   "openai>=2.0,<3"
 ]
