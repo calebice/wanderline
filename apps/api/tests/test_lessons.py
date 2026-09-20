@@ -110,7 +110,11 @@ async def test_simple_recipe_generates_one_pair_and_reuses_it(
         async def validate_process_board(self, images: Any, prompt: str) -> ProcessBoardValidation:
             calls.append("validation")
             return ProcessBoardValidation(
-                approved=validation_approved, summary="Pair checked.", failures=[]
+                approved=validation_approved,
+                summary="Pair checked."
+                if validation_approved
+                else "The painting is too detailed for a beginner-simple recipe.",
+                failures=[] if validation_approved else ["Too many small interior shapes."],
             )
 
     monkeypatch.setattr(lesson_service_module, "OpenAIStudyImageProvider", Images)
@@ -154,6 +158,7 @@ async def test_simple_recipe_generates_one_pair_and_reuses_it(
     with pytest.raises(LessonValidationError, match="one painting action"):
         await service.save(draft.id, invalid)
     lesson = await service.save(draft.id, save_request)
+    approved_asset_count = len(lesson.assets)
     assert lesson.saved_at is not None
     assert lesson.content and all(stage.approach_steps == [] for stage in lesson.content.stages)
     assert calls == ["image", "validation"]
@@ -164,10 +169,31 @@ async def test_simple_recipe_generates_one_pair_and_reuses_it(
     await process_generation_run(replacement.id, settings, storage, db)  # type: ignore[arg-type]
     rejected = await service.get_run(replacement.id)
     assert rejected.status == "failed" and rejected.recoverable is False
+    assert isinstance(rejected.result, dict)
+    assert rejected.result["rejected_candidate"] is True
+    assert rejected.result["rejection_category"] == "too_detailed"
     reopened = await service.get(draft.id)
     assert reopened.approved_target_asset_id == target_id
     assert reopened.content == lesson.content
-    assert len(reopened.assets) == len(lesson.assets)
+    assert len(reopened.assets) == approved_asset_count + 2
+    rejected_target = next(
+        asset for asset in reopened.assets if str(asset.id) == rejected.result["asset_id"]
+    )
+    assert rejected_target.is_current is False
+    recovered = await service.recover_rejected_target(replacement.id)
+    assert len(recovered.assets) == approved_asset_count + 2
+    from app.models import PaintingLesson
+
+    stored_lesson = await db.get(PaintingLesson, draft.id)
+    assert stored_lesson is not None
+    stored_lesson.generation_brief = {
+        **stored_lesson.generation_brief,
+        "sequence_style": "layer_study",
+    }
+    await db.commit()
+    accepted = await service.accept_rejected_target(replacement.id)
+    assert accepted.approved_target_asset_id == rejected_target.id
+    assert accepted.generation_brief.sequence_style == "simple_recipe"
     assert calls == ["image", "validation", "image", "validation"]
 
 

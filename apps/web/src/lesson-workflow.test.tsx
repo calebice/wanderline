@@ -417,6 +417,43 @@ describe("image-first lesson workflow", () => {
     await waitFor(() => expect(discarded).toBe(true));
   });
 
+  it("shows and keeps a paid Simple Recipe preview rejected by automatic review", async () => {
+    const base = customLesson();
+    const lesson = {
+      ...base,
+      approved_target_asset_id: null,
+      assets: base.assets.filter((asset) => asset.role === "original_reference"),
+    };
+    const recovered = {
+      ...lesson,
+      assets: [
+        ...lesson.assets,
+        { ...base.assets[0], id: "rejected-target", role: "target_reference" as const, is_primary: false, image_url: "/api/v1/lesson-assets/rejected-target/image", alt_text: "Generated sunflower painting" },
+        { ...base.assets[0], id: "rejected-outline", role: "tracing_outline" as const, is_primary: false, stage_id: "rejected-target", image_url: "/api/v1/lesson-assets/rejected-outline/image", alt_text: "Matching sunflower outline" },
+      ],
+    };
+    let approved = false;
+    let generationStarted = false;
+    vi.mocked(fetch).mockImplementation((input, init) => {
+      const url = String(input);
+      if (url.endsWith("/painting-lessons/photo-lesson-1") && !init?.method) return response(lesson);
+      if (url.endsWith("/lesson-generations/run-1") && !init?.method) return response(generationRun({ status: "failed", scope: "target", recoverable: false, error_code: "ProcessBoardRejectedError", error_message: "raw evaluator detail", result: { rejected_candidate: true, rejection_category: "too_detailed" } }));
+      if (url.endsWith("/lesson-generations/run-1/rejected-target") && init?.method === "POST") return response(recovered);
+      if (url.endsWith("/lesson-generations/run-1/rejected-target/accept") && init?.method === "POST") { approved = true; return response({ ...recovered, approved_target_asset_id: "rejected-target" }); }
+      if (url.endsWith("/painting-lessons/photo-lesson-1/generations") && init?.method === "POST") { generationStarted = true; return response(generationRun({ id: "run-2", status: "queued" })); }
+      if (url.endsWith("/lesson-generations/run-2")) return new Promise<Response>(() => undefined);
+      throw new Error(`Unexpected request: ${url}`);
+    });
+    render(<MemoryRouter initialEntries={["/sessions/photo-lesson-1/build/run-1?next=target"]}><StyleStudioApp /></MemoryRouter>);
+
+    expect(await screen.findByText("This preview needs your eye.")).toBeInTheDocument();
+    expect(screen.getByAltText("Generated sunflower painting")).toBeInTheDocument();
+    expect(screen.getByAltText("Matching sunflower outline")).toBeInTheDocument();
+    expect(screen.queryByText("raw evaluator detail")).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: "Keep this version" }));
+    await waitFor(() => expect(approved && generationStarted).toBe(true));
+  });
+
   it("loads sessions for the action-first home and carries them into the library", async () => {
     vi.mocked(fetch).mockImplementation(() => response([customLesson()]));
     render(<MemoryRouter initialEntries={["/"]}><StyleStudioApp /></MemoryRouter>);

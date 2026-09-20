@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "rea
 import { Link, useSearchParams } from "react-router-dom";
 
 import { useSessionNavigate as useNavigate, useStudioConfirm } from "./studio-ui";
-import { approveTarget, choosePrimary, createLesson, discardLesson, getLesson, getLessonCapabilities, latestGenerated, removeReference, retryGeneration, saveLesson, startGeneration, startSectionGeneration, startStageGeneration, startTargetGeneration, updateLessonBrief, uploadReferences, waitForGeneration, type GenerationRun } from "./lesson-api";
+import { acceptRejectedTarget, approveTarget, choosePrimary, createLesson, discardLesson, getLesson, getLessonCapabilities, latestGenerated, recoverRejectedTarget, removeReference, retryGeneration, saveLesson, startGeneration, startSectionGeneration, startStageGeneration, startTargetGeneration, updateLessonBrief, uploadReferences, waitForGeneration, type GenerationResult, type GenerationRun } from "./lesson-api";
 import { DEFAULT_LESSON_BRIEF, type LessonContent, type LessonGenerationBrief, type LessonStage, type PaintingLesson, type PaletteMix } from "./lesson-model";
 import { PaintingRecipeSheet } from "./painting-recipe";
 import { CompactStagePalette, LayerProcessSheet, PaintingStepArt, PaintingStepGuidance, WatercolorLessonTemplate } from "./watercolor-lesson";
@@ -169,6 +169,9 @@ export function LessonAssembly({ id, runId, next }: { id: string | null; runId: 
   const [run, setRun] = useState<GenerationRun | null>(null);
   const [lesson, setLesson] = useState<PaintingLesson | null>(null);
   const [error, setError] = useState("");
+  const [working, setWorking] = useState(false);
+  const [recoveredTargetId, setRecoveredTargetId] = useState<string | null>(null);
+  const recoveryAttempts = useRef(new Set<string>());
   const [pollAttempt, setPollAttempt] = useState(0);
   useEffect(() => { if (id) getLesson(id).then(setLesson).catch(() => undefined); }, [id]);
   useEffect(() => {
@@ -187,7 +190,19 @@ export function LessonAssembly({ id, runId, next }: { id: string | null; runId: 
       if (controller.signal.aborted) return;
       setRun(value);
       if (value.status === "completed") navigate(next === "target" ? `/sessions/${id}/target` : `/sessions/${id}/edit`, { replace: true });
-      else setError(value.error_message || "We couldn’t finish preparing this session.");
+      else {
+        setError(value.error_message || "We couldn’t finish preparing this session.");
+        if (value.error_code === "ProcessBoardRejectedError" && !recoveryAttempts.current.has(value.id)) {
+          recoveryAttempts.current.add(value.id);
+          recoverRejectedTarget(value.id).then((updated) => {
+            if (!controller.signal.aborted) {
+              setLesson(updated);
+              const candidate = [...updated.assets].reverse().find((asset) => asset.role === "target_reference" && asset.id !== updated.approved_target_asset_id);
+              setRecoveredTargetId(candidate?.id || null);
+            }
+          }).catch(() => undefined);
+        }
+      }
     }).catch((reason) => {
       if (controller.signal.aborted) return;
       const message = reason instanceof Error ? reason.message : "Preparation is unavailable.";
@@ -197,15 +212,21 @@ export function LessonAssembly({ id, runId, next }: { id: string | null; runId: 
     return () => controller.abort();
   }, [id, navigate, next, pollAttempt, runId]);
   const total = run?.progress?.total || (next === "target" ? 1 : (lesson?.generation_brief.stage_count || 3) + 1);
-  const completed = run?.progress?.completed || 0;
+  const completed = run?.error_code === "ProcessBoardRejectedError" ? 1 : run?.progress?.completed || 0;
   const phase = run?.progress?.phase;
   const stageItems = run?.progress?.items?.filter((item) => item.key !== "lesson") || [];
   const runningStage = stageItems.findIndex((item) => item.status === "running");
   const finishedStages = stageItems.filter((item) => item.status === "completed").length;
   const stageNumber = runningStage >= 0 ? runningStage + 1 : Math.min(finishedStages + 1, Math.max(1, total - 1));
-  const statusText = phase === "target" ? "Painting your watercolor preview…" : phase === "lesson_text" ? "Writing the session…" : phase === "painting_process_sheet" ? "Painting the layer-by-layer process sheet…" : phase === "validating_process_order" ? "Checking that each layer advances naturally…" : phase === "preparing_stage_views" ? "Preparing the step views…" : phase === "stage_images" ? `Painting step ${stageNumber} of ${Math.max(1, total - 1)}…` : phase === "review" ? "Preparing your review…" : "Preparing your reference…";
+  const statusText = run?.error_code === "ProcessBoardRejectedError" ? "Preview ready for your review." : phase === "target" ? "Painting your watercolor preview…" : phase === "lesson_text" ? "Writing the session…" : phase === "painting_process_sheet" ? "Painting the layer-by-layer process sheet…" : phase === "validating_process_order" ? "Checking that each layer advances naturally…" : phase === "preparing_stage_views" ? "Preparing the step views…" : phase === "stage_images" ? `Painting step ${stageNumber} of ${Math.max(1, total - 1)}…` : phase === "review" ? "Preparing your review…" : "Preparing your reference…";
   const stageAssets = lesson?.content?.stages.map((stage) => activeCheckpointAsset(lesson, stage.id)) || [];
   const targetAsset = [...(lesson?.assets || [])].reverse().find((asset) => asset.role === "target_reference") || lesson?.assets.find((asset) => asset.role === "original_reference" && asset.is_primary);
+  const rejectedResult = run?.result && !Array.isArray(run.result) && typeof run.result === "object" ? run.result as GenerationResult : null;
+  const rejectedAssetId = rejectedResult?.asset_id || recoveredTargetId;
+  const rejectedTarget = run?.error_code === "ProcessBoardRejectedError" && rejectedAssetId ? lesson?.assets.find((asset) => asset.id === rejectedAssetId) : undefined;
+  const rejectedOutline = rejectedTarget ? lesson?.assets.find((asset) => asset.role === "tracing_outline" && asset.stage_id === rejectedTarget.id) : undefined;
+  const inferredCategory = rejectedResult?.rejection_category || (run?.error_message?.toLowerCase().includes("detail") ? "too_detailed" : run?.error_message?.toLowerCase().match(/match|align|outline|panel|layout/) ? "layout_mismatch" : "quality_review");
+  const rejectionCopy = inferredCategory === "layout_mismatch" ? "The painting and tracing outline may not line up closely enough." : inferredCategory === "too_detailed" ? "This version may be more detailed than a simple recipe usually calls for." : "This version needs your review before we turn it into a simple recipe.";
   const cards = next === "target" ? [targetAsset] : Array.from({ length: Math.max(1, total - 1) }, (_, index) => stageAssets[index]);
   async function retry() { if (!runId) return; setError(""); try { const retried = await retryGeneration(runId); setRun(retried); setPollAttempt((attempt) => attempt + 1); } catch (reason) { setError(reason instanceof Error ? reason.message : "We couldn’t resume yet."); } }
   async function discard() {
@@ -213,7 +234,14 @@ export function LessonAssembly({ id, runId, next }: { id: string | null; runId: 
     try { await discardLesson(lesson.id); navigate("/sessions", { replace: true }); }
     catch (reason) { setError(reason instanceof Error ? reason.message : "We couldn’t discard that session."); }
   }
-  return <article className="lesson-assembly"><header><p className="eyebrow">ASSEMBLING YOUR SESSION</p><h1>Paint, paper, and a little patience.</h1><p>Your draft is safe. You can leave this page and reopen it while Wanderline keeps working.</p></header>{next !== "target" && targetAsset && <figure className="assembly-preview"><img src={targetAsset.image_url} alt={targetAsset.alt_text} /><figcaption>Your painting preview</figcaption></figure>}<section aria-live="polite" role="status"><div className="lesson-assembly__papers" aria-hidden="true">{cards.map((asset, index) => <span key={index} className={asset || index < Math.max(0, completed - 1) ? "is-complete" : ""}>{asset ? <img src={asset.image_url} alt="" /> : String(index + 1).padStart(2, "0")}</span>)}</div><strong>{statusText}</strong><progress max={total} value={completed}>{completed} of {total}</progress><p>{completed} of {total} assembly steps complete</p></section>{error && <div className="lesson-error" role="alert"><strong>We couldn’t finish that pass.</strong><p>{error}</p><div className="lesson-error__actions">{run?.status === "failed" && run.recoverable !== false && <button type="button" onClick={() => void retry()}>Resume preparation</button>}{run?.recoverable === false && <><Link className="text-link" to="/settings/usage">Review AI usage</Link>{lesson && <><Link className="button-link" to={lesson.approved_target_asset_id ? `/sessions/${lesson.id}/target` : `/sessions/new?lesson=${lesson.id}`}>Try a new version</Link><button type="button" className="button-secondary" onClick={() => void discard()}>Discard this session</button></>}</>}</div></div>}<Link className="text-link" to="/sessions">Return to your sessions →</Link></article>;
+  async function keepRejected() {
+    if (!lesson || !rejectedTarget || !runId) return;
+    setWorking(true); setError("");
+    try { await acceptRejectedTarget(runId); const nextRun = await startGeneration(lesson.id, false); navigate(`/sessions/${lesson.id}/build/${nextRun.id}?next=review`, { replace: true }); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : "We couldn’t keep this version yet."); }
+    finally { setWorking(false); }
+  }
+  return <article className="lesson-assembly"><header><p className="eyebrow">ASSEMBLING YOUR SESSION</p><h1>Paint, paper, and a little patience.</h1><p>Your draft is safe. You can leave this page and reopen it while Wanderline keeps working.</p></header>{next !== "target" && targetAsset && <figure className="assembly-preview"><img src={targetAsset.image_url} alt={targetAsset.alt_text} /><figcaption>Your painting preview</figcaption></figure>}<section aria-live="polite" role="status"><div className="lesson-assembly__papers" aria-hidden="true">{cards.map((asset, index) => <span key={index} className={asset || index < Math.max(0, completed - 1) ? "is-complete" : ""}>{asset ? <img src={asset.image_url} alt="" /> : String(index + 1).padStart(2, "0")}</span>)}</div><strong>{statusText}</strong><progress max={total} value={completed}>{completed} of {total}</progress><p>{completed} of {total} assembly steps complete</p></section>{error && <div className="lesson-error" role="alert">{rejectedTarget ? <><strong>This preview needs your eye.</strong><p>{rejectionCopy} You’ve already paid for this preview, so you can keep it as it is or ask for a simpler version.</p><section className="rejected-preview" aria-label="Generated preview under review"><figure><img src={rejectedTarget.image_url} alt={rejectedTarget.alt_text} /><figcaption>Generated painting</figcaption></figure>{rejectedOutline && <figure><img src={rejectedOutline.image_url} alt={rejectedOutline.alt_text} /><figcaption>Matching outline</figcaption></figure>}</section></> : <><strong>We couldn’t finish that pass.</strong><p>{error}</p></>}<div className="lesson-error__actions">{run?.status === "failed" && run.recoverable !== false && <button type="button" onClick={() => void retry()}>Resume preparation</button>}{run?.recoverable === false && <><Link className="text-link" to="/settings/usage">Review AI usage</Link>{lesson && <>{rejectedTarget ? <><button type="button" disabled={working} onClick={() => void keepRejected()}>{working ? "Keeping version…" : "Keep this version"}</button><Link className="button-link button-secondary" to={`/sessions/${lesson.id}/target`}>Try a simpler version</Link></> : <Link className="button-link" to={lesson.approved_target_asset_id ? `/sessions/${lesson.id}/target` : `/sessions/new?lesson=${lesson.id}`}>Try a new version</Link>}<button type="button" className="button-secondary" onClick={() => void discard()}>Discard this session</button></>}</>}</div></div>}<Link className="text-link" to="/sessions">Return to your sessions →</Link></article>;
 }
 
 function useLesson(id: string | null) {

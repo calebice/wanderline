@@ -125,6 +125,10 @@ All endpoints are versioned under `/api/v1`:
   cascade. A v2 final-checkpoint adjustment is redirected to target generation and approval.
 - `GET /lesson-generations/{run_id}` polls status; `POST /lesson-generations/{run_id}/retry`
   requeues recoverable failures.
+- `POST /lesson-generations/{run_id}/rejected-target` restores an already-paid Simple Recipe
+  preview from its durable checkpoint for review. It does not make another provider request.
+- `POST /lesson-generations/{run_id}/rejected-target/accept` approves that candidate with the
+  captured Simple Recipe brief before the learner explicitly starts written-guide generation.
 - `POST /painting-lessons/{id}/sections/{section_key}/generations` queues isolated section or
   stage regeneration; `GET .../latest-generated` retrieves the newest successful snapshot.
 - `PUT /painting-lessons/{id}` saves the complete edited lesson with optimistic revision checking.

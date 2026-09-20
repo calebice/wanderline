@@ -44,6 +44,31 @@ reconcile; no deprecated operation remains in OpenAPI.
 
 ## Later opportunities
 
+### Simple Recipe v2: simplicity-first generation and guided recovery
+
+Simple Recipe v1 remains frozen. Any generation-contract change below ships as a separately
+versioned Simple Recipe v2 after fixture, print, accessibility, and visual review.
+
+- Make simplicity the primary image objective rather than direct photographic realism: retain the
+  subject's identity while grouping petals, foliage, vessels, shadows, and background into broad,
+  paintable shapes.
+- Constrain likely failure points in the prompt and validator: limited wash families, few interior
+  boundaries, plain vessel treatment, restrained texture/highlights, and omission of decorative
+  motifs that do not carry the subject.
+- Separate hard structural failures (missing/equal panels, unusable outline, non-corresponding
+  composition) from complexity advisories. Structural failures still require review; complexity
+  alone should not hide a paid candidate or prevent the learner from accepting it.
+- Preserve every completed paid candidate as a visible, reusable draft with its validator category,
+  while keeping raw evaluator prose in logs rather than application copy.
+- Add user-triggered, category-specific regeneration procedures such as “simplify small shapes,”
+  “align the outline,” and “quiet the background.” Feed the relevant evaluator findings into the
+  corrective prompt, show that another generation may add usage, and never retry automatically.
+- Measure acceptance, regeneration category, and repeat-failure rates before tightening validation.
+
+Definition of done: a v2 contract and fixtures prove that accepted references remain recognizable,
+beginner-paintable, and structurally usable; recovery stays concise and every additional paid call
+requires an explicit learner action.
+
 ### P2: Generated references
 
 - Rename Sessions to References throughout navigation, application copy, durable routes, API

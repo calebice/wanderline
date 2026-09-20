@@ -364,6 +364,42 @@ async def retry_lesson_generation(
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
+@studio_router.post(
+    "/api/v1/lesson-generations/{run_id}/rejected-target",
+    response_model=LessonRead,
+    tags=["painting-lessons"],
+)
+async def recover_rejected_lesson_target(
+    run_id: uuid.UUID,
+    service: Annotated[LessonService, Depends(get_lesson_service)],
+) -> LessonRead:
+    """Restore a paid Simple Recipe preview that the automatic review rejected."""
+    try:
+        return await service.recover_rejected_target(run_id)
+    except LessonNotFoundError as error:
+        raise HTTPException(status_code=404, detail="generation not found") from error
+    except LessonValidationError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+@studio_router.post(
+    "/api/v1/lesson-generations/{run_id}/rejected-target/accept",
+    response_model=LessonRead,
+    tags=["painting-lessons"],
+)
+async def accept_rejected_lesson_target(
+    run_id: uuid.UUID,
+    service: Annotated[LessonService, Depends(get_lesson_service)],
+) -> LessonRead:
+    """Accept a rejected Simple Recipe preview without another image-provider call."""
+    try:
+        return await service.accept_rejected_target(run_id)
+    except LessonNotFoundError as error:
+        raise HTTPException(status_code=404, detail="generation not found") from error
+    except LessonValidationError as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
 @studio_router.get(
     "/api/v1/painting-lessons/{lesson_id}/sections/{section_key}/latest-generated",
     response_model=GenerationRunRead,

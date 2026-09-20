@@ -63,6 +63,8 @@ OpenAPI and return 404.
 | `POST …/{lesson_id}/generations`, `POST …/{lesson_id}/stage-generations` | retained | full/checkpoint generation | — |
 | `POST …/{lesson_id}/sections/{section_key}/generations` | retained | section regeneration | — |
 | `GET /api/v1/lesson-generations/{run_id}`, `POST …/{run_id}/retry` | retained | durable job state/retry | — |
+| `POST …/{run_id}/rejected-target` | retained | materializes an already-paid rejected Simple Recipe checkpoint for learner review; never calls the provider | — |
+| `POST …/{run_id}/rejected-target/accept` | retained | approves the recovered candidate with its captured Simple Recipe brief; never calls the provider | — |
 | `GET …/{lesson_id}/sections/{section_key}/latest-generated` | retained | provisional section result | — |
 | `PUT /api/v1/painting-lessons/{lesson_id}` | retained | optimistic save | — |
 | `GET /api/v1/lesson-assets/{asset_id}/image` | retained | authorized private display object | — |
@@ -102,6 +104,8 @@ the human-readable disposition):
 /api/v1/painting-lessons/{lesson_id}/sections/{section_key}/generations
 /api/v1/lesson-generations/{run_id}
 /api/v1/lesson-generations/{run_id}/retry
+/api/v1/lesson-generations/{run_id}/rejected-target
+/api/v1/lesson-generations/{run_id}/rejected-target/accept
 /api/v1/painting-lessons/{lesson_id}/sections/{section_key}/latest-generated
 /api/v1/lesson-assets/{asset_id}/image
 /api/v1/studio/usage

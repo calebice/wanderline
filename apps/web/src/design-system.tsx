@@ -24,6 +24,7 @@ const exampleOptions = [
   { value: "artwork", label: "Artwork stage" },
   { value: "recipe", label: "Painting recipe" },
   { value: "sessions", label: "Sessions" },
+  { value: "recovery", label: "Preview recovery" },
   { value: "form", label: "Form & dialog" },
   { value: "settings", label: "Settings" },
   { value: "mixing", label: "Color mixing" },
@@ -36,6 +37,7 @@ const exampleNotes: Record<Example, string> = {
   artwork: "The artwork can set the mood. The production Feeling First slider is preserved unchanged; these buttons demonstrate the general artwork-control pattern.",
   recipe: "Compact presentation of the frozen apple fixture. Select the artwork to enlarge it. Production recipes retain their approved layout.",
   sessions: "Titles, artwork, and a useful next action. Filters stay compact; an empty collection offers one way forward.",
+  recovery: "A paid preview remains visible when automatic review raises a concern. Use one short, category-based explanation and let the learner keep it or explicitly request another version.",
   form: "Visible labels, short hints, and errors beside the field. Secondary decisions belong in a dialog. This example saves only in memory.",
   settings: "Utility pages use the same typography and controls, with restrained surfaces and explicit labels. Figures here are local sample data.",
 };
@@ -130,6 +132,10 @@ function SessionsExample({ onPaint }: { onPaint: () => void }) {
   </div>;
 }
 
+function PreviewRecoveryExample({ onPaint }: { onPaint: () => void }) {
+  return <div className="garden-page-example"><div className="lesson-error" role="status"><strong>This preview needs your eye.</strong><p>This version may be more detailed than a simple recipe usually calls for. You can keep it as it is or ask for a simpler version.</p><section className="rejected-preview" aria-label="Generated preview under review"><figure><img src={applePainting} alt="Generated watercolor apple" /><figcaption>Generated painting</figcaption></figure><figure><img src={appleOutline} alt="Matching apple outline" /><figcaption>Matching outline</figcaption></figure></section><div className="lesson-error__actions"><GardenButton onClick={onPaint}>Keep this version</GardenButton><GardenButton variant="secondary" onClick={onPaint}>Try a simpler version</GardenButton><GardenLink to="/settings/usage">Review AI usage</GardenLink></div></div></div>;
+}
+
 function FormExample() {
   const [title, setTitle] = useState("");
   const [error, setError] = useState(false);
@@ -208,6 +214,7 @@ export function DesignSystem() {
         {example === "artwork" && <ArtworkExample />}
         {example === "recipe" && <PaintingRecipeSheet presentation="compact" lesson={referenceLesson} actions={<GardenButton variant="quiet" onClick={() => navigateExample("sessions")}>Your painting sessions</GardenButton>} />}
         {example === "sessions" && <SessionsExample onPaint={showRecipe} />}
+        {example === "recovery" && <PreviewRecoveryExample onPaint={showRecipe} />}
         {example === "form" && <FormExample />}
         {example === "settings" && <SettingsExample />}
         {example === "mixing" && <ColorMixingProposal />}

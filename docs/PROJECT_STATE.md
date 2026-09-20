@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Volatile project coordination state
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-19
 
 ## Current milestone
 
@@ -14,6 +14,10 @@ painting-session workflow. ADR 0005 and `FEATURE_API_AUDIT.md` are authoritative
 Garden Studio revision 04 remains approved. Paper A and Pigment edge controls may be reused without
 additional approval. The complete Feeling First selector and Simple Recipe v1 presentation/content/
 assets/printing remain protected and frozen.
+
+Rejected Simple Recipe previews now remain visible and can be accepted without paying to regenerate.
+The application shows concise review categories rather than raw evaluator prose. A separately
+versioned simplicity-first generation and guided-regeneration proposal is recorded in the roadmap.
 
 ## Current product truth
 
@@ -41,7 +45,7 @@ frontend type checks.
 ## Consolidation verification
 
 September 18: backend lint, formatting, strict types, and **69 retained tests** pass. Frontend lint,
-types, **45 unit tests**, production build, and static validation pass (86 files, 17.6 MB). All **41
+types, **46 unit tests**, production build, and static validation pass (86 files, 17.6 MB). All **41
 Playwright tests** pass across the reference-carousel Home, production color trials, clean/compatibility routes, responsive
 and enlarged-text layouts, Feeling First preservation, and frozen Simple Recipe/print screenshots.
 
