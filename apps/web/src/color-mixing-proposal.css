@@ -26,6 +26,7 @@
 .mixing-proposal__guidance { border-left: 3px solid var(--interactive-primary); padding-left: .75rem; }
 .mixing-proposal details { margin: .75rem 0; }
 .mixing-proposal .garden-field { margin: 1rem 0; }
+.mixing-proposal__actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
 .mixing-proposal--production { padding: .5rem 0 2rem; }
 .mixing-proposal__history { padding: 1rem; border: 1px solid var(--theme-border); border-radius: 1rem; background: var(--surface-panel); }
 .mixing-proposal__history ul { display: grid; gap: .5rem; padding: 0; list-style: none; }

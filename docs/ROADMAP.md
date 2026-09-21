@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Delivery sequencing
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 ## Release 1: Evidence-backed audit — complete in consolidation
 
@@ -41,6 +41,22 @@ Git-ignored export was verified before removal.
 
 Definition of done: retained painting/color data survives migration; export and cleanup manifests
 reconcile; no deprecated operation remains in OpenAPI.
+
+## Release 4: Personal Color Library — complete
+
+- Record learner-private physical swatches for one palette paint, an authored mix, or a custom mix
+  of up to three paints.
+- Preserve numeric formula parts, immutable palette/recipe source snapshots, paper and capture
+  metadata, structured observations, and one card-backed private photograph.
+- Show 18-paint coverage and a newest-first gallery with source, family, and ingredient filters.
+- Support optimistic metadata edits, private photo replacement, and confirmed permanent deletion.
+- Keep mix notes compatible and clearly separate from physical swatches.
+- Preserve raw evidence for a future calibrated recommender without sampling pixels or making
+  validation, accuracy, or catalog-publication claims.
+
+Definition of done: additive migration, learner-scoped API/storage lifecycle, production routes,
+live design reference, and backend/frontend/browser acceptance pass without changing protected
+Feeling First or Simple Recipe v1 behavior.
 
 ## Later opportunities
 
@@ -90,9 +106,9 @@ requires an explicit learner action.
   for a later gallery ordered by painted date and filterable by reference and tags; do not build
   the gallery presentation in this stage.
 
-- A physical color-testing workflow where the learner records real mixes, uploads or samples the
-  dried result, and compares the resulting color with the authored target before publishing a new
-  validated catalog version
+- A calibrated recommender using explicitly supported reference-card profiles, reviewed target-color
+  sources, confidence, and accuracy thresholds
+- Evidence review and publication of physically validated changes as a new immutable catalog version
 - Additional watercolor palettes
 - A new medium introduced through explicit versioned contracts and design review
 - Stronger local identity only when multi-learner use becomes a real requirement

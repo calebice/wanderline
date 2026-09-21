@@ -10,6 +10,8 @@ import applePainting from "../e2e/fixtures/simple-recipe-v1/painting.png";
 import appleOutline from "../e2e/fixtures/simple-recipe-v1/outline.png";
 import "./design-system.css";
 import { ColorMixingProposal } from "./color-mixing-proposal";
+import { EMILY_LEX_PAINTS } from "./color-mixing-examples";
+import "./color-library.css";
 import { readyPaintingReferences } from "./reference-model";
 import { ReferenceRail } from "./reference-rail";
 
@@ -28,11 +30,13 @@ const exampleOptions = [
   { value: "form", label: "Form & dialog" },
   { value: "settings", label: "Settings" },
   { value: "mixing", label: "Color mixing" },
+  { value: "library", label: "Color Library" },
 ] as const;
 type Example = (typeof exampleOptions)[number]["value"];
 const exampleNotes: Record<Example, string> = {
   home: "Approved home pattern: a manual horizontal rail of completed generated references. It supports touch, keyboard, and visible controls, never advances on its own, and leaves the next card partly visible.",
   mixing: "Production-approved composition: choose a family, then a shade. The 36 versioned starting mixtures use one to three paints; numbered highlights show order. Saving here remains a local demonstration and never changes learner history.",
+  library: "The Color Library reuses the collection and focused-form patterns. Set coverage makes missing single-paint swatches visible; physical swatches follow in a filterable gallery without claiming calibrated color matching.",
   explore: "Compact heading, one action, and artwork. Paper grain and pigment provide the character.",
   artwork: "The artwork can set the mood. The production Feeling First slider is preserved unchanged; these buttons demonstrate the general artwork-control pattern.",
   recipe: "Compact presentation of the frozen apple fixture. Select the artwork to enlarge it. Production recipes retain their approved layout.",
@@ -163,6 +167,15 @@ function SettingsExample() {
   </div>;
 }
 
+function ColorLibraryExample() {
+  const recorded = new Set(EMILY_LEX_PAINTS.slice(0, 3).map(([name]) => name));
+  return <div className="garden-page-example color-library">
+    <GardenHeading title="Color Library" action={<GardenButton>Add a swatch</GardenButton>}><p>Keep a private record of how your paints and mixes look after they dry.</p></GardenHeading>
+    <section className="color-library__coverage"><div><h2>Your paint set</h2><p>3 of 18 paints recorded</p></div><progress value={3} max={18}>3 of 18</progress><ul>{EMILY_LEX_PAINTS.map(([name, color]) => <li key={name} className={recorded.has(name) ? "is-recorded" : ""}><a href="#design-examples" onClick={(event) => event.preventDefault()}><span style={{ backgroundColor: color }} aria-hidden="true" /><strong>{name}</strong><small>{recorded.has(name) ? "Recorded" : "Add swatch"}</small></a></li>)}</ul></section>
+    <GardenEmpty title="No mixed swatches yet" action={<GardenButton variant="secondary">Add a mixture</GardenButton>}>Single paints and mixtures share one physical color library.</GardenEmpty>
+  </div>;
+}
+
 function ComponentExamples() {
   const [choice, setChoice] = useState("color");
   const [notice, setNotice] = useState<"info" | "loading" | "success" | "error">("info");
@@ -218,6 +231,7 @@ export function DesignSystem() {
         {example === "form" && <FormExample />}
         {example === "settings" && <SettingsExample />}
         {example === "mixing" && <ColorMixingProposal />}
+        {example === "library" && <ColorLibraryExample />}
       </div>
     </section>
 

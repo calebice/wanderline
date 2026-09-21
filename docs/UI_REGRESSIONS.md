@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Project-wide UI invariants and regression record
-Last reviewed: 2026-09-09
+Last reviewed: 2026-09-20
 
 This file records recurring visual failures that must remain fixed across Wanderline.
 Treat these checks as project-wide layout invariants, not page-specific polish.
@@ -74,3 +74,16 @@ controls, appearance, sticky placement, keyboard behavior, and artwork scrolling
 application styling layer at phone, tablet, and desktop widths. It also checks active-view
 component bounds at normal and 200% text size. Subject cards and lesson navigation labels
 must wrap; intentional scrolling navigation remains scrollable.
+
+## R-006: Physical swatch evidence must remain complete
+
+**Status:** Guarded by unit and browser tests
+
+A Color Library photograph includes both the dried swatch and its reference card. Gallery and detail
+layouts must use `object-fit: contain` and must not crop, mask, or sample that evidence. At phone,
+tablet, desktop, and 200% text sizes, coverage labels, filter controls, formula text, and capture
+fields reflow without clipped descendants or page-level horizontal overflow. Screen targets remain
+explicitly illustrative and may not be described as calibrated measurements.
+
+**Automated guards:** `apps/web/src/color-library.test.tsx` and the Color Library flow in
+`apps/web/e2e/consolidation.spec.ts`.

@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Consolidation disposition and removal ledger
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 ## Baseline and method
 
@@ -52,6 +52,10 @@ OpenAPI and return 404.
 | `GET /api/v1/color-mixing/catalog` | active, retained | versioned 36-recipe Emily Lex catalog | — |
 | `GET, POST /api/v1/color-mixing/trials` | active, retained | learner-scoped history and creation | — |
 | `PUT /api/v1/color-mixing/trials/{trial_id}` | active, retained | optimistic `expected_revision` updates | — |
+| `GET, POST /api/v1/color-mixing/swatches` | active, retained | learner-private physical swatch library and multipart creation | — |
+| `GET, PUT, DELETE /api/v1/color-mixing/swatches/{swatch_id}` | active, retained | read, optimistic metadata update, and confirmed permanent deletion | — |
+| `PUT /api/v1/color-mixing/swatches/{swatch_id}/image` | active, retained | private physical-swatch photo replacement with optimistic revision | — |
+| `GET /api/v1/color-mixing/swatches/{swatch_id}/image` | active, retained | authorized normalized swatch display image | — |
 | `POST, GET /api/v1/painting-lessons` | retained | create/list painting sessions | — |
 | `GET /api/v1/painting-lessons/capabilities` | retained | provider availability | — |
 | `GET, DELETE /api/v1/painting-lessons/{lesson_id}` | retained | open or safely discard a session; discarding initially preserves usage history | — |
@@ -88,6 +92,9 @@ the human-readable disposition):
 /api/v1/color-mixing/catalog
 /api/v1/color-mixing/trials
 /api/v1/color-mixing/trials/{trial_id}
+/api/v1/color-mixing/swatches
+/api/v1/color-mixing/swatches/{swatch_id}
+/api/v1/color-mixing/swatches/{swatch_id}/image
 /api/v1/painting-lessons
 /api/v1/painting-lessons/capabilities
 /api/v1/painting-lessons/{lesson_id}
@@ -120,10 +127,14 @@ the human-readable disposition):
 | `GenerationUsage` / `generation_usage` | retained | usage reporting | — |
 | `ColorMixRecipe` / `color_mix_recipes` | retained | immutable version/palette/slug records | — |
 | `ColorMixTrial` / `color_mix_trials` | retained | learner trials, ordered adjustments, notes, revision, timestamps | — |
+| `ColorSwatch` / `color_swatches` | active, retained | physical single-paint and mixture records with source, formula, material, capture, and observation snapshots | — |
+| `ColorSwatchAsset` / `color_swatch_assets` | active, retained | one learner-private original/display photo pair per physical swatch | — |
 | `Exercise`, `PracticeSession`, `LibraryExercise`, `LibraryAttempt`, `Sketch`, `Analysis` and their six tables | removed | Real export verified; dropped by `0014` | complete |
 
 Historical migrations `0001`–`0011` are immutable. Migration `0012` adds color-mixing persistence;
 `0013` adds safe session discarding; `0014` drops only the six exported drawing-era tables.
+Migration `0015` additively introduces the personal physical Color Library without rewriting recipes
+or existing mix-note records.
 
 ## Worker operations and storage
 
@@ -137,6 +148,7 @@ Historical migrations `0001`–`0011` are immutable. Migration `0012` adds color
 | Usage recording | retained | model/operation/token/cost provenance |
 | Lesson source objects | retained | private original plus bounded display rendition |
 | Generated target/stage/process/outline objects | retained | addressed by `lesson_assets` |
+| Physical color-swatch originals/displays | active, retained | private `color-swatches/{swatch}/{asset}/…` objects addressed by `color_swatch_assets` |
 | Sketch upload objects | removed | Export contained no sketch objects; storage type removed |
 | Generic image alias | removed | Duplicate endpoint removed with sketch storage |
 | Curated guide/Feeling First/lemon assets | retained static | bundled with web build |
@@ -151,6 +163,7 @@ Historical migrations `0001`–`0011` are immutable. Migration `0012` adds color
 | Style guide, Feeling First, Color Study tests | retained | Use durable routes; preserve behavior |
 | Health and migration tests | retained | Cover `0012` color mixing, `0013` discarding, and scoped `0014` removal |
 | Color mixing catalog/trial tests | active | Seed/version/create/update/conflict/isolation/history |
+| Color Library API/storage/browser tests | active | Source validation, snapshots, private images, optimistic edits, filtering, coverage, replacement, and deletion |
 | Exercise/library/practice/analysis/decomposition compatibility tests | removed | Deleted with the retired implementation after export |
 | Archived-site-only tests | obsolete | delete with stale bundle |
 | “drawing curriculum is primary” | contradicted claim | replaced by watercolor-first boundary |

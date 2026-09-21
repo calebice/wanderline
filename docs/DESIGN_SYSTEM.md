@@ -2,7 +2,7 @@
 
 Status: Current — revision 04 approved; application styling adopted
 Authority: Approved application UX and visual design contract
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 ## Start here
 
@@ -107,6 +107,7 @@ Explore/teaching guides, artwork stages, sessions, creation/review/editing, less
 | Artwork with controls | Compact controls immediately adjacent to the preview; preserve the user's selection. Controls remain keyboard accessible. In a full feature page, keep them sticky during viewing, account for navigation, and bring changed artwork into view. |
 | Focused lesson | Complete artwork beside concise numbered actions, with enlargement available in the compact reference; stack on phones. Reuse the actual Simple Recipe renderer and frozen fixture. Keep swatches adjacent, mixing below, optional detail closed, print controls in the existing dialog. |
 | Session collection | Clear title and primary action, compact filters, artwork/title/status/action per item. One helpful empty state, no duplicate calls to action inside every surrounding section. |
+| Physical Color Library | Reuse the collection pattern: compact title/action, 18-paint coverage, then a newest-first filtered swatch gallery. Keep full swatch/card photographs uncropped. Capture and edit use the focused form pattern; technical capture guidance stays beside the image field. Never imply that an unprocessed photo is a calibrated match. |
 | Paid preview recovery | Keep a rejected generated painting and its matching outline visible. Explain the review concern in one plain, category-based sentence; never expose raw evaluator output. “Keep this version” is primary, requesting another version is explicit, and usage remains a quiet supporting link. Do not automatically spend on another generation. |
 | Form / dialog | Visible labels, one brief hint if useful, error beside its field; keep values after an error. One primary submit. Put secondary decisions in an accessible dialog with an explicit close, Escape support, contained focus, and focus restoration. |
 | Settings / usage | Calm heading, a small set of meaningful figures, filters beside results, semantic tables. Explain unknown data plainly; avoid promotional language and oversized hero layouts. |
@@ -209,6 +210,20 @@ The owner approved this composition for production as part of the consolidation 
 updates use optimistic revisions and retain the recipe snapshot/catalog version that created each
 trial. Additional palettes, editable pan arrangement, or physically validated formula changes are
 new product work and require a versioned proposal; they are not implied by this approval.
+
+### Personal Color Library — production-approved composition
+
+The library is a separate physical-evidence surface below Color Mixing. Application copy calls the
+existing editable recipe observations **mix notes** and reserves **swatch** for a card-backed physical
+record. The library uses the approved collection and focused-form patterns: 18-paint coverage first,
+then a newest-first gallery with compact source/family/ingredient filters. One paint, authored mixes,
+and custom mixes of up to three paints share the same library.
+
+The capture form requires formula parts, paper, basic appearance, reference-card identity, lighting,
+same-plane confirmation, and one dry-swatch photograph. Preserve the full card-inclusive image and
+state that screen targets are illustrative. No v1 interface samples pixels, ranks colors, declares a
+physical validation, or publishes a catalog change. The live reference demonstrates the coverage
+and empty-gallery composition without reading learner data.
 
 General teaching reference: [Jane Blundell on two- and three-color mixing](https://danielsmith.com/artists/insights/jane-blundell-the-ultimate-watercolor-mixing-selection/).
 That reference uses other paints and does not validate the Emily Lex formulas or amounts.

@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: System boundaries and technical architecture
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 ## System overview
 
@@ -20,7 +20,9 @@ Redis is coordination, not durable state.
 
 The React application uses one shell and these durable routes: `/`, `/explore`,
 `/explore/styles/:style`, `/explore/feeling-first`, `/explore/color-study`, `/color-mixing`,
-`/sessions`, `/sessions/new`, `/sessions/:id`, `/sessions/:id/edit`, `/sessions/:id/target`,
+`/color-mixing/library`, `/color-mixing/library/new`, `/color-mixing/library/:id`,
+`/color-mixing/library/:id/edit`, `/sessions`, `/sessions/new`, `/sessions/:id`,
+`/sessions/:id/edit`, `/sessions/:id/target`,
 `/sessions/:id/build/:runId`, `/settings/usage`, and `/internal/design-system`.
 
 Supported legacy query URLs redirect to these paths while preserving their meaningful parameters.
@@ -31,10 +33,16 @@ Static curated references ship with the web application and do not require learn
 - Health/readiness
 - Painting lessons, references/assets, targets, generation runs, save/edit, and usage
 - Color-mixing catalog and learner-scoped trials
+- Learner-scoped physical color swatches and private swatch images
 
 Color recipes have a stable catalog version, palette ID, and recipe slug. Each trial stores a recipe
 snapshot plus version so history remains readable after later catalogs ship. Updates require
 `expected_revision` and timestamps are UTC.
+
+Physical swatches are independent of working mix notes. Each stores a versioned single-paint,
+authored-recipe, or custom-mixture source plus structured material/capture observations. A one-to-one
+asset owns the private original and bounded WebP display image. Metadata and image replacements use
+the swatch revision; no v1 process derives a representative color from the photograph.
 
 Drawing-era operations and their runtime dependencies were removed after a verified local export.
 They are absent from OpenAPI; historical migrations remain as the immutable schema history.
@@ -60,7 +68,8 @@ The local learner is represented by `learner_profiles`, which remains the owners
 painting lessons and color trials. Future identity can replace lookup behavior without discarding
 ownership columns.
 
-S3-compatible storage holds lesson originals and generated/display assets. Curated guide, Feeling
+S3-compatible storage holds lesson originals, generated/display assets, and physical-swatch
+original/display pairs under a separate `color-swatches/` prefix. Curated guide, Feeling
 First, Color Study, and lemon assets are static web files. No drawing-era object type remains.
 
 ## Deployment and observability

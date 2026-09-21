@@ -1,8 +1,8 @@
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime
 from typing import Any
 
-from sqlalchemy import JSON, Boolean, DateTime, ForeignKey, Index, Numeric, String, Text, text
+from sqlalchemy import JSON, Boolean, Date, DateTime, ForeignKey, Index, Numeric, String, Text, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -177,3 +177,49 @@ class ColorMixTrial(Base):
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now, onupdate=utc_now
     )
+
+
+class ColorSwatch(Base):
+    __tablename__ = "color_swatches"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    learner_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("learner_profiles.id"), index=True)
+    schema_version: Mapped[str] = mapped_column(String(40), default="color-swatch.v1")
+    source_type: Mapped[str] = mapped_column(String(30), index=True)
+    palette_id: Mapped[str] = mapped_column(String(80), index=True)
+    catalog_version: Mapped[int]
+    source_recipe_id: Mapped[uuid.UUID | None] = mapped_column(
+        ForeignKey("color_mix_recipes.id"), index=True
+    )
+    family: Mapped[str | None] = mapped_column(String(40), index=True)
+    name: Mapped[str] = mapped_column(String(160))
+    source_snapshot: Mapped[dict[str, Any]] = mapped_column(JSON)
+    ingredients: Mapped[list[dict[str, Any]]] = mapped_column(JSON)
+    paper: Mapped[dict[str, Any]] = mapped_column(JSON)
+    capture: Mapped[dict[str, Any]] = mapped_column(JSON)
+    observations: Mapped[dict[str, Any]] = mapped_column(JSON)
+    notes: Mapped[str] = mapped_column(String(4000), default="")
+    tested_on: Mapped[date] = mapped_column(Date, index=True)
+    revision: Mapped[int] = mapped_column(default=1)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, onupdate=utc_now
+    )
+
+
+class ColorSwatchAsset(Base):
+    __tablename__ = "color_swatch_assets"
+
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4)
+    swatch_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("color_swatches.id", ondelete="CASCADE"), unique=True, index=True
+    )
+    original_object_key: Mapped[str] = mapped_column(String(400), unique=True)
+    display_object_key: Mapped[str] = mapped_column(String(400), unique=True)
+    original_content_type: Mapped[str] = mapped_column(String(50))
+    display_content_type: Mapped[str] = mapped_column(String(50))
+    width: Mapped[int]
+    height: Mapped[int]
+    filename: Mapped[str] = mapped_column(String(255))
+    alt_text: Mapped[str] = mapped_column(String(500))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)

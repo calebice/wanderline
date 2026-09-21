@@ -13,6 +13,7 @@ import { FEELING_FIRST_GALLERY } from "./emotion-study-catalog";
 import { FeelingFirstStudy } from "./feeling-first";
 import { ColorStudy } from "./color-study";
 import { ColorMixingProposal } from "./color-mixing-proposal";
+import { ColorLibrary, ColorSwatchDetail, ColorSwatchForm } from "./color-library";
 import { StartPaintingLink, StudioDialog, StudioConfirmationProvider } from "./studio-ui";
 import { PaintingSessions, StudioHome, StudioSettings } from "./studio-pages";
 import { AppNav } from "./navigation";
@@ -389,6 +390,10 @@ function StudioShell() {
       <Route path="/explore/color-study" element={<ColorStudy />} />
       <Route path="/explore/watercolor-lesson" element={<WatercolorLesson />} />
       <Route path="/color-mixing" element={<ColorMixingProposal production />} />
+      <Route path="/color-mixing/library" element={<ColorLibrary />} />
+      <Route path="/color-mixing/library/new" element={<ColorSwatchForm />} />
+      <Route path="/color-mixing/library/:id" element={<ColorSwatchDetail />} />
+      <Route path="/color-mixing/library/:id/edit" element={<ColorSwatchForm />} />
       <Route path="/sessions" element={<PaintingSessions />} />
       <Route path="/sessions/:id" element={<SessionViewRoute />} />
       <Route path="/sessions/:id/edit" element={<SessionEditRoute />} />
