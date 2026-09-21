@@ -13,7 +13,7 @@ async function generationAction(path: string, body: Record<string, unknown> = {}
 
 const apiBase = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
+export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBase}${path}`, init);
   if (!response.ok) {
     const payload = await response.json().catch(() => null) as { detail?: string | Array<{ msg: string }> } | null;
@@ -26,9 +26,18 @@ export function hydrateLesson(lesson: PaintingLesson): PaintingLesson {
   return { ...lesson, assets: lesson.assets.map((asset) => ({ ...asset, image_url: asset.image_url.startsWith("http") ? asset.image_url : `${apiBase}${asset.image_url}` })) };
 }
 
-export async function listLessons(state: "saved" | "drafts" | "all" = "saved") { return (await request<PaintingLesson[]>(`/api/v1/painting-lessons${state === "saved" ? "" : `?state=${state}`}`)).map(hydrateLesson); }
+export async function listLessons(state: "saved" | "drafts" | "all" | "discarded" = "saved") { return (await request<PaintingLesson[]>(`/api/v1/painting-lessons${state === "saved" ? "" : `?state=${state}`}`)).map(hydrateLesson); }
 export async function getLesson(id: string) { return hydrateLesson(await request<PaintingLesson>(`/api/v1/painting-lessons/${id}`)); }
 export async function createLesson(metadata: Record<string, unknown>) { return request<PaintingLesson>("/api/v1/painting-lessons", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(metadata) }); }
+export async function discardLesson(id: string) {
+  const response = await fetch(`${apiBase}/api/v1/painting-lessons/${id}`, { method: "DELETE" });
+  if (!response.ok) throw new Error("We couldn’t discard that session. Try again.");
+}
+export async function restoreLesson(id: string) { return hydrateLesson(await request<PaintingLesson>(`/api/v1/painting-lessons/${id}/restore`, { method: "POST" })); }
+export async function deleteLessonPermanently(id: string) {
+  const response = await fetch(`${apiBase}/api/v1/painting-lessons/${id}/permanent`, { method: "DELETE" });
+  if (!response.ok) throw new Error("We couldn’t permanently delete that session. Try again.");
+}
 export async function getLessonCapabilities() { return request<{ image_generation_available: boolean }>("/api/v1/painting-lessons/capabilities"); }
 export async function updateLessonBrief(id: string, generationBrief: LessonGenerationBrief, metadata: Record<string, unknown> = {}) { return request<PaintingLesson>(`/api/v1/painting-lessons/${id}/brief`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ generation_brief: generationBrief, ...metadata }) }); }
 export async function startTargetGeneration(id: string, adjustment = "") { return generationAction(`/api/v1/painting-lessons/${id}/target-generations`, { adjustment: adjustment || null }); }
@@ -37,12 +46,15 @@ export async function uploadReferences(id: string, files: File[]) { const body =
 export async function choosePrimary(id: string, assetId: string) { return request<PaintingLesson>(`/api/v1/painting-lessons/${id}/references/${assetId}/primary`, { method: "PATCH" }); }
 export async function removeReference(id: string, assetId: string) { return request<PaintingLesson>(`/api/v1/painting-lessons/${id}/references/${assetId}`, { method: "DELETE" }); }
 
-export type GenerationRun = { id: string; lesson_id: string; scope: string; section_key: string | null; status: string; result: unknown; error_message: string | null; recoverable?: boolean; error_code?: string; progress?: { phase?: string; completed?: number; total?: number; items?: Array<{ key: string; status: string; message?: string }> } | null };
+export type GenerationResult = { asset_id?: string; rejected_candidate?: boolean; rejection_category?: "too_detailed" | "layout_mismatch" | "quality_review" };
+export type GenerationRun = { id: string; lesson_id: string; scope: string; section_key: string | null; status: string; result: GenerationResult | Record<string, unknown> | unknown[] | string | null; error_message: string | null; recoverable?: boolean; error_code?: string; progress?: { phase?: string; completed?: number; total?: number; items?: Array<{ key: string; status: string; message?: string }> } | null };
 export async function startGeneration(id: string, includeStudyImage: boolean) { return generationAction(`/api/v1/painting-lessons/${id}/generations`, { include_study_image: includeStudyImage }); }
 export async function startStageGeneration(id: string, stageId: string, adjustment = "") { return generationAction(`/api/v1/painting-lessons/${id}/stage-generations`, { start_stage_id: stageId, adjustment: adjustment || null }); }
 export async function startSectionGeneration(id: string, key: string, content: LessonContent) { return generationAction(`/api/v1/painting-lessons/${id}/sections/${encodeURIComponent(key)}/generations`, { current_content: content }); }
 export async function getGeneration(id: string) { return request<GenerationRun>(`/api/v1/lesson-generations/${id}`); }
 export async function retryGeneration(id: string) { return request<GenerationRun>(`/api/v1/lesson-generations/${id}/retry`, { method: "POST" }); }
+export async function recoverRejectedTarget(id: string) { return hydrateLesson(await request<PaintingLesson>(`/api/v1/lesson-generations/${id}/rejected-target`, { method: "POST" })); }
+export async function acceptRejectedTarget(id: string) { return hydrateLesson(await request<PaintingLesson>(`/api/v1/lesson-generations/${id}/rejected-target/accept`, { method: "POST" })); }
 export async function latestGenerated(lessonId: string, key: string) { return request<GenerationRun>(`/api/v1/painting-lessons/${lessonId}/sections/${encodeURIComponent(key)}/latest-generated`); }
 export async function saveLesson(lesson: PaintingLesson, content: LessonContent) { return hydrateLesson(await request<PaintingLesson>(`/api/v1/painting-lessons/${lesson.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ expected_revision: lesson.revision, title: lesson.title, subject: lesson.subject, artistic_context: lesson.artistic_context, difficulty: lesson.difficulty, estimated_duration_minutes: lesson.estimated_duration_minutes, content }) })); }
 

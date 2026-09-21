@@ -118,7 +118,7 @@ function CheckpointLessonTemplate({ lesson }: { lesson: PaintingLesson }) {
   return (
     <article className="checkpoint-lesson">
       <header className="checkpoint-lesson__header">
-        <div><Link className="text-link" to="/?view=guide&style=watercolor">← Watercolor guide</Link><p className="eyebrow">GUIDED WATERCOLOR · {lesson.difficulty}</p><h1>{lesson.title}</h1></div>
+        <div><Link className="text-link" to="/explore/styles/watercolor">← Watercolor guide</Link><p className="eyebrow">GUIDED WATERCOLOR · {lesson.difficulty}</p><h1>{lesson.title}</h1></div>
         <dl><div><dt>Steps</dt><dd>{stages.length}</dd></div><div><dt>Active time</dt><dd>{lesson.estimated_duration_minutes} min</dd></div></dl>
       </header>
       {lesson.is_demo && <aside className="lesson-demo-note" role="status"><strong>A sample session.</strong> These tips offer a starting point; they are not based on a visual reading of your photo.</aside>}
@@ -140,7 +140,7 @@ function CheckpointLessonTemplate({ lesson }: { lesson: PaintingLesson }) {
 }
 
 export function WatercolorLessonTemplate({ lesson }: { lesson: PaintingLesson }) {
-  if (!lesson.content?.stages.length) return <section className="lesson-state"><h1>Your session is still taking shape.</h1><Link className="text-link" to="/?view=sessions">Return to your sessions</Link></section>;
+  if (!lesson.content?.stages.length) return <section className="lesson-state"><h1>Your session is still taking shape.</h1><Link className="text-link" to="/sessions">Return to your sessions</Link></section>;
   if (lesson.generation_brief.sequence_style === "simple_recipe") return <PaintingRecipeSheet lesson={lesson} />;
   return <CheckpointLessonTemplate lesson={lesson} />;
 }

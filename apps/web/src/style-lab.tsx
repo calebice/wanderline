@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link, Route, Routes, useLocation, useNavigate, useSearchParams, type Location } from "react-router-dom";
+import { useState } from "react";
+import { Link, Navigate, Route, Routes, useLocation, useNavigate, useParams, useSearchParams, type Location } from "react-router-dom";
 import {
   STYLE_GUIDE_BY_SLUG,
   STYLE_GUIDE_ENTRIES,
@@ -12,8 +12,9 @@ import {
 import { FEELING_FIRST_GALLERY } from "./emotion-study-catalog";
 import { FeelingFirstStudy } from "./feeling-first";
 import { ColorStudy } from "./color-study";
+import { ColorMixingProposal } from "./color-mixing-proposal";
 import { StartPaintingLink, StudioDialog, StudioConfirmationProvider } from "./studio-ui";
-import { PaintingSessions, StudioSettings } from "./studio-pages";
+import { PaintingSessions, StudioHome, StudioSettings } from "./studio-pages";
 import { AppNav } from "./navigation";
 import { WatercolorLesson } from "./watercolor-lesson";
 import { DesignSystem } from "./design-system";
@@ -174,7 +175,7 @@ export function StyleGuideGallery() {
             </section>
             <div className="style-reference-actions">
               <a href={variant.reference.src} target="_blank" rel="noreferrer">Open full image ↗</a>
-              {variant.guidePath && <Link to={`/?view=guide&style=${variant.style}`}>Tips to try →</Link>}
+              {variant.guidePath && <Link to={`/explore/styles/${variant.style}`}>Tips to try →</Link>}
             </div>
 
           </aside>
@@ -182,7 +183,7 @@ export function StyleGuideGallery() {
       </section>
       <section className="color-study-entry" aria-labelledby="color-study-entry-title">
         <div><h2 id="color-study-entry-title">Spend a little time with color.</h2><p>Explore gentle neighbors, bold opposites, and the colors in between.</p></div>
-        <Link className="button-link" to="/?view=color-study">Explore Color Study</Link>
+        <Link className="button-link" to="/explore/color-study">Explore Color Study</Link>
       </section>
       <section className="feeling-first-card" aria-labelledby="feeling-first-card-title">
         <img
@@ -196,7 +197,7 @@ export function StyleGuideGallery() {
         <div>
           <h2 id="feeling-first-card-title">One premise. Five feelings.</h2>
           <p>Move from sadness to joy through five completely different celestial interpretations. See how setting, viewpoint, light, and subject change what an image feels like.</p>
-          <Link className="button-link" to="/?view=feeling-first&emotion=pensive">Explore the gallery →</Link>
+          <Link className="button-link" to="/explore/feeling-first?emotion=pensive">Explore the gallery →</Link>
         </div>
       </section>
       <SavedLessonLibrary />
@@ -214,7 +215,7 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
       <article className={`style-guide-detail style-guide-detail--${entry.slug}`}>
         <header className="style-guide-detail__header">
           <div>
-            <Link className="text-link" to="/">← Explore</Link>
+            <Link className="text-link" to="/explore">← Explore</Link>
             <p className="eyebrow">STYLE {String(index + 1).padStart(2, "0")} OF 05</p>
             <h1>{entry.label}</h1>
             <p className="style-guide-kicker">{entry.kicker}</p>
@@ -241,7 +242,7 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
               <h2 id="watercolor-lesson-invitation-title">See what the water is doing.</h2>
               <p>Paint one lemon through dry, glossy, damp, and dry-again steps. Each interval shows what to do, what to notice, and when the paper is ready to move on.</p>
             </div>
-            <Link className="button-link" to="/?view=watercolor-lesson">Start the lemon session →</Link>
+            <Link className="button-link" to="/explore/watercolor-lesson">Start the lemon session →</Link>
           </section>
         )}
 
@@ -317,51 +318,90 @@ export function StyleGuideDetail({ entry }: { entry: StyleGuideEntry }) {
 
 
         <nav className="style-guide-pagination" aria-label="Browse style guides">
-          <Link to={`/?view=guide&style=${previous.slug}`}><span>Previous</span><strong>← {previous.label}</strong></Link>
-          <Link to="/"><span>Overview</span><strong>Compare all styles</strong></Link>
-          <Link to={`/?view=guide&style=${next.slug}`}><span>Next</span><strong>{next.label} →</strong></Link>
+          <Link to={`/explore/styles/${previous.slug}`}><span>Previous</span><strong>← {previous.label}</strong></Link>
+          <Link to="/explore"><span>Overview</span><strong>Compare all styles</strong></Link>
+          <Link to={`/explore/styles/${next.slug}`}><span>Next</span><strong>{next.label} →</strong></Link>
         </nav>
       </article>
   );
 }
 
-function StudioPage() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const view = searchParams.get("view");
-  const style = searchParams.get("style");
-  const guide = isStyleGuideSlug(style) ? STYLE_GUIDE_BY_SLUG.get(style) : undefined;
-  useEffect(() => {
-    if (view === "guide" && !guide) setSearchParams({ view: "guide", style: STYLE_GUIDE_ENTRIES[0].slug }, { replace: true });
-  }, [guide, setSearchParams, view]);
-  if (view === "guide" && guide) return <StyleGuideDetail entry={guide} />;
-  if (view === "design-system") return <DesignSystem />;
-  if (view === "feeling-first") return <FeelingFirstStudy />;
-  if (view === "color-study") return <ColorStudy />;
-  if (view === "sessions") return <PaintingSessions />;
-  if (view === "settings") return <StudioSettings />;
-  if (view === "watercolor-lesson") return <WatercolorLesson />;
-  if (view === "lesson-build") return <LessonAssembly id={searchParams.get("lesson")} runId={searchParams.get("run")} next={searchParams.get("next")} />;
-  if (view === "lesson-review") return <LessonEditor id={searchParams.get("lesson")} />;
-  if (view === "lesson") return <SavedLessonView id={searchParams.get("lesson")} />;
-  return <StyleGuideGallery />;
+function LegacyViewRedirect() {
+  const [params] = useSearchParams();
+  const view = params.get("view");
+  if (!view) {
+    if (params.has("subject") || params.has("style")) {
+      const next = new URLSearchParams();
+      if (params.get("subject")) next.set("subject", params.get("subject")!);
+      if (params.get("style")) next.set("style", params.get("style")!);
+      return <Navigate replace to={`/explore?${next.toString()}`} />;
+    }
+    return <StudioHome />;
+  }
+  const lesson = params.get("lesson");
+  const run = params.get("run");
+  const next = params.get("next");
+  const style = params.get("style");
+  const emotion = params.get("emotion");
+  const target = view === "guide" ? `/explore/styles/${isStyleGuideSlug(style) ? style : STYLE_GUIDE_ENTRIES[0].slug}${params.get("subject") ? `?subject=${encodeURIComponent(params.get("subject")!)}` : ""}`
+    : view === "design-system" ? "/internal/design-system"
+    : view === "feeling-first" ? `/explore/feeling-first${emotion ? `?emotion=${encodeURIComponent(emotion)}` : ""}`
+    : view === "color-study" ? "/explore/color-study"
+    : view === "sessions" ? "/sessions"
+    : view === "settings" ? "/settings/usage"
+    : view === "watercolor-lesson" ? "/explore/watercolor-lesson"
+    : view === "lesson-build" && lesson && run ? `/sessions/${lesson}/build/${run}${next ? `?next=${encodeURIComponent(next)}` : ""}`
+    : view === "lesson-review" && lesson ? `/sessions/${lesson}/edit`
+    : view === "lesson" && lesson ? `/sessions/${lesson}`
+    : view === "lesson-target" && lesson ? `/sessions/${lesson}/target`
+    : view === "lesson-create" ? `/sessions/new${lesson ? `?lesson=${lesson}` : ""}`
+    : "/explore";
+  return <Navigate replace to={target} />;
 }
+
+function StyleGuideRoute() {
+  const { style } = useParams();
+  const guide = isStyleGuideSlug(style) ? STYLE_GUIDE_BY_SLUG.get(style) : undefined;
+  return guide ? <StyleGuideDetail entry={guide} /> : <Navigate replace to={`/explore/styles/${STYLE_GUIDE_ENTRIES[0].slug}`} />;
+}
+
+function SessionViewRoute() { const { id } = useParams(); return <SavedLessonView id={id || null} />; }
+function SessionEditRoute() { const { id } = useParams(); return <LessonEditor id={id || null} />; }
+function SessionBuildRoute() { const { id, runId } = useParams(); const [params] = useSearchParams(); return <LessonAssembly id={id || null} runId={runId || null} next={params.get("next")} />; }
 
 function StudioShell() {
   const location = useLocation();
   const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
-  const view = params.get("view");
-  const modal = view === "lesson-create" || view === "lesson-target" || (view === "lesson-build" && params.get("next") === "target");
+  const newSession = location.pathname === "/sessions/new";
+  const targetMatch = location.pathname.match(/^\/sessions\/([^/]+)\/target$/);
+  const buildMatch = location.pathname.match(/^\/sessions\/([^/]+)\/build\/([^/]+)$/);
+  const modal = newSession || Boolean(targetMatch) || Boolean(buildMatch && params.get("next") === "target");
   const background = (location.state as { background?: Location } | null)?.background;
-  const pageLocation = modal ? background || { ...location, search: "", state: null } : location;
-  function close() { if (background) navigate(background.pathname + background.search, { replace: true }); else navigate("/?view=sessions", { replace: true }); }
+  const pageLocation = modal ? background || { ...location, pathname: "/sessions", search: "", state: null } : location;
+  function close() { if (background) navigate(background.pathname + background.search, { replace: true }); else navigate("/sessions", { replace: true }); }
   return <div className="site-shell studio-aligned"><a className="skip-link" href="#main-content">Skip to the artwork</a>
-    <Routes location={pageLocation}><Route path="*" element={<><AppNav /><main id="main-content"><StudioPage /></main></>} /></Routes>
-    <footer className="site-footer"><span>Wanderline</span><p>Look closely. Choose boldly. Make it yours.</p><Link to="/?view=settings">Studio settings</Link></footer>
-    <StudioDialog open={modal} onClose={close} wide={view !== "lesson-create"}>
-      <div hidden={view !== "lesson-create"}><LessonCreator active={view === "lesson-create"} /></div>
-      {view === "lesson-target" && <LessonTargetReview id={params.get("lesson")} />}
-      {view === "lesson-build" && params.get("next") === "target" && <LessonAssembly id={params.get("lesson")} runId={params.get("run")} next="target" />}
+    <AppNav /><main id="main-content"><Routes location={pageLocation}>
+      <Route path="/" element={<LegacyViewRedirect />} />
+      <Route path="/explore" element={<StyleGuideGallery />} />
+      <Route path="/explore/styles/:style" element={<StyleGuideRoute />} />
+      <Route path="/explore/feeling-first" element={<FeelingFirstStudy />} />
+      <Route path="/explore/color-study" element={<ColorStudy />} />
+      <Route path="/explore/watercolor-lesson" element={<WatercolorLesson />} />
+      <Route path="/color-mixing" element={<ColorMixingProposal production />} />
+      <Route path="/sessions" element={<PaintingSessions />} />
+      <Route path="/sessions/:id" element={<SessionViewRoute />} />
+      <Route path="/sessions/:id/edit" element={<SessionEditRoute />} />
+      <Route path="/sessions/:id/build/:runId" element={<SessionBuildRoute />} />
+      <Route path="/settings/usage" element={<StudioSettings />} />
+      <Route path="/internal/design-system" element={<DesignSystem />} />
+      <Route path="*" element={<Navigate replace to="/" />} />
+    </Routes></main>
+    <footer className="site-footer"><span>Wanderline</span><p>Look closely. Choose boldly. Make it yours.</p><Link to="/settings/usage">Studio settings</Link></footer>
+    <StudioDialog open={modal} onClose={close} wide={!newSession}>
+      <div hidden={!newSession}><LessonCreator active={newSession} /></div>
+      {targetMatch && <LessonTargetReview id={targetMatch[1]} />}
+      {buildMatch && params.get("next") === "target" && <LessonAssembly id={buildMatch[1]} runId={buildMatch[2]} next="target" />}
     </StudioDialog>
   </div>;
 }

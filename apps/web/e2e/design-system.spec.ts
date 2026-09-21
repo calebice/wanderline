@@ -24,7 +24,7 @@ async function expectContentsFit(page: Page) {
 test("color mixing proposal preserves instructions while recording adjustments", async ({ page }) => {
   const apiRequests: string[] = [];
   await page.route("**/api/**", (route) => { apiRequests.push(route.request().url()); return route.abort(); });
-  await page.goto("/?view=design-system");
+  await page.goto("/internal/design-system");
   const example = await selectPattern(page, "Color mixing");
   await expect(example.locator(".mixing-proposal__palette li")).toHaveCount(18);
   const families = example.getByRole("group", { name: "Color family", exact: true });
@@ -61,7 +61,7 @@ test("color mixing proposal preserves instructions while recording adjustments",
 test("reference patterns work locally and preserve the frozen recipe and modal behavior", async ({ page }) => {
   const apiRequests: string[] = [];
   await page.route("**/api/**", (route) => { apiRequests.push(route.request().url()); return route.abort(); });
-  await page.goto("/?view=design-system");
+  await page.goto("/internal/design-system");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Garden Studio");
   await expect(page.getByText("Approved design system", { exact: true })).toBeVisible();
   const explore = page.getByRole("region", { name: "Explore page example", exact: true });
@@ -122,7 +122,7 @@ test("reference patterns work locally and preserve the frozen recipe and modal b
   await page.getByRole("alert").getByRole("button", { name: "Try again" }).click();
   await expect(page.getByRole("status")).toContainText("Your painting session is ready to reopen.");
   await page.getByRole("link", { name: "View foundations" }).click();
-  await expect(page).toHaveURL(/view=design-system#design-foundations/);
+  await expect(page).toHaveURL(/\/internal\/design-system#design-foundations/);
   expect(apiRequests).toEqual([]);
 });
 
@@ -130,7 +130,7 @@ for (const width of [390, 768, 1440]) {
   test(`reference layouts at ${width}px with enlarged text`, async ({ page }) => {
     test.setTimeout(120_000);
     await page.setViewportSize({ width, height: 1000 });
-    await page.goto("/?view=design-system");
+    await page.goto("/internal/design-system");
     for (const textSize of [100, 200]) {
       await page.evaluate((size) => { document.documentElement.style.fontSize = `${size}%`; }, textSize);
       for (const name of patterns) {
@@ -173,7 +173,7 @@ for (const width of [390, 768, 1440]) {
 for (const [width, height] of [[1366, 768], [1440, 900], [1024, 768], [768, 1024]]) {
   test(`complete compact recipe fits ${width}x${height}`, async ({ page }) => {
     await page.setViewportSize({ width, height });
-    await page.goto("/?view=design-system");
+    await page.goto("/internal/design-system");
     await selectPattern(page, "Painting recipe");
     const sheet = page.getByRole("region", { name: "Simple painting recipe", exact: true });
     await expect(sheet.getByRole("heading", { name: "Mix your colors" })).toBeInViewport();

@@ -9,13 +9,13 @@ from typing import Any, cast
 from fastapi import UploadFile
 from PIL import Image, ImageOps
 from redis.asyncio import Redis
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.concurrency import run_in_threadpool
 
-from app.analysis import validate_sketch
 from app.config import Settings
 from app.generation_runtime import durable_operation, usage_context
+from app.image_validation import validate_image
 from app.lesson_generation import (
     LessonGenerationRequest,
     OpenAIStudyImageProvider,
@@ -57,6 +57,15 @@ class LessonValidationError(ValueError):
 
 class ProcessBoardRejectedError(LessonValidationError):
     pass
+
+
+def _recipe_rejection_category(*messages: str) -> str:
+    detail = " ".join(messages).lower()
+    if any(word in detail for word in ("detail", "complex", "beginner", "simple")):
+        return "too_detailed"
+    if any(word in detail for word in ("match", "align", "outline", "panel", "layout")):
+        return "layout_mismatch"
+    return "quality_review"
 
 
 def _clean(value: str | None) -> str | None:
@@ -228,7 +237,11 @@ class LessonService:
         learner = await LearnerProfileRepository(self.db).get_local()
         lesson = await self.db.scalar(
             select(PaintingLesson)
-            .where(PaintingLesson.id == lesson_id, PaintingLesson.learner_id == learner.id)
+            .where(
+                PaintingLesson.id == lesson_id,
+                PaintingLesson.learner_id == learner.id,
+                PaintingLesson.discarded_at.is_(None),
+            )
             .with_for_update()
         )
         if lesson is None:
@@ -327,22 +340,83 @@ class LessonService:
     async def get(self, lesson_id: uuid.UUID) -> LessonRead:
         return await lesson_read(self.db, await self._local_lesson(lesson_id), self.settings)
 
+    async def discard(self, lesson_id: uuid.UUID) -> None:
+        lesson = await self._local_lesson(lesson_id)
+        await self._existing_run(lesson, None)
+        lesson.discarded_at = utc_now()
+        lesson.generation_status = "discarded"
+        lesson.generation_error = None
+        await self.db.commit()
+
+    async def restore(self, lesson_id: uuid.UUID) -> LessonRead:
+        lesson = await self._discarded_lesson(lesson_id)
+        latest = await self.db.scalar(
+            select(LessonGenerationRun)
+            .where(LessonGenerationRun.lesson_id == lesson.id)
+            .order_by(LessonGenerationRun.created_at.desc())
+            .limit(1)
+        )
+        lesson.discarded_at = None
+        lesson.generation_status = (
+            "generating"
+            if latest and latest.status == "running"
+            else latest.status
+            if latest
+            else "idle"
+        )
+        lesson.generation_error = (
+            {"code": latest.error_code, "message": latest.error_message}
+            if latest and latest.status == "failed"
+            else None
+        )
+        await self.db.commit()
+        await self.db.refresh(lesson)
+        return await lesson_read(self.db, lesson, self.settings)
+
+    async def purge(self, lesson_id: uuid.UUID) -> None:
+        lesson = await self._discarded_lesson(lesson_id)
+        assets = list(
+            await self.db.scalars(select(LessonAsset).where(LessonAsset.lesson_id == lesson.id))
+        )
+        for asset in assets:
+            await run_in_threadpool(self.storage.delete, asset.original_object_key)
+            if asset.display_object_key != asset.original_object_key:
+                await run_in_threadpool(self.storage.delete, asset.display_object_key)
+        await self.db.execute(delete(GenerationUsage).where(GenerationUsage.lesson_id == lesson.id))
+        await self.db.execute(
+            delete(LessonGenerationRun).where(LessonGenerationRun.lesson_id == lesson.id)
+        )
+        await self.db.execute(delete(LessonAsset).where(LessonAsset.lesson_id == lesson.id))
+        await self.db.delete(lesson)
+        await self.db.commit()
+
+    async def _discarded_lesson(self, lesson_id: uuid.UUID) -> PaintingLesson:
+        learner = await LearnerProfileRepository(self.db).get_local()
+        lesson = await self.db.scalar(
+            select(PaintingLesson)
+            .where(
+                PaintingLesson.id == lesson_id,
+                PaintingLesson.learner_id == learner.id,
+                PaintingLesson.discarded_at.is_not(None),
+            )
+            .with_for_update()
+        )
+        if lesson is None:
+            raise LessonNotFoundError(str(lesson_id))
+        return lesson
+
     async def list_saved(self, state: str = "saved") -> list[LessonRead]:
         learner = await LearnerProfileRepository(self.db).get_local()
-        lessons = list(
-            await self.db.scalars(
-                select(PaintingLesson)
-                .where(
-                    PaintingLesson.learner_id == learner.id,
-                    PaintingLesson.saved_at.is_not(None)
-                    if state == "saved"
-                    else PaintingLesson.saved_at.is_(None)
-                    if state == "drafts"
-                    else PaintingLesson.id.is_not(None),
-                )
-                .order_by(PaintingLesson.updated_at.desc())
-            )
-        )
+        statement = select(PaintingLesson).where(PaintingLesson.learner_id == learner.id)
+        if state == "discarded":
+            statement = statement.where(PaintingLesson.discarded_at.is_not(None))
+        else:
+            statement = statement.where(PaintingLesson.discarded_at.is_(None))
+            if state == "saved":
+                statement = statement.where(PaintingLesson.saved_at.is_not(None))
+            elif state == "drafts":
+                statement = statement.where(PaintingLesson.saved_at.is_(None))
+        lessons = list(await self.db.scalars(statement.order_by(PaintingLesson.updated_at.desc())))
         return [await lesson_read(self.db, lesson, self.settings) for lesson in lessons]
 
     async def usage_summary(self) -> dict[str, Any]:
@@ -440,7 +514,7 @@ class LessonService:
             if len(raw) > self.settings.max_upload_bytes:
                 raise LessonValidationError("An image exceeds the configured 15 MB upload limit.")
             validated = await run_in_threadpool(
-                validate_sketch,
+                validate_image,
                 raw,
                 upload.content_type or "",
                 self.settings.max_image_pixels,
@@ -794,6 +868,90 @@ class LessonService:
 
     async def get_run(self, run_id: uuid.UUID) -> GenerationRunRead:
         return GenerationRunRead.model_validate(await self.get_run_model(run_id))
+
+    async def recover_rejected_target(self, run_id: uuid.UUID) -> LessonRead:
+        run = await self.get_run_model(run_id)
+        lesson = await self._local_lesson(run.lesson_id)
+        if (
+            run.scope != "target"
+            or run.status != "failed"
+            or run.error_code != "ProcessBoardRejectedError"
+            or not (run.input_snapshot or {}).get("recipe_version")
+        ):
+            raise LessonValidationError(
+                "This generation does not have a rejected preview to recover."
+            )
+
+        result = run.result if isinstance(run.result, dict) else {}
+        asset_id = result.get("asset_id")
+        if asset_id:
+            existing = await self.db.scalar(
+                select(LessonAsset).where(
+                    LessonAsset.id == uuid.UUID(str(asset_id)),
+                    LessonAsset.lesson_id == lesson.id,
+                    LessonAsset.role == "target_reference",
+                )
+            )
+            if existing is not None:
+                return await lesson_read(self.db, lesson, self.settings)
+
+        checkpoint = (run.checkpoints or {}).get("target")
+        if not checkpoint or checkpoint.get("status") != "completed":
+            raise LessonValidationError("The rejected preview is no longer available.")
+
+        async def unavailable_generation() -> tuple[bytes, str]:
+            raise LessonValidationError("The rejected preview is no longer available.")
+
+        board, _ = await durable_operation(
+            run, self.db, self.storage, "target", unavailable_generation
+        )
+        image, outline = await run_in_threadpool(split_recipe_art, board)
+        target = await _store_generated_asset(
+            self.db,
+            self.storage,
+            lesson,
+            image,
+            "image/png",
+            "target_reference",
+            "watercolor-target.png",
+            f"Generated watercolor target for {lesson.title}",
+        )
+        await _store_generated_asset(
+            self.db,
+            self.storage,
+            lesson,
+            outline,
+            "image/png",
+            "tracing_outline",
+            "tracing-outline.png",
+            f"Tracing outline for {lesson.title}",
+            str(target.id),
+        )
+        run.result = {
+            **result,
+            "asset_id": str(target.id),
+            "rejected_candidate": True,
+            "rejection_category": _recipe_rejection_category(run.error_message or ""),
+        }
+        await self.db.commit()
+        await self.db.refresh(lesson)
+        return await lesson_read(self.db, lesson, self.settings)
+
+    async def accept_rejected_target(self, run_id: uuid.UUID) -> LessonRead:
+        await self.recover_rejected_target(run_id)
+        run = await self.get_run_model(run_id)
+        lesson = await self._local_lesson(run.lesson_id)
+        result = run.result if isinstance(run.result, dict) else {}
+        asset_id = result.get("asset_id")
+        snapshot_lesson = (run.input_snapshot or {}).get("lesson") or {}
+        generation_brief = snapshot_lesson.get("generation_brief")
+        if not asset_id or not generation_brief:
+            raise LessonValidationError("The rejected preview can no longer be accepted.")
+        lesson.generation_brief = generation_brief
+        lesson.source_mode = generation_brief.get("source_mode", lesson.source_mode)
+        lesson.scene_prompt = generation_brief.get("scene_prompt", lesson.scene_prompt)
+        await self.db.commit()
+        return await self.approve_target(lesson.id, uuid.UUID(str(asset_id)))
 
     async def latest_generated(self, lesson_id: uuid.UUID, section_key: str) -> GenerationRunRead:
         lesson = await self._local_lesson(lesson_id)
@@ -1369,9 +1527,37 @@ async def _process_claimed_run(
                         ProcessBoardValidation,
                     )
                     if not validation.approved:
+                        image, outline = await run_in_threadpool(split_recipe_art, image)
+                        target = await _store_generated_asset(
+                            db,
+                            storage,
+                            lesson,
+                            image,
+                            "image/png",
+                            "target_reference",
+                            "watercolor-target.png",
+                            f"Generated watercolor target for {lesson.title}",
+                        )
+                        await _store_generated_asset(
+                            db,
+                            storage,
+                            lesson,
+                            outline,
+                            "image/png",
+                            "tracing_outline",
+                            "tracing-outline.png",
+                            f"Tracing outline for {lesson.title}",
+                            str(target.id),
+                        )
+                        run.result = {
+                            "asset_id": str(target.id),
+                            "rejected_candidate": True,
+                            "rejection_category": _recipe_rejection_category(
+                                validation.summary, *validation.failures
+                            ),
+                        }
                         raise ProcessBoardRejectedError(
-                            "The painting and outline did not match clearly enough. Try another preview. "
-                            + validation.summary
+                            "This preview needs your review before it becomes a simple recipe."
                         )
                     image, outline = await run_in_threadpool(split_recipe_art, image)
                     mime = "image/png"

@@ -10,6 +10,8 @@ import applePainting from "../e2e/fixtures/simple-recipe-v1/painting.png";
 import appleOutline from "../e2e/fixtures/simple-recipe-v1/outline.png";
 import "./design-system.css";
 import { ColorMixingProposal } from "./color-mixing-proposal";
+import { readyPaintingReferences } from "./reference-model";
+import { ReferenceRail } from "./reference-rail";
 
 // Reuse the frozen content without changing its fixture or contacting the lesson API.
 const referenceLesson: PaintingLesson = {
@@ -17,24 +19,34 @@ const referenceLesson: PaintingLesson = {
   assets: apple.assets.map((asset) => ({ ...asset, image_url: asset.role === "tracing_outline" ? appleOutline : applePainting })) as PaintingLesson["assets"],
 };
 const exampleOptions = [
+  { value: "home", label: "Reference carousel" },
   { value: "explore", label: "Explore" },
   { value: "artwork", label: "Artwork stage" },
   { value: "recipe", label: "Painting recipe" },
   { value: "sessions", label: "Sessions" },
+  { value: "recovery", label: "Preview recovery" },
   { value: "form", label: "Form & dialog" },
   { value: "settings", label: "Settings" },
   { value: "mixing", label: "Color mixing" },
 ] as const;
 type Example = (typeof exampleOptions)[number]["value"];
 const exampleNotes: Record<Example, string> = {
-  mixing: "Choose a color family, then a shade. Explore 36 starting mixtures using one to three paints; numbered highlights show the mixing order. Revised from owner feedback; saving is a local demonstration.",
+  home: "Approved home pattern: a manual horizontal rail of completed generated references. It supports touch, keyboard, and visible controls, never advances on its own, and leaves the next card partly visible.",
+  mixing: "Production-approved composition: choose a family, then a shade. The 36 versioned starting mixtures use one to three paints; numbered highlights show order. Saving here remains a local demonstration and never changes learner history.",
   explore: "Compact heading, one action, and artwork. Paper grain and pigment provide the character.",
   artwork: "The artwork can set the mood. The production Feeling First slider is preserved unchanged; these buttons demonstrate the general artwork-control pattern.",
   recipe: "Compact presentation of the frozen apple fixture. Select the artwork to enlarge it. Production recipes retain their approved layout.",
   sessions: "Titles, artwork, and a useful next action. Filters stay compact; an empty collection offers one way forward.",
+  recovery: "A paid preview remains visible when automatic review raises a concern. Use one short, category-based explanation and let the learner keep it or explicitly request another version.",
   form: "Visible labels, short hints, and errors beside the field. Secondary decisions belong in a dialog. This example saves only in memory.",
   settings: "Utility pages use the same typography and controls, with restrained surfaces and explicit labels. Figures here are local sample data.",
 };
+
+const referenceCarouselExamples = readyPaintingReferences([
+  { ...referenceLesson, id: "reference-apple", title: "A red apple", estimated_duration_minutes: 20 },
+  { ...referenceLesson, id: "reference-orchard", title: "Quiet orchard light", estimated_duration_minutes: 30, updated_at: "2026-09-10T15:16:39.342667Z" },
+  { ...referenceLesson, id: "reference-window", title: "Herbs by the window", estimated_duration_minutes: 25, updated_at: "2026-09-11T15:16:39.342667Z" },
+]);
 
 const controlDirections = [
   { id: "paint", title: "1 · Soft pigment", note: "Filled green, softly uneven corners, and subtle pigment depth." },
@@ -95,6 +107,10 @@ function ExploreExample({ onPaint }: { onPaint: () => void }) {
   </div>;
 }
 
+function ReferenceCarouselExample({ onPaint }: { onPaint: () => void }) {
+  return <div className="garden-page-example"><ReferenceRail references={referenceCarouselExamples} action={() => <GardenButton onClick={onPaint}>Paint this reference</GardenButton>} /></div>;
+}
+
 function ArtworkExample() {
   const [feeling, setFeeling] = useState(FEELING_FIRST_GALLERY.defaultInterpretation);
   const selected = FEELING_FIRST_GALLERY.interpretations.find((item) => item.slug === feeling)!;
@@ -114,6 +130,10 @@ function SessionsExample({ onPaint }: { onPaint: () => void }) {
     <GardenChoices label="Example session filter" value={filter} onChange={setFilter} options={[{ value: "all", label: "All sessions" }, { value: "saved", label: "Saved" }, { value: "progress", label: "In progress" }]} />
     {filter === "progress" ? <GardenEmpty title="No sessions in progress" action={<GardenButton onClick={onPaint}>Start painting</GardenButton>}>Choose a subject to begin a painting.</GardenEmpty> : <div className="garden-session-example"><img src={applePainting} alt="A simple red watercolor apple" /><div><p className="garden-eyebrow">Ready to paint · 20 minutes</p><h3>A red apple</h3><p>Three actions. A few colors.</p><GardenButton variant="secondary" onClick={onPaint}>Open session</GardenButton></div></div>}
   </div>;
+}
+
+function PreviewRecoveryExample({ onPaint }: { onPaint: () => void }) {
+  return <div className="garden-page-example"><div className="lesson-error" role="status"><strong>This preview needs your eye.</strong><p>This version may be more detailed than a simple recipe usually calls for. You can keep it as it is or ask for a simpler version.</p><section className="rejected-preview" aria-label="Generated preview under review"><figure><img src={applePainting} alt="Generated watercolor apple" /><figcaption>Generated painting</figcaption></figure><figure><img src={appleOutline} alt="Matching apple outline" /><figcaption>Matching outline</figcaption></figure></section><div className="lesson-error__actions"><GardenButton onClick={onPaint}>Keep this version</GardenButton><GardenButton variant="secondary" onClick={onPaint}>Try a simpler version</GardenButton><GardenLink to="/settings/usage">Review AI usage</GardenLink></div></div></div>;
 }
 
 function FormExample() {
@@ -149,7 +169,7 @@ function ComponentExamples() {
   const messages = { info: "This reference uses local examples.", loading: "Loading your sessions…", success: "Your painting session is ready to reopen.", error: "Your sessions couldn’t load. Try again." };
   return <section className="design-section" id="design-components"><div className="design-section__label"><span>03 / Building blocks</span><h2>Components</h2><p>Use an existing pattern before inventing another.</p></div>
     <div className="design-component-grid">
-      <article><h3>Actions</h3><div className="garden-actions"><GardenButton onClick={() => setNotice("success")}>Save example</GardenButton><GardenButton variant="secondary" onClick={() => setNotice("info")}>Cancel</GardenButton><GardenLink to="/?view=design-system#design-foundations" onClick={() => document.getElementById("design-foundations")?.scrollIntoView()}>View foundations</GardenLink><GardenButton disabled>Preparing…</GardenButton></div><p className="garden-small">Pale fills and green edges distinguish actions without dark blocks. Selected controls also use an underline. Try hover, press, and keyboard focus.</p></article>
+      <article><h3>Actions</h3><div className="garden-actions"><GardenButton onClick={() => setNotice("success")}>Save example</GardenButton><GardenButton variant="secondary" onClick={() => setNotice("info")}>Cancel</GardenButton><GardenLink to="/internal/design-system#design-foundations" onClick={() => document.getElementById("design-foundations")?.scrollIntoView()}>View foundations</GardenLink><GardenButton disabled>Preparing…</GardenButton></div><p className="garden-small">Pale fills and green edges distinguish actions without dark blocks. Selected controls also use an underline. Try hover, press, and keyboard focus.</p></article>
       <article><h3>Choices</h3><GardenChoices label="Reference view example" value={choice} onChange={setChoice} options={[{ value: "color", label: "Color" }, { value: "value", label: "Value" }]} /><p className="garden-small">Selected view: {choice}. Selection uses contrast and a pressed state, never color alone.</p></article>
       <article><h3>Fields</h3><GardenInput label="Subject" placeholder="A small bowl" hint="Name the main subject." /><GardenInput label="Painting title with an error" defaultValue="" error="Enter a title to continue." /></article>
       <article><h3>Feedback</h3><GardenChoices label="Feedback state" value={notice} onChange={setNotice} options={[{ value: "info", label: "Info" }, { value: "loading", label: "Loading" }, { value: "success", label: "Success" }, { value: "error", label: "Error" }]} /><GardenNotice kind={notice} action={notice === "error" ? <GardenButton variant="secondary" onClick={() => setNotice("success")}>Try again</GardenButton> : undefined}>{messages[notice]}</GardenNotice></article>
@@ -189,10 +209,12 @@ export function DesignSystem() {
       <GardenChoices label="Page pattern" options={exampleOptions} value={example} onChange={navigateExample} />
       <p className="design-example-note">{exampleNotes[example]}</p>
       <div className="design-example-frame" ref={exampleFrame} tabIndex={-1} role="region" aria-label={`${exampleOptions.find((item) => item.value === example)!.label} page example`}>
+        {example === "home" && <ReferenceCarouselExample onPaint={showRecipe} />}
         {example === "explore" && <ExploreExample onPaint={showRecipe} />}
         {example === "artwork" && <ArtworkExample />}
         {example === "recipe" && <PaintingRecipeSheet presentation="compact" lesson={referenceLesson} actions={<GardenButton variant="quiet" onClick={() => navigateExample("sessions")}>Your painting sessions</GardenButton>} />}
         {example === "sessions" && <SessionsExample onPaint={showRecipe} />}
+        {example === "recovery" && <PreviewRecoveryExample onPaint={showRecipe} />}
         {example === "form" && <FormExample />}
         {example === "settings" && <SettingsExample />}
         {example === "mixing" && <ColorMixingProposal />}

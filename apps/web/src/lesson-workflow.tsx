@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type DragEvent, type FormEvent } from "rea
 import { Link, useSearchParams } from "react-router-dom";
 
 import { useSessionNavigate as useNavigate, useStudioConfirm } from "./studio-ui";
-import { approveTarget, choosePrimary, createLesson, getLesson, getLessonCapabilities, latestGenerated, removeReference, retryGeneration, saveLesson, startGeneration, startSectionGeneration, startStageGeneration, startTargetGeneration, updateLessonBrief, uploadReferences, waitForGeneration, type GenerationRun } from "./lesson-api";
+import { acceptRejectedTarget, approveTarget, choosePrimary, createLesson, discardLesson, getLesson, getLessonCapabilities, latestGenerated, recoverRejectedTarget, removeReference, retryGeneration, saveLesson, startGeneration, startSectionGeneration, startStageGeneration, startTargetGeneration, updateLessonBrief, uploadReferences, waitForGeneration, type GenerationResult, type GenerationRun } from "./lesson-api";
 import { DEFAULT_LESSON_BRIEF, type LessonContent, type LessonGenerationBrief, type LessonStage, type PaintingLesson, type PaletteMix } from "./lesson-model";
 import { PaintingRecipeSheet } from "./painting-recipe";
 import { CompactStagePalette, LayerProcessSheet, PaintingStepArt, PaintingStepGuidance, WatercolorLessonTemplate } from "./watercolor-lesson";
@@ -10,7 +10,7 @@ import { CompactStagePalette, LayerProcessSheet, PaintingStepArt, PaintingStepGu
 const acceptedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif", ""]);
 
 export function SavedLessonLibrary() {
-  return <section className="session-invitation"><div><h2>Keep a little inspiration close.</h2><p>Your painting sessions are here whenever you feel like picking up a brush.</p></div><Link className="button-link" to="/?view=sessions">Your sessions →</Link></section>;
+  return <section className="session-invitation"><div><h2>Keep a little inspiration close.</h2><p>Your painting sessions are here whenever you feel like picking up a brush.</p></div><Link className="button-link" to="/sessions">Your sessions →</Link></section>;
 }
 
 type LocalFile = { file: File; url: string | null; assetId?: string };
@@ -103,7 +103,7 @@ export function LessonCreator({ active = true }: { active?: boolean }) {
       const run = await startTargetGeneration(draft.id);
       files.forEach((item) => item.url?.startsWith("blob:") && URL.revokeObjectURL(item.url));
       setFiles([]); setDraftId(null); setTitle(""); setContext(""); setDifficulty("beginner"); setDuration(30); setBrief({ ...DEFAULT_LESSON_BRIEF }); setCustomizing(false); setStatus("idle"); loadedDraft.current = null;
-      navigate(`/?view=lesson-build&lesson=${draft.id}&run=${run.id}&next=target`);
+      navigate(`/sessions/${draft.id}/build/${run.id}?next=target`);
     } catch (reason) { setStatus("failed"); setError(reason instanceof Error ? reason.message : "We couldn’t prepare your preview."); }
     finally { submitting.current = false; }
   }
@@ -147,7 +147,7 @@ export function LessonTargetReview({ id }: { id: string | null }) {
   const visualDirectionChanged = ["mood", "custom_mood", "background", "custom_background", "treatment", "custom_treatment", "additional_direction"].some((key) => brief[key as keyof LessonGenerationBrief] !== lesson.generation_brief[key as keyof LessonGenerationBrief]);
   const tracing = lesson.assets.find((asset) => asset.role === "tracing_outline" && asset.stage_id === target?.id);
   const stageCountChanged = brief.stage_count !== lesson.generation_brief.stage_count;
-  async function regenerate() { if (!id) return; setWorking(true); setActionError(""); try { await updateLessonBrief(id, brief!); const run = await startTargetGeneration(id, adjustment); navigate(`/?view=lesson-build&lesson=${id}&run=${run.id}&next=target`); } catch (reason) { setActionError(reason instanceof Error ? reason.message : "Could not repaint the preview."); } finally { setWorking(false); } }
+  async function regenerate() { if (!id) return; setWorking(true); setActionError(""); try { await updateLessonBrief(id, brief!); const run = await startTargetGeneration(id, adjustment); navigate(`/sessions/${id}/build/${run.id}?next=target`); } catch (reason) { setActionError(reason instanceof Error ? reason.message : "Could not repaint the preview."); } finally { setWorking(false); } }
   async function approve() {
     if (!target || !id) return;
     if (visualDirectionChanged && currentLesson.image_generation_available) { setActionError("Create a new preview to see your changes before using this image."); return; }
@@ -156,18 +156,22 @@ export function LessonTargetReview({ id }: { id: string | null }) {
       const currentImages = Math.max(0, currentLesson.content.stages.length - 1);
       if (!await confirm(`Changing to ${currentBrief.stage_count} steps will rebuild the written sequence and repaint ${nextImages} intermediate image${nextImages === 1 ? "" : "s"}. It will replace ${currentImages} current intermediate image${currentImages === 1 ? "" : "s"}; the approved preview remains the final step. Continue?`)) return;
     }
-    if (target.id === currentLesson.approved_target_asset_id && !stageCountChanged && !visualDirectionChanged && currentLesson.content) { navigate(`/?view=lesson-review&lesson=${id}`); return; }
+    if (target.id === currentLesson.approved_target_asset_id && !stageCountChanged && !visualDirectionChanged && currentLesson.content) { navigate(`/sessions/${id}/edit`); return; }
     setWorking(true); setActionError("");
-    try { await updateLessonBrief(id, currentBrief); await approveTarget(id, target.id); const run = await startGeneration(id, false); navigate(`/?view=lesson-build&lesson=${id}&run=${run.id}&next=review`); } catch (reason) { setActionError(reason instanceof Error ? reason.message : "Could not begin the session."); } finally { setWorking(false); }
+    try { await updateLessonBrief(id, currentBrief); await approveTarget(id, target.id); const run = await startGeneration(id, false); navigate(`/sessions/${id}/build/${run.id}?next=review`); } catch (reason) { setActionError(reason instanceof Error ? reason.message : "Could not begin the session."); } finally { setWorking(false); }
   }
-  return <article className="lesson-target-review"><header><Link className="text-link" to="/?view=lesson-create">← Start over</Link><p className="eyebrow">YOUR PAINTING PREVIEW</p><h1>Does this feel like you?</h1><p className="lede">Choose the image you’d love to paint. We’ll prepare the steps from here.</p></header><section className={`lesson-target-images${original ? " has-original" : ""}`}>{original && <figure><img src={original.image_url} alt={original.alt_text} /><figcaption>Original photo</figcaption></figure>}<figure>{target ? <img src={target.image_url} alt={target.alt_text} /> : <div className="lesson-image-missing">Preview image unavailable</div>}<figcaption>{lesson.image_generation_available ? "Painting preview" : "Your photo · sample guidance to follow"}</figcaption></figure>{tracing && <figure><img src={tracing.image_url} alt="Matching tracing outline" /><figcaption>Your tracing outline</figcaption></figure>}</section><button type="button" className="button-secondary" onClick={() => setAdjusting(!adjusting)} aria-expanded={adjusting}>Try a change</button>{adjusting && <section className="lesson-target-adjust"><h2>Make a little room for a new idea.</h2>{brief.sequence_style !== "simple_recipe" && <ArtDirectionControls brief={brief} onChange={setBrief} />}<label>One more adjustment <input value={adjustment} maxLength={1000} onChange={(event) => setAdjustment(event.target.value)} placeholder="Keep the window reflections, but simplify the garden…" /></label>{visualDirectionChanged && lesson.image_generation_available && <p className="lesson-capability-note">Your art direction changed. Create a new preview to see the changes before using this image.</p>}</section>}{actionError && <div className="lesson-error" role="alert">{actionError}</div>}<div className="lesson-checkpoint-actions">{adjusting && <button type="button" className="button-secondary" disabled={working} onClick={() => void regenerate()}>Try another version</button>}<button type="button" disabled={working || !target || visualDirectionChanged && lesson.image_generation_available} onClick={() => void approve()}>Use this image →</button></div></article>;
+  return <article className="lesson-target-review"><header><Link className="text-link" to="/sessions/new">← Start over</Link><p className="eyebrow">YOUR PAINTING PREVIEW</p><h1>Does this feel like you?</h1><p className="lede">Choose the image you’d love to paint. We’ll prepare the steps from here.</p></header><section className={`lesson-target-images${original ? " has-original" : ""}`}>{original && <figure><img src={original.image_url} alt={original.alt_text} /><figcaption>Original photo</figcaption></figure>}<figure>{target ? <img src={target.image_url} alt={target.alt_text} /> : <div className="lesson-image-missing">Preview image unavailable</div>}<figcaption>{lesson.image_generation_available ? "Painting preview" : "Your photo · sample guidance to follow"}</figcaption></figure>{tracing && <figure><img src={tracing.image_url} alt="Matching tracing outline" /><figcaption>Your tracing outline</figcaption></figure>}</section><button type="button" className="button-secondary" onClick={() => setAdjusting(!adjusting)} aria-expanded={adjusting}>Try a change</button>{adjusting && <section className="lesson-target-adjust"><h2>Make a little room for a new idea.</h2>{brief.sequence_style !== "simple_recipe" && <ArtDirectionControls brief={brief} onChange={setBrief} />}<label>One more adjustment <input value={adjustment} maxLength={1000} onChange={(event) => setAdjustment(event.target.value)} placeholder="Keep the window reflections, but simplify the garden…" /></label>{visualDirectionChanged && lesson.image_generation_available && <p className="lesson-capability-note">Your art direction changed. Create a new preview to see the changes before using this image.</p>}</section>}{actionError && <div className="lesson-error" role="alert">{actionError}</div>}<div className="lesson-checkpoint-actions">{adjusting && <button type="button" className="button-secondary" disabled={working} onClick={() => void regenerate()}>Try another version</button>}<button type="button" disabled={working || !target || visualDirectionChanged && lesson.image_generation_available} onClick={() => void approve()}>Use this image →</button></div></article>;
 }
 
 export function LessonAssembly({ id, runId, next }: { id: string | null; runId: string | null; next: string | null }) {
   const navigate = useNavigate();
+  const confirm = useStudioConfirm();
   const [run, setRun] = useState<GenerationRun | null>(null);
   const [lesson, setLesson] = useState<PaintingLesson | null>(null);
   const [error, setError] = useState("");
+  const [working, setWorking] = useState(false);
+  const [recoveredTargetId, setRecoveredTargetId] = useState<string | null>(null);
+  const recoveryAttempts = useRef(new Set<string>());
   const [pollAttempt, setPollAttempt] = useState(0);
   useEffect(() => { if (id) getLesson(id).then(setLesson).catch(() => undefined); }, [id]);
   useEffect(() => {
@@ -185,24 +189,59 @@ export function LessonAssembly({ id, runId, next }: { id: string | null; runId: 
     }, controller.signal).then((value) => {
       if (controller.signal.aborted) return;
       setRun(value);
-      if (value.status === "completed") navigate(next === "target" ? `/?view=lesson-target&lesson=${id}` : `/?view=lesson-review&lesson=${id}`, { replace: true });
-      else setError(value.error_message || "We couldn’t finish preparing this session.");
-    }).catch((reason) => { if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "Preparation is unavailable."); });
+      if (value.status === "completed") navigate(next === "target" ? `/sessions/${id}/target` : `/sessions/${id}/edit`, { replace: true });
+      else {
+        setError(value.error_message || "We couldn’t finish preparing this session.");
+        if (value.error_code === "ProcessBoardRejectedError" && !recoveryAttempts.current.has(value.id)) {
+          recoveryAttempts.current.add(value.id);
+          recoverRejectedTarget(value.id).then((updated) => {
+            if (!controller.signal.aborted) {
+              setLesson(updated);
+              const candidate = [...updated.assets].reverse().find((asset) => asset.role === "target_reference" && asset.id !== updated.approved_target_asset_id);
+              setRecoveredTargetId(candidate?.id || null);
+            }
+          }).catch(() => undefined);
+        }
+      }
+    }).catch((reason) => {
+      if (controller.signal.aborted) return;
+      const message = reason instanceof Error ? reason.message : "Preparation is unavailable.";
+      if (message === "generation not found") navigate("/sessions", { replace: true });
+      else setError(message);
+    });
     return () => controller.abort();
   }, [id, navigate, next, pollAttempt, runId]);
   const total = run?.progress?.total || (next === "target" ? 1 : (lesson?.generation_brief.stage_count || 3) + 1);
-  const completed = run?.progress?.completed || 0;
+  const completed = run?.error_code === "ProcessBoardRejectedError" ? 1 : run?.progress?.completed || 0;
   const phase = run?.progress?.phase;
   const stageItems = run?.progress?.items?.filter((item) => item.key !== "lesson") || [];
   const runningStage = stageItems.findIndex((item) => item.status === "running");
   const finishedStages = stageItems.filter((item) => item.status === "completed").length;
   const stageNumber = runningStage >= 0 ? runningStage + 1 : Math.min(finishedStages + 1, Math.max(1, total - 1));
-  const statusText = phase === "target" ? "Painting your watercolor preview…" : phase === "lesson_text" ? "Writing the session…" : phase === "painting_process_sheet" ? "Painting the layer-by-layer process sheet…" : phase === "validating_process_order" ? "Checking that each layer advances naturally…" : phase === "preparing_stage_views" ? "Preparing the step views…" : phase === "stage_images" ? `Painting step ${stageNumber} of ${Math.max(1, total - 1)}…` : phase === "review" ? "Preparing your review…" : "Preparing your reference…";
+  const statusText = run?.error_code === "ProcessBoardRejectedError" ? "Preview ready for your review." : phase === "target" ? "Painting your watercolor preview…" : phase === "lesson_text" ? "Writing the session…" : phase === "painting_process_sheet" ? "Painting the layer-by-layer process sheet…" : phase === "validating_process_order" ? "Checking that each layer advances naturally…" : phase === "preparing_stage_views" ? "Preparing the step views…" : phase === "stage_images" ? `Painting step ${stageNumber} of ${Math.max(1, total - 1)}…` : phase === "review" ? "Preparing your review…" : "Preparing your reference…";
   const stageAssets = lesson?.content?.stages.map((stage) => activeCheckpointAsset(lesson, stage.id)) || [];
   const targetAsset = [...(lesson?.assets || [])].reverse().find((asset) => asset.role === "target_reference") || lesson?.assets.find((asset) => asset.role === "original_reference" && asset.is_primary);
+  const rejectedResult = run?.result && !Array.isArray(run.result) && typeof run.result === "object" ? run.result as GenerationResult : null;
+  const rejectedAssetId = rejectedResult?.asset_id || recoveredTargetId;
+  const rejectedTarget = run?.error_code === "ProcessBoardRejectedError" && rejectedAssetId ? lesson?.assets.find((asset) => asset.id === rejectedAssetId) : undefined;
+  const rejectedOutline = rejectedTarget ? lesson?.assets.find((asset) => asset.role === "tracing_outline" && asset.stage_id === rejectedTarget.id) : undefined;
+  const inferredCategory = rejectedResult?.rejection_category || (run?.error_message?.toLowerCase().includes("detail") ? "too_detailed" : run?.error_message?.toLowerCase().match(/match|align|outline|panel|layout/) ? "layout_mismatch" : "quality_review");
+  const rejectionCopy = inferredCategory === "layout_mismatch" ? "The painting and tracing outline may not line up closely enough." : inferredCategory === "too_detailed" ? "This version may be more detailed than a simple recipe usually calls for." : "This version needs your review before we turn it into a simple recipe.";
   const cards = next === "target" ? [targetAsset] : Array.from({ length: Math.max(1, total - 1) }, (_, index) => stageAssets[index]);
   async function retry() { if (!runId) return; setError(""); try { const retried = await retryGeneration(runId); setRun(retried); setPollAttempt((attempt) => attempt + 1); } catch (reason) { setError(reason instanceof Error ? reason.message : "We couldn’t resume yet."); } }
-  return <article className="lesson-assembly"><header><p className="eyebrow">ASSEMBLING YOUR SESSION</p><h1>Paint, paper, and a little patience.</h1><p>Your draft is safe. You can leave this page and reopen it while Wanderline keeps working.</p></header>{next !== "target" && targetAsset && <figure className="assembly-preview"><img src={targetAsset.image_url} alt={targetAsset.alt_text} /><figcaption>Your painting preview</figcaption></figure>}<section aria-live="polite" role="status"><div className="lesson-assembly__papers" aria-hidden="true">{cards.map((asset, index) => <span key={index} className={asset || index < Math.max(0, completed - 1) ? "is-complete" : ""}>{asset ? <img src={asset.image_url} alt="" /> : String(index + 1).padStart(2, "0")}</span>)}</div><strong>{statusText}</strong><progress max={total} value={completed}>{completed} of {total}</progress><p>{completed} of {total} assembly steps complete</p></section>{error && <div className="lesson-error" role="alert"><strong>We couldn’t finish that pass.</strong><p>{error}</p>{run?.status === "failed" && run.recoverable !== false && <button type="button" onClick={() => void retry()}>Resume preparation</button>}{run?.recoverable === false && <><Link className="text-link" to="/?view=settings">Review AI usage</Link>{lesson && <Link className="button-link" to={`/?view=${lesson.approved_target_asset_id ? "lesson-target" : "lesson-create"}&lesson=${lesson.id}`}>Try a new version</Link>}</>}</div>}<Link className="text-link" to="/?view=sessions">Return to your sessions →</Link></article>;
+  async function discard() {
+    if (!lesson || !await confirm("Discard this failed session? Its AI usage will remain in your usage history.")) return;
+    try { await discardLesson(lesson.id); navigate("/sessions", { replace: true }); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : "We couldn’t discard that session."); }
+  }
+  async function keepRejected() {
+    if (!lesson || !rejectedTarget || !runId) return;
+    setWorking(true); setError("");
+    try { await acceptRejectedTarget(runId); const nextRun = await startGeneration(lesson.id, false); navigate(`/sessions/${lesson.id}/build/${nextRun.id}?next=review`, { replace: true }); }
+    catch (reason) { setError(reason instanceof Error ? reason.message : "We couldn’t keep this version yet."); }
+    finally { setWorking(false); }
+  }
+  return <article className="lesson-assembly"><header><p className="eyebrow">ASSEMBLING YOUR SESSION</p><h1>Paint, paper, and a little patience.</h1><p>Your draft is safe. You can leave this page and reopen it while Wanderline keeps working.</p></header>{next !== "target" && targetAsset && <figure className="assembly-preview"><img src={targetAsset.image_url} alt={targetAsset.alt_text} /><figcaption>Your painting preview</figcaption></figure>}<section aria-live="polite" role="status"><div className="lesson-assembly__papers" aria-hidden="true">{cards.map((asset, index) => <span key={index} className={asset || index < Math.max(0, completed - 1) ? "is-complete" : ""}>{asset ? <img src={asset.image_url} alt="" /> : String(index + 1).padStart(2, "0")}</span>)}</div><strong>{statusText}</strong><progress max={total} value={completed}>{completed} of {total}</progress><p>{completed} of {total} assembly steps complete</p></section>{error && <div className="lesson-error" role="alert">{rejectedTarget ? <><strong>This preview needs your eye.</strong><p>{rejectionCopy} You’ve already paid for this preview, so you can keep it as it is or ask for a simpler version.</p><section className="rejected-preview" aria-label="Generated preview under review"><figure><img src={rejectedTarget.image_url} alt={rejectedTarget.alt_text} /><figcaption>Generated painting</figcaption></figure>{rejectedOutline && <figure><img src={rejectedOutline.image_url} alt={rejectedOutline.alt_text} /><figcaption>Matching outline</figcaption></figure>}</section></> : <><strong>We couldn’t finish that pass.</strong><p>{error}</p></>}<div className="lesson-error__actions">{run?.status === "failed" && run.recoverable !== false && <button type="button" onClick={() => void retry()}>Resume preparation</button>}{run?.recoverable === false && <><Link className="text-link" to="/settings/usage">Review AI usage</Link>{lesson && <>{rejectedTarget ? <><button type="button" disabled={working} onClick={() => void keepRejected()}>{working ? "Keeping version…" : "Keep this version"}</button><Link className="button-link button-secondary" to={`/sessions/${lesson.id}/target`}>Try a simpler version</Link></> : <Link className="button-link" to={lesson.approved_target_asset_id ? `/sessions/${lesson.id}/target` : `/sessions/new?lesson=${lesson.id}`}>Try a new version</Link>}<button type="button" className="button-secondary" onClick={() => void discard()}>Discard this session</button></>}</>}</div></div>}<Link className="text-link" to="/sessions">Return to your sessions →</Link></article>;
 }
 
 function useLesson(id: string | null) {
@@ -216,7 +255,7 @@ export function SavedLessonView({ id }: { id: string | null }) {
   const { lesson, error } = useLesson(id);
   if (error) return <section className="lesson-state"><h1>Session unavailable</h1><p>{error}</p><Link className="text-link" to="/">Return to the studio</Link></section>;
   if (!lesson) return <section className="lesson-state" aria-live="polite"><h1>Opening your session…</h1></section>;
-  return <><div className="lesson-view-actions"><Link className="text-link" to="/?view=sessions">← Your sessions</Link><Link className="button-link" to={`/?view=lesson-review&lesson=${lesson.id}`}>Edit session</Link></div><WatercolorLessonTemplate lesson={lesson} /></>;
+  return <><div className="lesson-view-actions"><Link className="text-link" to="/sessions">← Your sessions</Link><Link className="button-link" to={`/sessions/${lesson.id}/edit`}>Edit session</Link></div><WatercolorLessonTemplate lesson={lesson} /></>;
 }
 
 function replaceSection(content: LessonContent, key: string, value: unknown): LessonContent {
@@ -278,7 +317,7 @@ export function LessonEditor({ id }: { id: string | null }) {
       return;
     }
     setWorking("save");
-    try { const saved = await saveLesson(draft, content); setLesson(saved); setDraft(saved); setDirty(false); navigate(`/?view=lesson&lesson=${saved.id}`); }
+    try { const saved = await saveLesson(draft, content); setLesson(saved); setDraft(saved); setDirty(false); navigate(`/sessions/${saved.id}`); }
     catch (reason) { setMessage(reason instanceof Error ? reason.message : "Could not save the session."); }
     finally { setWorking(null); }
   }
@@ -290,7 +329,7 @@ export function LessonEditor({ id }: { id: string | null }) {
       const stageIndex = content?.stages.findIndex((stage) => stage.id === stageId) ?? 0;
       const affected = content ? content.stages.length - stageIndex - (draft.schema_version === "painting-lesson.v2" ? 1 : 0) : 1;
       if (affected < 1) {
-        navigate(`/?view=lesson-target&lesson=${draft.id}`);
+        navigate(`/sessions/${draft.id}/target`);
         return;
       }
       if (!await confirm(`This will repaint ${affected} step image${affected === 1 ? "" : "s"}, starting here.${dirty ? " Your text changes will be saved first." : ""}`)) return;
@@ -299,7 +338,7 @@ export function LessonEditor({ id }: { id: string | null }) {
         setLesson(saved); setDraft(saved); setDirty(false);
       }
       const run = await startStageGeneration(draft.id, stageId, adjustment);
-      navigate(`/?view=lesson-build&lesson=${draft.id}&run=${run.id}&next=review`);
+      navigate(`/sessions/${draft.id}/build/${run.id}?next=review`);
     } catch (reason) { setMessage(reason instanceof Error ? reason.message : "Could not repaint the steps."); }
     finally { setWorking(null); }
   }
@@ -309,11 +348,11 @@ export function LessonEditor({ id }: { id: string | null }) {
   const textSections: Array<[keyof LessonContent, string]> = [["overview", "Your starting point"], ["learning_objective", "What you’ll explore"], ["composition_crop", "Composition and crop"], ["focal_point", "Focal point"], ["large_value_shapes", "Large value and shape breakdown"], ["light_shadow", "Light and shadow"], ["underdrawing", "Under-sketch guidance"], ["wash_control", "Wash control"], ["completion_notes", "Completion notes"], ["user_notes", "Your notes"]];
   return (
     <article className="lesson-editor" onClickCapture={async (event) => { const link = (event.target as HTMLElement).closest("a"); if (link && dirty && !link.getAttribute("href")?.startsWith("#")) { event.preventDefault(); if (await confirm("Leave without saving your session changes?")) navigate(link.getAttribute("href") || "/"); } }}>
-      <header><Link className="text-link" to={`/?view=lesson&lesson=${draft.id}`}>← Session preview</Link><p className="eyebrow">YOUR PAINTING SESSION</p><h1>{draft.generation_brief.sequence_style === "simple_recipe" ? "Your little painting recipe." : "Review the painting journey."}</h1><p className="lede">{draft.generation_brief.sequence_style === "simple_recipe" ? "Trace the shape, mix a little color, and begin. Save your recipe to keep it close." : "Move through the images and essential instructions. The complete written editor is available only when you want it."}</p></header>
+      <header><Link className="text-link" to={`/sessions/${draft.id}`}>← Session preview</Link><p className="eyebrow">YOUR PAINTING SESSION</p><h1>{draft.generation_brief.sequence_style === "simple_recipe" ? "Your little painting recipe." : "Review the painting journey."}</h1><p className="lede">{draft.generation_brief.sequence_style === "simple_recipe" ? "Trace the shape, mix a little color, and begin. Save your recipe to keep it close." : "Move through the images and essential instructions. The complete written editor is available only when you want it."}</p></header>
       <div className="lesson-editor__bar"><span className={dirty ? "is-dirty" : ""}>{dirty ? "Unsaved changes" : draft.saved_at ? "Saved" : "Generated draft"}</span><button type="button" onClick={save} disabled={!dirty && Boolean(draft.saved_at) || working === "save"}>{draft.saved_at ? "Save changes" : "Save session"}</button></div>
       {draft.is_demo && <aside className="lesson-demo-note"><strong>Sample guidance</strong> These tips have not been matched to the contents of your photo.</aside>}
       {message && <div className="lesson-error" role="alert">{message}</div>}
-      <section className="lesson-review-summary"><div><p className="eyebrow">LESSON SETUP</p><strong>{content.stages.length} steps · {draft.generation_brief.mood.replace("_", " ")} · {draft.generation_brief.treatment} watercolor</strong></div><Link className="text-link" to={`/?view=lesson-target&lesson=${draft.id}`}>Change art direction →</Link></section>
+      <section className="lesson-review-summary"><div><p className="eyebrow">LESSON SETUP</p><strong>{content.stages.length} steps · {draft.generation_brief.mood.replace("_", " ")} · {draft.generation_brief.treatment} watercolor</strong></div><Link className="text-link" to={`/sessions/${draft.id}/target`}>Change art direction →</Link></section>
       {draft.generation_brief.sequence_style === "simple_recipe" ? <PaintingRecipeSheet lesson={draft} /> : (() => {
         const stage = content.stages[Math.min(activeReviewStage, content.stages.length - 1)];
         const image = activeCheckpointAsset(draft, stage.id);
@@ -330,7 +369,7 @@ export function LessonEditor({ id }: { id: string | null }) {
         const imageModes: Array<"stage" | "process" | "target" | "original"> = usesImageControls ? ["stage", ...(isLayerStudy ? ["process"] as const : []), "target", ...(original ? ["original"] as const : [])] : [];
         return <section className="lesson-stage-review" aria-labelledby="lesson-stage-review-title">
           <nav aria-label="Review session steps">{content.stages.map((item, index) => { const thumbnail = activeCheckpointAsset(draft, item.id); return <button type="button" key={item.id} className={index === activeReviewStage ? "is-selected" : ""} aria-current={index === activeReviewStage ? "step" : undefined} onClick={() => { setActiveReviewStage(index); setStageAdjustment(""); setReviewImageMode("stage"); }}>{thumbnail && <img src={thumbnail.image_url} alt="" />}<span>{String(index + 1).padStart(2, "0")}</span><strong>{item.short_title}</strong></button>; })}</nav>
-          <div className="lesson-stage-review__body"><div className="lesson-stage-review__visual">{usesImageControls && <div className="watercolor-view-toggle" aria-label="Review image view">{imageModes.map((mode) => <button type="button" key={mode} className={reviewImageMode === mode ? "is-selected" : ""} aria-pressed={reviewImageMode === mode} onClick={() => setReviewImageMode(mode)}>{mode === "stage" ? "Current step" : mode === "process" ? "Process sheet" : mode === "target" ? "Finished painting" : "Original photo"}</button>)}</div>}{isLayerStudy && reviewImageMode === "process" ? <LayerProcessSheet lesson={draft} /> : <figure>{reviewImageMode === "stage" ? <PaintingStepArt lesson={draft} stageId={stage.id} /> : shownAsset ? <img src={shownAsset.image_url} alt={shownAsset.alt_text} /> : null}<figcaption>{reviewImageMode === "target" ? "Finished painting" : reviewImageMode === "original" ? "Original photograph" : `Step ${activeReviewStage + 1} of ${content.stages.length}`}</figcaption></figure>}{usesImageControls && <CompactStagePalette palette={palette} />}</div><div><p className="eyebrow">{stage.water_state}</p><PaintingStepGuidance stage={stage} headingId="lesson-stage-review-title" /><details><summary>More painting tips</summary><blockquote>{stage.principle}</blockquote>{isV2 && <><h3>Full technique</h3><p>{stage.instruction}</p></>}<h3>Look for</h3><p>{stage.look_for}</p><h3>Palette</h3><p>{stage.palette_mix_ids.map((id) => content.palette.find((mix) => mix.id === id)?.name).filter(Boolean).join(" · ")}</p></details>{isFinalTarget ? <div className="lesson-stage-review__target-adjust"><strong>This step is your approved preview.</strong><p>Adjusting it returns to preview approval and rebuilds the intermediate sequence.</p><Link className="button-link" to={`/?view=lesson-target&lesson=${draft.id}`}>Adjust finished painting →</Link></div> : <fieldset><legend>Adjust this step onward</legend><div>{suggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => setStageAdjustment(suggestion)} aria-pressed={stageAdjustment === suggestion}>{suggestion}</button>)}</div><input aria-label="Describe a step image change" value={stageAdjustment} onChange={(event) => setStageAdjustment(event.target.value)} placeholder="Describe a change…" /><button type="button" disabled={working === `image.${stage.id}` || !draft.image_generation_available} onClick={() => void regenerateStageImages(stage.id, stageAdjustment)}>Repaint {affected} image{affected === 1 ? "" : "s"}</button></fieldset>}</div></div>
+          <div className="lesson-stage-review__body"><div className="lesson-stage-review__visual">{usesImageControls && <div className="watercolor-view-toggle" aria-label="Review image view">{imageModes.map((mode) => <button type="button" key={mode} className={reviewImageMode === mode ? "is-selected" : ""} aria-pressed={reviewImageMode === mode} onClick={() => setReviewImageMode(mode)}>{mode === "stage" ? "Current step" : mode === "process" ? "Process sheet" : mode === "target" ? "Finished painting" : "Original photo"}</button>)}</div>}{isLayerStudy && reviewImageMode === "process" ? <LayerProcessSheet lesson={draft} /> : <figure>{reviewImageMode === "stage" ? <PaintingStepArt lesson={draft} stageId={stage.id} /> : shownAsset ? <img src={shownAsset.image_url} alt={shownAsset.alt_text} /> : null}<figcaption>{reviewImageMode === "target" ? "Finished painting" : reviewImageMode === "original" ? "Original photograph" : `Step ${activeReviewStage + 1} of ${content.stages.length}`}</figcaption></figure>}{usesImageControls && <CompactStagePalette palette={palette} />}</div><div><p className="eyebrow">{stage.water_state}</p><PaintingStepGuidance stage={stage} headingId="lesson-stage-review-title" /><details><summary>More painting tips</summary><blockquote>{stage.principle}</blockquote>{isV2 && <><h3>Full technique</h3><p>{stage.instruction}</p></>}<h3>Look for</h3><p>{stage.look_for}</p><h3>Palette</h3><p>{stage.palette_mix_ids.map((id) => content.palette.find((mix) => mix.id === id)?.name).filter(Boolean).join(" · ")}</p></details>{isFinalTarget ? <div className="lesson-stage-review__target-adjust"><strong>This step is your approved preview.</strong><p>Adjusting it returns to preview approval and rebuilds the intermediate sequence.</p><Link className="button-link" to={`/sessions/${draft.id}/target`}>Adjust finished painting →</Link></div> : <fieldset><legend>Adjust this step onward</legend><div>{suggestions.map((suggestion) => <button type="button" key={suggestion} onClick={() => setStageAdjustment(suggestion)} aria-pressed={stageAdjustment === suggestion}>{suggestion}</button>)}</div><input aria-label="Describe a step image change" value={stageAdjustment} onChange={(event) => setStageAdjustment(event.target.value)} placeholder="Describe a change…" /><button type="button" disabled={working === `image.${stage.id}` || !draft.image_generation_available} onClick={() => void regenerateStageImages(stage.id, stageAdjustment)}>Repaint {affected} image{affected === 1 ? "" : "s"}</button></fieldset>}</div></div>
           <div className="lesson-stage-review__pager"><button type="button" disabled={activeReviewStage === 0} onClick={() => setActiveReviewStage((current) => current - 1)}>← Previous</button><button type="button" disabled={activeReviewStage === content.stages.length - 1} onClick={() => setActiveReviewStage((current) => current + 1)}>Next step →</button></div>
         </section>;
       })()}

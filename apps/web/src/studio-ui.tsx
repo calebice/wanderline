@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate, type NavigateOptions } from "react-rout
 
 export function StartPaintingLink({ children = "Start painting", className = "button-link" }: { children?: ReactNode; className?: string }) {
   const location = useLocation();
-  return <Link className={className} to="/?view=lesson-create" state={{ background: location }}>{children}</Link>;
+  return <Link className={className} to="/sessions/new" state={{ background: location }}>{children}</Link>;
 }
 
 export function StudioDialog({ open, onClose, children, wide = false, label = "Start a painting session", className = "" }: { open: boolean; onClose: () => void; children: ReactNode; wide?: boolean; label?: string; className?: string }) {

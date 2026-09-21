@@ -26,6 +26,11 @@
 .mixing-proposal__guidance { border-left: 3px solid var(--interactive-primary); padding-left: .75rem; }
 .mixing-proposal details { margin: .75rem 0; }
 .mixing-proposal .garden-field { margin: 1rem 0; }
+.mixing-proposal--production { padding: .5rem 0 2rem; }
+.mixing-proposal__history { padding: 1rem; border: 1px solid var(--theme-border); border-radius: 1rem; background: var(--surface-panel); }
+.mixing-proposal__history ul { display: grid; gap: .5rem; padding: 0; list-style: none; }
+.mixing-proposal__history li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.mixing-proposal__history button { justify-content: flex-start; }
 @media (max-width: 900px) { .mixing-proposal__workspace { grid-template-columns: minmax(0, 1fr); gap: 1rem; } .mixing-proposal__palette { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 520px) { .mixing-proposal__browse { grid-template-columns: minmax(0, 1fr); } .mixing-proposal__palette { grid-template-columns: repeat(3, minmax(0, 1fr)); } .mixing-proposal__target > span { width: 5rem; } }
 @container (max-width: 32rem) { .mixing-proposal__browse { grid-template-columns: minmax(0, 1fr); } }

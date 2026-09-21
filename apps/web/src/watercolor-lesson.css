@@ -256,6 +256,13 @@
 .lesson-error strong { display: block; margin-bottom: 3px; }
 .lesson-error { background: color-mix(in srgb, #c96d63 15%, var(--surface-panel)); }
 .lesson-error p { margin: 4px 0 0; }
+.lesson-error__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 16px; }
+.lesson-error__actions :is(button,.button-link,.text-link) { margin: 0; }
+.rejected-preview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 18px; }
+.rejected-preview figure { margin: 0; padding: 10px; border: 1px solid var(--theme-border); border-radius: 14px; background: var(--surface-panel); }
+.rejected-preview img { display: block; width: 100%; max-height: 360px; object-fit: contain; border-radius: 10px; }
+.rejected-preview figcaption { margin-top: 8px; color: var(--text-secondary); font-size: .9rem; }
+@media (max-width: 640px) { .rejected-preview { grid-template-columns: 1fr; } }
 
 .watercolor-guidance { display: grid; gap: 14px; }
 .watercolor-guidance details { overflow: hidden; border: 1px solid var(--theme-border); border-radius: 22px; background: var(--surface-panel); }

@@ -3,7 +3,7 @@
 Read `CODEX.md`, `README.md`, `docs/PROJECT_STATE.md`, and `docs/README.md` before making changes.
 
 For any frontend, UX, styling, or interface-copy work, also read `docs/DESIGN_SYSTEM.md` and
-`docs/UI_REGRESSIONS.md`. Open the live design reference at `?view=design-system` when reviewing
+`docs/UI_REGRESSIONS.md`. Open the live design reference at `/internal/design-system` when reviewing
 visual changes. The artwork teaching guides are not the application design system.
 
 The owner approved Garden Studio revision 04: paper A and Pigment edge controls. Reuse these
