@@ -12,6 +12,7 @@ async function generationAction(path: string, body: Record<string, unknown> = {}
 }
 
 const apiBase = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
+export function apiUrl(path: string) { return path.startsWith("http") ? path : `${apiBase}${path}`; }
 
 export async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${apiBase}${path}`, init);

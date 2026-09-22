@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Product requirements
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 ## Product promise
 
@@ -33,6 +33,8 @@ identity. Watercolor is the only production medium; domain names and versions mu
 - Saved sessions, optimistic editing, Simple Recipe v1, tracing/print, and usage reporting
 - Versioned Emily Lex color catalog with 36 authored starting recipes
 - Learner-scoped color trials with ordered adjustments, notes, revision, and history
+- Personal Color Library with 18-paint coverage, authored/custom mixture formulas, structured physical
+  observations, and private card-backed dried-swatch photographs
 
 Every color recipe must say that screen swatches and directions are illustrative starting points. Do
 not imply guaranteed physical outcomes until paint/paper testing is recorded.
@@ -44,6 +46,8 @@ not imply guaranteed physical outcomes until paint/paper testing is recorded.
 - Bookmarked sessions and exploration selections survive the clean-route migration.
 - A generated target is never mistaken for approved guidance.
 - Saved painting sessions and color trials reopen with the version that created them.
+- Physical swatches retain their palette or recipe source, material/capture observations, and original
+  private photograph after catalog changes.
 - Empty, loading, failure, phone, tablet, desktop, enlarged-text, and keyboard states remain usable.
 - The stack starts healthily with one Compose command and no browser-held infrastructure credentials.
 
@@ -54,6 +58,7 @@ not imply guaranteed physical outcomes until paint/paper testing is recorded.
 - Production 3D scene/model configuration
 - Full-featured digital painting, accounts/social features, marketplaces, or collaboration
 - Guaranteed color matching or automatic recipes inferred from screen colors
+- Photograph calibration, automatic swatch ranking, physical-validation claims, or catalog publication
 - Changes to frozen Simple Recipe v1 or the Feeling First selector
 
 Drawing-era APIs and persistence have been removed after export; they are not product capabilities.

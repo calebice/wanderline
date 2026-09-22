@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Stable implementation contract and working rules
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 Wanderline is a containerized, watercolor-first and medium-extensible painting studio. Treat this
 file, ADR 0005, and `docs/FEATURE_API_AUDIT.md` as the product boundary.
@@ -20,6 +20,8 @@ Watercolor is the only production medium in this release. Names and versions mus
   reopening, Simple Recipe, and usage reporting
 - Versioned Emily Lex color-mixing catalog with learner-scoped trials, notes, ordered adjustments,
   optimistic revisions, and an explicit illustrative-not-physically-validated label
+- Learner-private Personal Color Library with card-backed physical single-paint and mixture swatches,
+  immutable source snapshots, structured observations, and private original/display photographs
 - Browser, API, worker, PostgreSQL, Redis, private object storage, provider, health, and future identity
   boundaries
 

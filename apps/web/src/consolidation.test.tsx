@@ -105,7 +105,7 @@ describe("consolidated application", () => {
     await waitFor(() => expect(actions).toContain("purge"));
   });
 
-  it("loads authored mixtures and saves a learner trial", async () => {
+  it("loads authored mixtures and saves learner mix notes", async () => {
     let savedBody: Record<string, unknown> | undefined;
     vi.stubGlobal("fetch", vi.fn((input, init) => {
       const url = String(input);
@@ -131,10 +131,10 @@ describe("consolidated application", () => {
     expect(await screen.findByRole("heading", { name: "Olive green" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: "Too brown" }));
     fireEvent.change(screen.getByLabelText("Notes for next time"), { target: { value: "Dried warmer on cotton paper." } });
-    fireEvent.click(screen.getByRole("button", { name: "Save color trial" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save mix notes" }));
 
     await waitFor(() => expect(savedBody).toBeDefined());
     expect(savedBody).toMatchObject({ recipe_id: "olive-green", catalog_version: 1, notes: "Dried warmer on cotton paper." });
-    expect(screen.getByText("Color trial saved.")).toBeInTheDocument();
+    expect(screen.getByText("Mix notes saved.")).toBeInTheDocument();
   });
 });

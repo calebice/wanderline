@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Volatile project coordination state
-Last reviewed: 2026-09-19
+Last reviewed: 2026-09-21
 
 ## Current milestone
 
@@ -10,6 +10,11 @@ The watercolor-first consolidation release is implemented. Wanderline now has an
 with a manual horizontal carousel of completed generated references,
 durable path-based routes, shared primary navigation, production color mixing, and an instrumented
 painting-session workflow. ADR 0005 and `FEATURE_API_AUDIT.md` are authoritative.
+
+Release 4 adds a learner-private Personal Color Library. It records single paints, authored mixes,
+and custom mixes of up to three palette paints with numeric parts, paper/capture metadata, guided
+observations, and one private card-backed dried-swatch photograph. Existing persistence/API trial
+names remain compatible while application copy calls those working records mix notes.
 
 Garden Studio revision 04 remains approved. Paper A and Pigment edge controls may be reused without
 additional approval. The complete Feeling First selector and Simple Recipe v1 presentation/content/
@@ -49,9 +54,24 @@ types, **46 unit tests**, production build, and static validation pass (86 files
 Playwright tests** pass across the reference-carousel Home, production color trials, clean/compatibility routes, responsive
 and enlarged-text layouts, Feeling First preservation, and frozen Simple Recipe/print screenshots.
 
-Compose rebuilt successfully with all six services healthy and PostgreSQL at Alembic `0014`. Sessions
+Compose rebuilt successfully with all six services healthy and PostgreSQL at Alembic `0015`. Sessions
 can be discarded, restored, or explicitly deleted forever. The live catalog returns 36 versioned
 recipes, and removed drawing-era operations are absent from OpenAPI.
+
+## Color Library verification
+
+September 20: backend format/lint/strict types and **73 tests** pass. Frontend lint/types,
+**48 unit tests**, production build, and static validation pass. All **42 Playwright tests** pass,
+including card-backed swatch capture, reopen, coverage updates, three responsive viewports, and 200%
+text alongside every protected Feeling First and Simple Recipe regression. Migration `0015` is
+additive and the API audit includes every swatch route, table, and private storage type.
+
+Release acceptance remains pending hands-on mobile confirmation. Review the direct-from-phone camera
+workflow and judge whether the capture form is manageable while working with a physical swatch and
+reference card. The responsive browser checks pass, but they do not substitute for testing camera
+selection, photograph handoff, and form burden on an actual phone. Keep the current implementation
+staged for review; if the mobile form feels overwhelming, revise its presentation without weakening
+the capture contract.
 
 ## Canonical documents
 
@@ -66,6 +86,6 @@ recipes, and removed drawing-era operations are absent from OpenAPI.
 
 ## Next product exploration
 
-Design the separate physical color-testing feature: record the real mixture, capture its dried
-result, compare it with the intended target, and promote validated revisions without rewriting saved
-trial history.
+Define a separately reviewed color-recommendation contract: supported reference-card calibration
+profiles, target-color sources, match scoring, confidence, and acceptable accuracy. The Color Library
+preserves originals and card identity for that work but makes no calibration or recommendation claim.

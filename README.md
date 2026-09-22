@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Product overview and local development guide
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 Wanderline is a container-first, watercolor-first painting studio. Its home page helps one local
 learner resume an active painting or start a new one; Explore, saved sessions, Color Study, and saved
@@ -15,6 +15,7 @@ color-mixing trials support the work without turning it into a score.
 - Saves/reopens sessions and reports generation usage
 - Provides authored style references, Feeling First, Color Study, and the canonical lemon lesson
 - Serves 36 versioned Emily Lex color-mixing starting recipes and saves learner notes/adjustments
+- Builds a private Color Library from photographed physical single-paint, authored-mix, and custom-mix swatches
 - Runs as a separate web/API/worker stack with PostgreSQL, Redis, and S3-compatible storage
 
 Color recipes and screen swatches are illustrative until physically validated with the learner’s
@@ -44,7 +45,9 @@ Named volumes retain data when `docker compose down` stops the stack.
 
 - `/` — start/resume and recent sessions
 - `/explore` — authored references and learning tools
-- `/color-mixing` — recipes and saved trials
+- `/color-mixing` — recipes and saved mix notes
+- `/color-mixing/library` — physical swatch coverage and library
+- `/color-mixing/library/new` — record a physical swatch
 - `/sessions` — painting-session library
 - `/sessions/new` — start painting
 - `/settings/usage` — generation usage

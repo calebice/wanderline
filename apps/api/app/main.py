@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.concurrency import run_in_threadpool
 
 from app.color_mixing import router as color_mixing_router
+from app.color_swatches import router as color_swatches_router
 from app.config import settings
 from app.database import get_db
 from app.dependencies import get_lesson_service, get_storage
@@ -463,3 +464,4 @@ async def studio_usage(
 
 app.include_router(studio_router)
 app.include_router(color_mixing_router)
+app.include_router(color_swatches_router)

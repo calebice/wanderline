@@ -2,7 +2,7 @@
 
 Status: Current
 Authority: Documentation map and context-loading policy
-Last reviewed: 2026-09-18
+Last reviewed: 2026-09-20
 
 ## Read for every task
 
@@ -29,6 +29,8 @@ Last reviewed: 2026-09-18
 - The feature-specific document
 - Relevant ADRs
 - Relevant records in `docs/UI_REGRESSIONS.md`
+
+The current physical-swatch contract is `docs/COLOR_LIBRARY_V1.md`.
 
 ## Read for visual or generated-artifact work
 
